@@ -17,59 +17,53 @@
  *******************************************************************************/
 package com.oneops.proxy.keywhiz.security;
 
-import com.oneops.config.KeyStoreConfig;
+import com.oneops.proxy.config.OneOpsConfig;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ResourceLoader;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.util.logging.Logger;
 
-import static com.oneops.config.CliConfig.keywhiz;
 
 /**
  * Holds PKCS12 trust-store/keystore to communicate with Keywhiz server.
- * The keystore is optional and is required only for {@link com.oneops.keywhiz.KeywhizAutomationClient}.
- * Both the keystore and trust-store are configured in <strong>application.conf</strong>.
+ * The keystore is optional and is required only for Keywhiz Automation client.
  *
  * @author Suresh
  */
 public class KeywhizKeyStore {
 
-    /**
-     * Logger instance.
-     */
-    private static Logger log = Logger.getLogger(KeywhizKeyStore.class.getSimpleName());
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(KeywhizKeyStore.class);
+    private final KeyStore trustStore;
+    private final KeyStore keyStore;
+    private final char[] keyPassword;
+    private final OneOpsConfig.Keywhiz config;
+    private final ResourceLoader loader;
 
     /**
-     * Keywhiz trust store.
+     * Create a keywhiz key store to communicate with Keywhiz server.
+     *
+     * @param config {@link OneOpsConfig.Keywhiz} Keywhiz config properties
+     * @param loader {@link ResourceLoader} for loading resources from classpath for file system.
      */
-    private static KeyStore trustStore;
-
-    /**
-     * Keywhiz key store.
-     */
-    private static KeyStore keyStore;
-
-    /**
-     * Private key password.
-     */
-    private static char[] keyPassword;
-
-    static {
-        trustStore = keyStoreFromResource(keywhiz.getTrustStore());
-        // Keystore is optional.
-        if ((keywhiz.getKeyStore() != null)) {
-            keyStore = keyStoreFromResource(keywhiz.getKeyStore());
-            keyPassword = keywhiz.getKeyStore().getPassword();
+    public KeywhizKeyStore(OneOpsConfig.Keywhiz config, ResourceLoader loader) {
+        this.config = config;
+        this.loader = loader;
+        if (config.getTrustStore() != null) {
+            trustStore = keyStoreFromResource(config.getTrustStore());
+        } else {
+            trustStore = null;
+        }
+        if (config.getKeyStore() != null) {
+            keyStore = keyStoreFromResource(config.getKeyStore());
+            keyPassword = config.getKeyStore().getKeyPassword();
         } else {
             keyStore = null;
             keyPassword = null;
         }
-    }
-
-    private KeywhizKeyStore() {
     }
 
     /**
@@ -79,27 +73,28 @@ public class KeywhizKeyStore {
      * @param config keystore config
      * @return {@link KeyStore} instance or <code>null</code> if the resource doesn't exist.
      */
-    private static @Nullable
-    KeyStore keyStoreFromResource(KeyStoreConfig config) {
+    private @Nullable
+    KeyStore keyStoreFromResource(OneOpsConfig.TrustStore config) {
         try {
-            try (InputStream ins = KeywhizKeyStore.class.getResourceAsStream(config.getName())) {
-                log.info("Loading the keystore: " + config.getName());
+            try (InputStream ins = loader.getResource(config.getPath()).getInputStream()) {
+                log.info("Loading the keystore: " + config.getPath());
                 if (ins == null) return null;
                 KeyStore ks = KeyStore.getInstance(config.getType());
-                ks.load(ins, config.getPassword());
+                ks.load(ins, config.getStorePassword());
                 return ks;
             }
         } catch (IOException | GeneralSecurityException ex) {
-            throw new IllegalStateException("Can't load the keystore (" + config.getName() + ").", ex);
+            throw new IllegalStateException("Can't load the keystore (" + config.getPath() + ").", ex);
         }
     }
 
     /**
      * Returns the keywhiz server trust store.
      *
-     * @return {@link KeyStore}
+     * @return {@link KeyStore} if it's configured, else returns <code>null</code>
      */
-    public static KeyStore getTrustStore() {
+    public @Nullable
+    KeyStore getTrustStore() {
         return trustStore;
     }
 
@@ -108,7 +103,7 @@ public class KeywhizKeyStore {
      *
      * @return {@link KeyStore} if it's configured, else returns <code>null</code>
      */
-    public static @Nullable
+    public @Nullable
     KeyStore getKeyStore() {
         return keyStore;
     }
@@ -118,7 +113,7 @@ public class KeywhizKeyStore {
      *
      * @return password or <code>null</code> if the keystore is empty.
      */
-    public static @Nullable
+    public @Nullable
     char[] getKeyPassword() {
         return keyPassword;
     }

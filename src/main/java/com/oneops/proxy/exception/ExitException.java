@@ -15,26 +15,18 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy;
+package com.oneops.proxy.exception;
 
-import com.oneops.proxy.config.OneOpsConfig;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.ExitCodeGenerator;
 
 /**
- * Keywhiz proxy application.
+ * Defines an exit exception with proper error code.
  *
- * @author Suresh
+ * @author Suresh G
  */
-@SpringBootApplication
-@EnableConfigurationProperties(OneOpsConfig.class)
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+public class ExitException extends RuntimeException implements ExitCodeGenerator {
+    @Override
+    public int getExitCode() {
+        return 1;
     }
 }
-

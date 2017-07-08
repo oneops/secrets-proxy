@@ -20,6 +20,7 @@ package com.oneops.proxy.keywhiz;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.oneops.proxy.keywhiz.http.HttpClient;
 import com.oneops.proxy.keywhiz.model.v2.CreateClientRequestV2;
+import com.oneops.proxy.keywhiz.security.KeywhizKeyStore;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -38,11 +39,12 @@ public class KeywhizAutomationClient extends HttpClient {
     /**
      * Create a keywhiz automation client for the given baseurl.
      *
-     * @param baseUrl keywhiz server base url
+     * @param baseUrl         keywhiz server base url
+     * @param keywhizKeyStore keywhiz keystore.
      * @throws GeneralSecurityException throws if any error creating the https client.
      */
-    public KeywhizAutomationClient(String baseUrl) throws GeneralSecurityException {
-        super(baseUrl);
+    public KeywhizAutomationClient(String baseUrl, KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
+        super(baseUrl, keywhizKeyStore);
     }
 
     public List<String> allClients() throws IOException {

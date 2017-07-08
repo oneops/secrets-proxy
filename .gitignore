@@ -22,3 +22,6 @@ nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+
+### Ignore the Keystores
+src/main/resources/**/*.p12

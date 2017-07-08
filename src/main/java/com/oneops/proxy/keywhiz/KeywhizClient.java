@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import com.oneops.proxy.keywhiz.http.HttpClient;
 import com.oneops.proxy.keywhiz.http.HttpStatus;
 import com.oneops.proxy.keywhiz.model.*;
+import com.oneops.proxy.keywhiz.security.KeywhizKeyStore;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -43,11 +44,12 @@ public class KeywhizClient extends HttpClient {
     /**
      * Create a keywhiz client for the given baseurl.
      *
-     * @param baseUrl keywhiz server base url
+     * @param baseUrl         keywhiz server base url
+     * @param keywhizKeyStore keywhiz keystore.
      * @throws GeneralSecurityException throws if any error creating the https client.
      */
-    public KeywhizClient(String baseUrl) throws GeneralSecurityException {
-        super(baseUrl);
+    public KeywhizClient(String baseUrl, KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
+        super(baseUrl, keywhizKeyStore);
     }
 
     @Override

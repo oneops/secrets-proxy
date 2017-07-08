@@ -33,6 +33,7 @@
     </properties>
 
     <dependencies>
+        <!-- SpringBoot-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -45,16 +46,39 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
+        <!-- Adding Jetty support -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jetty</artifactId>
+        </dependency>
+        <!-- For ConfigurationProperties metadata -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- JSON Serialization -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        <!-- JSON deserialization/serialization with java8 features. -->
+        <!-- JSON (de)serialization with java8 features. -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
@@ -70,22 +94,26 @@
             <artifactId>jackson-datatype-guava</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        <!-- String utils -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commonlang.version}</version>
         </dependency>
+        <!-- Value Objects -->
         <dependency>
             <groupId>com.google.auto.value</groupId>
             <artifactId>auto-value</artifactId>
             <version>${autovalue.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Guava for common utils -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
         </dependency>
+        <!-- OKhttp Http Client -->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>logging-interceptor</artifactId>
@@ -96,11 +124,13 @@
             <artifactId>okhttp-urlconnection</artifactId>
             <version>${okhttp.version}</version>
         </dependency>
+        <!-- LDAP client for AD authentication.-->
         <dependency>
             <groupId>org.ldaptive</groupId>
             <artifactId>ldaptive</artifactId>
             <version>${ldaptive.version}</version>
         </dependency>
+        <!-- Feature flags-->
         <dependency>
             <groupId>org.togglz</groupId>
             <artifactId>togglz-spring-boot-starter</artifactId>
@@ -116,17 +146,15 @@
             <artifactId>togglz-console</artifactId>
             <version>${togglz.version}</version>
         </dependency>
+        <!-- JSR305 Nullable annotations-->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>${jsr305.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-        </dependency>
+
+        <!-- Test dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -140,8 +168,16 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <configuration>
+                    <reportOutputDirectory>${project.basedir}/docs</reportOutputDirectory>
+                    <destDir>api</destDir>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
 
 </project>

@@ -22,10 +22,10 @@ import okhttp3.Cookie;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.oneops.proxy.keywhiz.http.CookieCutter.decodeCookies;
 
@@ -40,7 +40,7 @@ import static com.oneops.proxy.keywhiz.http.CookieCutter.decodeCookies;
 
 public class XsrfTokenInterceptor implements Interceptor {
 
-    private Logger log = Logger.getLogger(XsrfTokenInterceptor.class.getSimpleName());
+    private static final Logger log = LoggerFactory.getLogger(XsrfTokenInterceptor.class);
 
     private String xsrfCookieName = "XSRF-TOKEN";
     private String xsrfHeaderName = "X-XSRF-TOKEN";
@@ -65,10 +65,9 @@ public class XsrfTokenInterceptor implements Interceptor {
                 }
             }
         } catch (Exception ex) {
-            log.log(Level.WARNING, "Error setting " + xsrfHeaderName + " header in request", ex);
+            log.warn("Error setting " + xsrfHeaderName + " header in request", ex);
         }
         return chain.proceed(req);
-
     }
 
     public String getXsrfCookieName() {

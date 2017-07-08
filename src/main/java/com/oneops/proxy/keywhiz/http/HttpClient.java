@@ -23,10 +23,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.oneops.proxy.keywhiz.KeywhizClient;
-import com.oneops.security.XsrfTokenInterceptor;
+import com.oneops.proxy.keywhiz.security.KeywhizKeyStore;
+import com.oneops.proxy.keywhiz.security.XsrfTokenInterceptor;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -35,7 +37,6 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.Collections;
-import java.util.logging.Logger;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.HttpHeaders.USER_AGENT;
@@ -49,7 +50,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  */
 public abstract class HttpClient {
 
-    protected static final Logger log = Logger.getLogger(KeywhizClient.class.getSimpleName());
+    private static final Logger log = LoggerFactory.getLogger(HttpClient.class);
 
     protected static final MediaType JSON = MediaType.parse("application/json");
 
@@ -59,15 +60,19 @@ public abstract class HttpClient {
 
     protected final HttpUrl baseUrl;
 
+    protected final KeywhizKeyStore keywhizKeyStore;
+
     private CookieManager cookieMgr;
 
     /**
-     * Creates the http client.
+     * Creates an http client.
      *
-     * @param baseUrl keywhiz server base url
+     * @param baseUrl         keywhiz base url
+     * @param keywhizKeyStore keywhiz keystore.
      * @throws GeneralSecurityException
      */
-    protected HttpClient(String baseUrl) throws GeneralSecurityException {
+    protected HttpClient(String baseUrl, KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
+        this.keywhizKeyStore = keywhizKeyStore;
         log.info("Creating Keywhiz client for " + baseUrl);
         this.client = createHttpsClient();
         this.baseUrl = HttpUrl.parse(baseUrl);
@@ -89,7 +94,7 @@ public abstract class HttpClient {
     }
 
     private TrustManager[] loadTrustMaterial() throws GeneralSecurityException {
-        KeyStore trustStore = KeywhizKeyStore.getTrustStore();
+        KeyStore trustStore = keywhizKeyStore.getTrustStore();
         final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         trustManagerFactory.init(trustStore);
         return trustManagerFactory.getTrustManagers();
@@ -98,15 +103,16 @@ public abstract class HttpClient {
     private KeyManager[] loadKeyMaterial() throws GeneralSecurityException {
         if (isClientAuthEnabled()) {
             log.info("Client auth is enabled. Loading the keystore...");
-            KeyStore keystore = KeywhizKeyStore.getKeyStore();
+            KeyStore keystore = keywhizKeyStore.getKeyStore();
             final KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            kmfactory.init(keystore, KeywhizKeyStore.getKeyPassword());
+            kmfactory.init(keystore, keywhizKeyStore.getKeyPassword());
             return kmfactory.getKeyManagers();
         } else {
-            log.warning("Client auth is disabled. Skipping keystore.");
+            log.warn("Client auth is disabled. Skipping keystore.");
             return new KeyManager[0];
         }
     }
+
 
     /**
      * Creates a {@link OkHttpClient} to start a TLS connection.
@@ -132,7 +138,7 @@ public abstract class HttpClient {
                 .addInterceptor(chain -> {
                     Request req = chain.request().newBuilder()
                             .addHeader(CONTENT_TYPE, JSON.toString())
-                            .addHeader(USER_AGENT, "OneOps-Keywhiz-Cli")
+                            .addHeader(USER_AGENT, "OneOps-Keywhiz-Proxy")
                             .build();
                     return chain.proceed(req);
                 })
@@ -153,10 +159,10 @@ public abstract class HttpClient {
      */
     public void clearCookies() {
         if (!isClientAuthEnabled()) {
-            log.warning("Clearing all cookies!");
+            log.warn("Clearing all cookies!");
             cookieMgr.getCookieStore().removeAll();
         } else {
-            log.warning("Cookie is not enabled for client auth.");
+            log.warn("Cookie is not enabled for client auth.");
         }
     }
 
