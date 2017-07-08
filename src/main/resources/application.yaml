@@ -1,0 +1,72 @@
+# OneOps Proxy Application config
+# ===============================
+logging:
+  level: info
+
+server:
+  address: 0.0.0.0
+  port: 8080
+  compression:
+    enabled: true
+
+oneops:
+   keywhiz:
+       base-url: https://keywhiz:4444/
+       svc-user: ${KEYWHIZ_USER:kwadmin}
+       svc-password: ${KEYWHIZ_PASS:xxxx}
+       trust-store:
+          path: classpath:keystores/keywhiz_truststore.p12
+          type: pkcs12
+          store-password: changeit
+#       key-store:
+#          path:
+#          type:
+#          store-password:
+#          key-password:
+   ldap:
+       server: ldap://ldap.com
+       port: 3269
+       user-dn: CN=xxx,OU=Users,OU=xxx,DC=xxx,DC=xxxx,DC=com
+       password: ${LDAP_PASS:xxxx}
+       user-base-dn: DC=xxx,DC=xxxx,DC=com
+       user-attribute: sAMAccountName
+       trust-store:
+           path: classpath:keystores/ldap_truststore.p12
+           type: pkcs12
+           store-password: changeit
+
+spring:
+  jmx:
+    enabled: true
+    default-domain: oneops
+  jackson.serialization:
+      INDENT_OUTPUT: true
+
+endpoints:
+  beans:
+    enabled: false
+  env:
+    enabled: false
+
+management:
+  context-path: /admin
+
+random:
+   uuid: ${random.uuid}
+
+banner:
+  location: banner.txt
+
+info:
+    name: @project.artifactId@
+    description: @project.description@
+    version: @project.version@
+    java: ${java.version}
+    java-vendor: ${java.vendor}
+    os-name: ${os.name}
+    os-arch: ${os.arch}
+    os-version: ${os.version}
+
+
+
+
