@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.keywhiz.security;
+package com.oneops.proxy.keywhiz.http;
 
 import com.google.common.net.HttpHeaders;
 import okhttp3.Cookie;

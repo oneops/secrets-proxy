@@ -17,10 +17,14 @@
  *******************************************************************************/
 package com.oneops.proxy.config;
 
-import javax.validation.constraints.NotNull;
-
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * OneOps proxy configuration properties,for communicating to the Keywhiz and LDAP.
@@ -61,7 +65,8 @@ public class OneOpsConfig {
     }
 
     public static class Keywhiz {
-        @NotNull
+
+        @NotBlank
         private String baseUrl;
 
         private String svcUser;
@@ -75,6 +80,10 @@ public class OneOpsConfig {
         @NotNull
         @NestedConfigurationProperty
         private Keystore keyStore;
+
+        @NotNull
+        @NestedConfigurationProperty
+        private Cli cli;
 
         public String getBaseUrl() {
             return baseUrl;
@@ -116,23 +125,65 @@ public class OneOpsConfig {
             this.keyStore = keyStore;
         }
 
+        public Cli getCli() {
+            return cli;
+        }
+
+        public void setCli(Cli cli) {
+            this.cli = cli;
+        }
+
         @Override
         public String toString() {
             return "Keywhiz{" +
                     "baseUrl='" + baseUrl + '\'' +
-                    ", svcUser='" + svcUser + '\'' +
+                    ", svcUser=******" +
                     ", svcPassword=******" +
                     ", trustStore=" + trustStore +
                     ", keyStore=" + keyStore +
+                    ", cli=" + cli +
+                    '}';
+        }
+    }
+
+    public static class Cli {
+        @NotNull
+        private String version;
+
+        @NotNull
+        private String downloadUrl;
+
+        public String getVersion() {
+            return version;
+        }
+
+        public void setVersion(String version) {
+            this.version = version;
+        }
+
+        public String getDownloadUrl() {
+            return downloadUrl;
+        }
+
+        public void setDownloadUrl(String downloadUrl) {
+            this.downloadUrl = downloadUrl;
+        }
+
+        @Override
+        public String toString() {
+            return "Cli{" +
+                    "version='" + version + '\'' +
+                    ", downloadUrl='" + downloadUrl + '\'' +
                     '}';
         }
     }
 
     public static class LDAP {
-        @NotNull
+        @NotBlank
         private String server;
 
-        @NotNull
+        @Min(1)
+        @Max(65535)
         private int port;
 
         @NotNull
@@ -147,9 +198,19 @@ public class OneOpsConfig {
         @NotNull
         private String userAttribute;
 
+        private String roleBaseDn;
+
+        private String roleAttribute;
+
+        private List<String> roles;
+
         @NotNull
         @NestedConfigurationProperty
         private TrustStore trustStore;
+
+        @NotNull
+        @NestedConfigurationProperty
+        private Keystore keyStore;
 
         public String getServer() {
             return server;
@@ -199,12 +260,44 @@ public class OneOpsConfig {
             this.userAttribute = userAttribute;
         }
 
+        public String getRoleBaseDn() {
+            return roleBaseDn;
+        }
+
+        public void setRoleBaseDn(String roleBaseDn) {
+            this.roleBaseDn = roleBaseDn;
+        }
+
+        public String getRoleAttribute() {
+            return roleAttribute;
+        }
+
+        public void setRoleAttribute(String roleAttribute) {
+            this.roleAttribute = roleAttribute;
+        }
+
+        public List<String> getRoles() {
+            return roles;
+        }
+
+        public void setRoles(List<String> roles) {
+            this.roles = roles;
+        }
+
         public TrustStore getTrustStore() {
             return trustStore;
         }
 
         public void setTrustStore(TrustStore trustStore) {
             this.trustStore = trustStore;
+        }
+
+        public Keystore getKeyStore() {
+            return keyStore;
+        }
+
+        public void setKeyStore(Keystore keyStore) {
+            this.keyStore = keyStore;
         }
 
         @Override
@@ -216,7 +309,11 @@ public class OneOpsConfig {
                     ", password=******" +
                     ", userBaseDn='" + userBaseDn + '\'' +
                     ", userAttribute='" + userAttribute + '\'' +
+                    ", roleBaseDn='" + roleBaseDn + '\'' +
+                    ", roleAttribute='" + roleAttribute + '\'' +
+                    ", roles=" + roles +
                     ", trustStore=" + trustStore +
+                    ", keyStore=" + keyStore +
                     '}';
         }
     }

@@ -1,5 +1,6 @@
 # OneOps Proxy Application config
 # ===============================
+
 logging:
   level: info
 
@@ -12,8 +13,8 @@ server:
 oneops:
    keywhiz:
        base-url: https://keywhiz:4444/
-       svc-user: ${KEYWHIZ_USER:kwadmin}
-       svc-password: ${KEYWHIZ_PASS:xxxx}
+       svc-user: ${KEYWHIZ_USER:xxxxx}
+       svc-password: ${KEYWHIZ_PASS:xxxxx}
        trust-store:
           path: classpath:keystores/keywhiz_truststore.p12
           type: pkcs12
@@ -23,17 +24,24 @@ oneops:
 #          type:
 #          store-password:
 #          key-password:
+       cli:
+          version: ${KEYWHIZ_CLI_VERSION:1.0.1}
+          download-url: https://github.com/oneops/keywhiz-cli/releases/download/${oneops.keywhiz.cli.version}/keywhiz-cli
    ldap:
        server: ldap://ldap.com
        port: 3269
-       user-dn: CN=xxx,OU=Users,OU=xxx,DC=xxx,DC=xxxx,DC=com
-       password: ${LDAP_PASS:xxxx}
-       user-base-dn: DC=xxx,DC=xxxx,DC=com
+       user-dn: CN=xxxxx,OU=Users,OU=xxxxx,DC=com
+       password: ${LDAP_PASS:xxxxx}
+       user-base-dn: OU=Users,OU=xxxxx,DC=com
        user-attribute: sAMAccountName
+       role-base-dn:
+       role-attribute: uniqueMember
+       roles[0]:
        trust-store:
            path: classpath:keystores/ldap_truststore.p12
            type: pkcs12
            store-password: changeit
+
 
 spring:
   jmx:
@@ -51,9 +59,6 @@ endpoints:
 management:
   context-path: /admin
 
-random:
-   uuid: ${random.uuid}
-
 banner:
   location: banner.txt
 
@@ -61,12 +66,10 @@ info:
     name: @project.artifactId@
     description: @project.description@
     version: @project.version@
+    keywhiz-cli-version: ${oneops.keywhiz.cli.version}
+    keywhiz-cli-url: ${oneops.keywhiz.cli.download-url}
     java: ${java.version}
     java-vendor: ${java.vendor}
     os-name: ${os.name}
     os-arch: ${os.arch}
     os-version: ${os.version}
-
-
-
-

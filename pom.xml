@@ -174,7 +174,7 @@
                 <version>2.10.4</version>
                 <configuration>
                     <reportOutputDirectory>${project.basedir}/docs</reportOutputDirectory>
-                    <destDir>api</destDir>
+                    <destDir>javadocs</destDir>
                 </configuration>
             </plugin>
         </plugins>

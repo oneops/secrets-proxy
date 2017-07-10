@@ -23,8 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.oneops.proxy.keywhiz.security.KeywhizKeyStore;
-import com.oneops.proxy.keywhiz.security.XsrfTokenInterceptor;
+import com.oneops.proxy.security.KeywhizKeyStore;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.slf4j.Logger;
@@ -93,32 +92,21 @@ public abstract class HttpClient {
         return mapper;
     }
 
-    private TrustManager[] loadTrustMaterial() throws GeneralSecurityException {
-        KeyStore trustStore = keywhizKeyStore.getTrustStore();
-        final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        trustManagerFactory.init(trustStore);
-        return trustManagerFactory.getTrustManagers();
-    }
 
     private KeyManager[] loadKeyMaterial() throws GeneralSecurityException {
         if (isClientAuthEnabled()) {
-            log.info("Client auth is enabled. Loading the keystore...");
-            KeyStore keystore = keywhizKeyStore.getKeyStore();
-            final KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            kmfactory.init(keystore, keywhizKeyStore.getKeyPassword());
-            return kmfactory.getKeyManagers();
+            return keywhizKeyStore.getKeyManagers();
         } else {
             log.warn("Client auth is disabled. Skipping keystore.");
             return new KeyManager[0];
         }
     }
 
-
     /**
      * Creates a {@link OkHttpClient} to start a TLS connection.
      */
     protected OkHttpClient createHttpsClient() throws GeneralSecurityException {
-        TrustManager[] trustManagers = loadTrustMaterial();
+        TrustManager[] trustManagers = keywhizKeyStore.getTrustManagers();
         KeyManager[] keyManagers = loadKeyMaterial();
         SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
         sslContext.init(keyManagers, trustManagers, new SecureRandom());
@@ -133,8 +121,8 @@ public abstract class HttpClient {
                 .followSslRedirects(false)
                 .retryOnConnectionFailure(false)
                 .connectTimeout(5, SECONDS)
-                .readTimeout(10, SECONDS)
-                .writeTimeout(10, SECONDS)
+                .readTimeout(5, SECONDS)
+                .writeTimeout(5, SECONDS)
                 .addInterceptor(chain -> {
                     Request req = chain.request().newBuilder()
                             .addHeader(CONTENT_TYPE, JSON.toString())

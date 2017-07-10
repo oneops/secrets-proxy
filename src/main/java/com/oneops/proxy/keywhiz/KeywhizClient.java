@@ -21,7 +21,7 @@ import com.google.common.collect.ImmutableMap;
 import com.oneops.proxy.keywhiz.http.HttpClient;
 import com.oneops.proxy.keywhiz.http.HttpStatus;
 import com.oneops.proxy.keywhiz.model.*;
-import com.oneops.proxy.keywhiz.security.KeywhizKeyStore;
+import com.oneops.proxy.security.KeywhizKeyStore;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.Request;

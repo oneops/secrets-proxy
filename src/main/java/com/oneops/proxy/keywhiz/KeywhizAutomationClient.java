@@ -20,7 +20,7 @@ package com.oneops.proxy.keywhiz;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.oneops.proxy.keywhiz.http.HttpClient;
 import com.oneops.proxy.keywhiz.model.v2.CreateClientRequestV2;
-import com.oneops.proxy.keywhiz.security.KeywhizKeyStore;
+import com.oneops.proxy.security.KeywhizKeyStore;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;

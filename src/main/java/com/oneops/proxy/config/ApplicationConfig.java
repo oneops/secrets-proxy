@@ -19,18 +19,24 @@ package com.oneops.proxy.config;
 
 import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
 import com.oneops.proxy.keywhiz.KeywhizClient;
-import com.oneops.proxy.keywhiz.security.KeywhizKeyStore;
+import com.oneops.proxy.ldap.LDAPClient;
+import com.oneops.proxy.security.KeywhizKeyStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.ResourceLoader;
 
 import java.security.GeneralSecurityException;
+
+import static com.oneops.proxy.security.KeywhizKeyStore.Name.Keywhiz;
+import static com.oneops.proxy.security.KeywhizKeyStore.Name.LDAP;
 
 /**
  * Keywhiz proxy application java config.
@@ -60,7 +66,7 @@ public class ApplicationConfig {
      */
     @Bean
     public CommandLineRunner init(OneOpsConfig config) {
-        return (String... args) -> {
+        return args -> {
             log.info("Starting OneOps Keywhiz Proxy...");
             log.info("Application config, " + config);
             String cliArgs = String.join(", ", args);
@@ -75,16 +81,30 @@ public class ApplicationConfig {
      * @param loader resource loader.
      * @return {@link KeywhizKeyStore}
      */
-    @Bean
-    public KeywhizKeyStore getKeywhizKeyStore(OneOpsConfig config, ResourceLoader loader) {
-        return new KeywhizKeyStore(config.getKeywhiz(), loader);
+    @Bean(name = "keywhizKeyStore")
+    public KeywhizKeyStore keywhizKeyStore(OneOpsConfig config, ResourceLoader loader) {
+        OneOpsConfig.Keywhiz keywhiz = config.getKeywhiz();
+        return new KeywhizKeyStore(Keywhiz, keywhiz.getTrustStore(), keywhiz.getKeyStore(), loader);
+    }
+
+    /**
+     * Returns the keystrore for LDAP server
+     *
+     * @param config LDAP config properties.
+     * @param loader resource loader.
+     * @return {@link KeywhizKeyStore}
+     */
+    @Bean(name = "ldapKeyStore")
+    public KeywhizKeyStore ldapKeyStore(OneOpsConfig config, ResourceLoader loader) {
+        OneOpsConfig.LDAP ldap = config.getLdap();
+        return new KeywhizKeyStore(LDAP, ldap.getTrustStore(), ldap.getKeyStore(), loader);
     }
 
     /**
      * Returns the keywhiz http client
      */
     @Bean
-    public KeywhizClient getKeywhizClient(OneOpsConfig config, KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
+    public KeywhizClient getKeywhizClient(OneOpsConfig config, @Qualifier("keywhizKeyStore") KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
         return new KeywhizClient(config.getKeywhiz().getBaseUrl(), keywhizKeyStore);
     }
 
@@ -92,8 +112,18 @@ public class ApplicationConfig {
      * Returns the keywhiz automation client
      */
     @Bean
-    public KeywhizAutomationClient getKeywhizAutomationClient(OneOpsConfig config, KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
+    @Lazy
+    public KeywhizAutomationClient getKeywhizAutomationClient(OneOpsConfig config, @Qualifier("keywhizKeyStore") KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
         return new KeywhizAutomationClient(config.getKeywhiz().getBaseUrl(), keywhizKeyStore);
+    }
+
+    /**
+     * Returns the LDAP client.
+     */
+    @Bean
+    @Lazy
+    public LDAPClient ldapClient(OneOpsConfig config, @Qualifier("ldapKeyStore") KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
+        return new LDAPClient(config.getLdap(), keywhizKeyStore);
     }
 
     /**
@@ -104,5 +134,17 @@ public class ApplicationConfig {
     @Bean
     public InfoContributor versionInfo() {
         return builder -> builder.withDetail("spring-boot.version", SpringBootVersion.getVersion());
+    }
+
+    @Bean
+    public CommandLineRunner test(KeywhizClient client, LDAPClient ldap, OneOpsConfig config) {
+        return args -> {
+            log.info("Logging in..");
+            client.login(config.getKeywhiz().getSvcUser(), config.getKeywhiz().getSvcPassword());
+            log.info("Is Logged in, " + client.isLoggedIn());
+            client.allClients().forEach(kc -> {
+                log.info(kc.toString());
+            });
+        };
     }
 }

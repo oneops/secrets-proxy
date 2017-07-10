@@ -15,13 +15,15 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.keywhiz.security;
+package com.oneops.proxy.security;
 
 import com.oneops.proxy.config.OneOpsConfig;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ResourceLoader;
 
 import javax.annotation.Nullable;
+import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;
@@ -36,30 +38,35 @@ import java.security.KeyStore;
  */
 public class KeywhizKeyStore {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(KeywhizKeyStore.class);
+    private static final Logger log = LoggerFactory.getLogger(KeywhizKeyStore.class);
+    private final Name name;
     private final KeyStore trustStore;
     private final KeyStore keyStore;
     private final char[] keyPassword;
-    private final OneOpsConfig.Keywhiz config;
     private final ResourceLoader loader;
 
     /**
      * Create a keywhiz key store to communicate with Keywhiz server.
      *
-     * @param config {@link OneOpsConfig.Keywhiz} Keywhiz config properties
-     * @param loader {@link ResourceLoader} for loading resources from classpath for file system.
+     * @param name             Keystore name
+     * @param trustStoreConfig {@link OneOpsConfig.TrustStore} trust-store properties
+     * @param keystoreConfig   {@link OneOpsConfig.Keystore} keystore properties
+     * @param loader           {@link ResourceLoader} for loading resources from classpath for file system.
      */
-    public KeywhizKeyStore(OneOpsConfig.Keywhiz config, ResourceLoader loader) {
-        this.config = config;
+    public KeywhizKeyStore(Name name,
+                           OneOpsConfig.TrustStore trustStoreConfig,
+                           OneOpsConfig.Keystore keystoreConfig,
+                           ResourceLoader loader) {
+        this.name = name;
         this.loader = loader;
-        if (config.getTrustStore() != null) {
-            trustStore = keyStoreFromResource(config.getTrustStore());
+        if (trustStoreConfig != null) {
+            trustStore = keyStoreFromResource(trustStoreConfig);
         } else {
             trustStore = null;
         }
-        if (config.getKeyStore() != null) {
-            keyStore = keyStoreFromResource(config.getKeyStore());
-            keyPassword = config.getKeyStore().getKeyPassword();
+        if (keystoreConfig != null) {
+            keyStore = keyStoreFromResource(keystoreConfig);
+            keyPassword = keystoreConfig.getKeyPassword();
         } else {
             keyStore = null;
             keyPassword = null;
@@ -116,5 +123,32 @@ public class KeywhizKeyStore {
     public @Nullable
     char[] getKeyPassword() {
         return keyPassword;
+    }
+
+
+    /**
+     * Return new trust managers from the trust-store.
+     */
+    public TrustManager[] getTrustManagers() throws GeneralSecurityException {
+        final TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        trustManagerFactory.init(trustStore);
+        return trustManagerFactory.getTrustManagers();
+
+    }
+
+    /**
+     * Return new key managers from the keystore.
+     */
+    public KeyManager[] getKeyManagers() throws GeneralSecurityException {
+        final KeyManagerFactory kmfactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        kmfactory.init(keyStore, keyPassword);
+        return kmfactory.getKeyManagers();
+    }
+
+    /**
+     * Keystore names.
+     */
+    public enum Name {
+        Keywhiz, LDAP
     }
 }
