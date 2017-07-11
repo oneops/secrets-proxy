@@ -40,6 +40,9 @@ public class OneOpsConfig {
     @NotNull
     private LDAP ldap;
 
+    @NotNull
+    private Auth auth;
+
     public Keywhiz getKeywhiz() {
         return keywhiz;
     }
@@ -56,11 +59,20 @@ public class OneOpsConfig {
         this.ldap = ldap;
     }
 
+    public Auth getAuth() {
+        return auth;
+    }
+
+    public void setAuth(Auth auth) {
+        this.auth = auth;
+    }
+
     @Override
     public String toString() {
         return "OneOpsConfig{" +
                 "keywhiz=" + keywhiz +
                 ", ldap=" + ldap +
+                ", auth=" + auth +
                 '}';
     }
 
@@ -379,6 +391,60 @@ public class OneOpsConfig {
                     ", type='" + super.type + '\'' +
                     ", storePassword=******" +
                     ", keyPassword=******" +
+                    '}';
+        }
+    }
+
+    /**
+     * JWT (JWS) authentication properties.
+     */
+    public static class Auth {
+
+        /**
+         * HMAC using SHA-512
+         */
+        @NotNull
+        private char[] signingKey;
+
+        @NotBlank
+        private String header;
+
+        /**
+         * Token expiry in secs.
+         */
+        @NotNull
+        private int expiresInSec;
+
+        public char[] getSigningKey() {
+            return signingKey;
+        }
+
+        public void setSigningKey(char[] signingKey) {
+            this.signingKey = signingKey;
+        }
+
+        public String getHeader() {
+            return header;
+        }
+
+        public void setHeader(String header) {
+            this.header = header;
+        }
+
+        public int getExpiresInSec() {
+            return expiresInSec;
+        }
+
+        public void setExpiresInSec(int expiresInSec) {
+            this.expiresInSec = expiresInSec;
+        }
+
+        @Override
+        public String toString() {
+            return "Auth{" +
+                    "signingKey=******" +
+                    ", header='" + header + '\'' +
+                    ", expiresInSec=" + expiresInSec +
                     '}';
         }
     }

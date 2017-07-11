@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
  * LDAP client for authenticating/searching AD accounts.
  * <p>
  * ToDo: Remove sun.security.x509.X500Name. This might be an
- * issue with future java versions with JPMS (Jigsaw).
+ * issue in future java versions with JPMS (Jigsaw).
  *
  * @author Suresh G
  */

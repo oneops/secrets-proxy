@@ -130,6 +130,12 @@
             <artifactId>ldaptive</artifactId>
             <version>${ldaptive.version}</version>
         </dependency>
+        <!-- JWT Token Auth -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.7.0</version>
+        </dependency>
         <!-- Feature flags-->
         <dependency>
             <groupId>org.togglz</groupId>
