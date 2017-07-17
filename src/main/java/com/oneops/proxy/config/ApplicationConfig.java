@@ -17,6 +17,8 @@
  *******************************************************************************/
 package com.oneops.proxy.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
 import com.oneops.proxy.keywhiz.KeywhizClient;
 import com.oneops.proxy.ldap.LDAPClient;
@@ -32,6 +34,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.security.GeneralSecurityException;
 
@@ -136,25 +139,14 @@ public class ApplicationConfig {
         return builder -> builder.withDetail("spring-boot.version", SpringBootVersion.getVersion());
     }
 
-    @Bean
-    public CommandLineRunner test(KeywhizClient client, LDAPClient ldap, OneOpsConfig config) {
-        return args -> {
-            log.info("Logging in..");
-            client.login(config.getKeywhiz().getSvcUser(), config.getKeywhiz().getSvcPassword());
-            log.info("Is Logged in, " + client.isLoggedIn());
-            client.allClients().forEach(kc -> {
-                log.info(kc.toString());
-            });
-        };
-    }
-
     /**
      * Json (de)serializer config.
      *
      * @return Object mapper.
-
-     @Bean public ObjectMapper objectMapper() {
-     return new Jackson2ObjectMapperBuilder().serializationInclusion(JsonInclude.Include.NON_NULL).build();
-     }
      */
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new Jackson2ObjectMapperBuilder().serializationInclusion(JsonInclude.Include.NON_NULL).build();
+    }
+
 }

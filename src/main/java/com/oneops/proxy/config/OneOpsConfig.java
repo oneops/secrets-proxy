@@ -20,6 +20,7 @@ package com.oneops.proxy.config;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
+import org.springframework.http.HttpHeaders;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -407,7 +408,13 @@ public class OneOpsConfig {
         private char[] signingKey;
 
         @NotBlank
-        private String header;
+        private String header = HttpHeaders.AUTHORIZATION;
+
+        @NotBlank
+        private String issuer = "OneOps-Proxy";
+
+        @NotBlank
+        private String tokenType = "Bearer";
 
         /**
          * Token expiry in secs.
@@ -439,11 +446,29 @@ public class OneOpsConfig {
             this.expiresInSec = expiresInSec;
         }
 
+        public String getIssuer() {
+            return issuer;
+        }
+
+        public void setIssuer(String issuer) {
+            this.issuer = issuer;
+        }
+
+        public String getTokenType() {
+            return tokenType;
+        }
+
+        public void setTokenType(String tokenType) {
+            this.tokenType = tokenType;
+        }
+
         @Override
         public String toString() {
             return "Auth{" +
                     "signingKey=******" +
                     ", header='" + header + '\'' +
+                    ", issuer='" + issuer + '\'' +
+                    ", tokenType='" + tokenType + '\'' +
                     ", expiresInSec=" + expiresInSec +
                     '}';
         }

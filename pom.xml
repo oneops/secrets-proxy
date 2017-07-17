@@ -10,6 +10,33 @@
 
     <name>keywhiz-proxy</name>
     <description>A secure proxy service for Keywhiz CLI.</description>
+    <url>https://github.com/oneops/keywhiz-proxy</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <developerConnection>scm:git:git@github.com:oneops/keywhiz-proxy.git</developerConnection>
+        <url>https://github.com/oneops/keywhiz-proxy</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/oneops/keywhiz-proxy/issues</url>
+    </issueManagement>
+    
+    <developers>
+        <developer>
+            <name>The OneOps Team</name>
+            <organization>OneOps</organization>
+            <organizationUrl>https://github.com/orgs/oneops/people</organizationUrl>
+        </developer>
+    </developers>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

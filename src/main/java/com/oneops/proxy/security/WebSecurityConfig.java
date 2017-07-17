@@ -17,21 +17,37 @@
  *******************************************************************************/
 package com.oneops.proxy.security;
 
-import com.oneops.proxy.config.OneOpsConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+
 /**
+ * Web security configurer for the application.
+ *
  * @author Suresh
+ * @see <a href="https://goo.gl/pSsmpy">Spring-boot-sample-web-security</a>
  */
-@Configuration
 @EnableWebSecurity
+@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private static final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
+
+    @Value("${management.context-path}")
+    private String mgmtContext;
 
     @Bean
     @Lazy
@@ -39,13 +55,36 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public TokenHelper tokenHelper(OneOpsConfig config) {
-        return new TokenHelper(config.getAuth());
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
+        http.sessionManagement()
+                  .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                    .authorizeRequests()
+                    .antMatchers(GET, "/").permitAll()
+                    .antMatchers(GET,  mgmtContext + "/info").permitAll()
+                    .antMatchers(GET, mgmtContext + "/health").permitAll()
+                    .antMatchers(GET,mgmtContext + "/**").hasRole("ADMIN")
+                    .antMatchers(POST, "/login").permitAll()
+                    .anyRequest().fullyAuthenticated()
+                .and()
+                   .httpBasic()
+                .and()
+                   .formLogin()//.loginPage("/login")
+                .and()
+                   .logout().disable()
+                   .csrf().disable()
+                   .cors()
+                .and()
+                   .headers()
+                   .frameOptions().disable();
+        // @formatter:on
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
+    public void configure(WebSecurity web) throws Exception {
+        // For static resources.
+        web.ignoring().antMatchers(GET, "/assets/**");
     }
 }
