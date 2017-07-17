@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.auth;
+package com.oneops.proxy.authz;
 
 import org.springframework.web.filter.GenericFilterBean;
 

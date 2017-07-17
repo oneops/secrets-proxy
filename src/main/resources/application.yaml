@@ -2,28 +2,40 @@
 # ===============================
 
 logging:
-  level: info
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.springframework.security: INFO
 
 server:
   address: 0.0.0.0
   port: 8080
   compression:
     enabled: true
+  session:
+    cookie:
+      name: SESSION
+
+#security:
+#  user:
+#    role: ADMIN
+#    name: oneops
+#    password: 0n30ps
 
 oneops:
    keywhiz:
        base-url: https://keywhiz:4444/
-       svc-user: ${KEYWHIZ_USER:xxxxx}
+       svc-user: ${KEYWHIZ_USER:admin}
        svc-password: ${KEYWHIZ_PASS:xxxxx}
        trust-store:
           path: classpath:keystores/keywhiz_truststore.p12
           type: pkcs12
           store-password: changeit
-#       key-store:
-#          path:
-#          type:
-#          store-password:
-#          key-password:
+       #key-store:
+          #path:
+          #type:
+          #store-password:
+          #key-password:
        cli:
           version: ${KEYWHIZ_CLI_VERSION:1.0.1}
           download-url: https://github.com/oneops/keywhiz-cli/releases/download/${oneops.keywhiz.cli.version}/keywhiz-cli
@@ -41,7 +53,13 @@ oneops:
            path: classpath:keystores/ldap_truststore.p12
            type: pkcs12
            store-password: changeit
-
+   auth:
+       issuer: OneOps-Proxy
+       header: Authorization
+       token-type: Bearer
+       # HMAC using SHA-512
+       signing-key: ${SIGNING_KEY:xxxxxxxxx}
+       expires-in-sec: 3600
 
 spring:
   jmx:
@@ -50,14 +68,11 @@ spring:
   jackson.serialization:
       INDENT_OUTPUT: true
 
-endpoints:
-  beans:
-    enabled: false
-  env:
-    enabled: false
-
 management:
-  context-path: /admin
+  context-path: /app
+  security:
+    enabled: false
+    roles: ADMIN
 
 banner:
   location: banner.txt

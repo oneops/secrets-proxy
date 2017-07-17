@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.auth;
+package com.oneops.proxy.authz;
 
 import com.oneops.proxy.config.OneOpsConfig;
 import io.jsonwebtoken.*;
