@@ -107,7 +107,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(GET, "/assets/**"); // Static resources.
+        web.ignoring()
+                .antMatchers(GET, "/assets/**")
+                .antMatchers(GET, "/static/**"); // Static resources.
     }
 
     @Override

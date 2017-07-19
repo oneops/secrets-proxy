@@ -3,6 +3,9 @@
 Keywhiz proxy service for the CLI app. **The service is not production ready and is in active development.**
 
 
+Api Doc  : https://oneops.github.com/keywhiz-proxy/apidocs
+Java Doc : https://oneops.github.com/keywhiz-proxy/javadocs
+
 ## OneOps Keywhiz-Proxy Keystores
 
   The following Trust-stores/Keystores are used in Keywhiz-proxy application.
@@ -15,10 +18,9 @@ Keywhiz proxy service for the CLI app. **The service is not production ready and
       * Common Name    : `keywhiz-proxy.dev.oneops.com`
       * Key Password   : `kwproxy-password`
       * Store Password : `kwproxy-password` 
-       
-       
+         
      ```
-       For production deployment, contact your infosec team to get new TLS server certificate.
+      For production deployment, contact your infosec team to get new TLS server certificate.
      ```
                  
   - [keywhiz_keystore.p12](src/main/resources/keystores/keywhiz_keystore.p12) 
@@ -65,5 +67,5 @@ TODO
 4. Logging configuration
 5. User (ACL) API
 
-
+https://www.jetbrains.com/research/devecosystem-2017/java/
       

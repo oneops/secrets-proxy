@@ -36,6 +36,7 @@ import static com.oneops.proxy.keywhiz.http.CookieCutter.decodeCookies;
  * the server-supplied cookie.
  *
  * @author Suresh
+ * @see <a href="https://en.wikipedia.org/wiki/Cross-site_request_forgery#Cookie-to-Header_Token">Cookie-to-Header Token, an anti-CSRF technique.</a>
  */
 
 public class XsrfTokenInterceptor implements Interceptor {

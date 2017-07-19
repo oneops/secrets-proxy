@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.auth;
+package com.oneops.proxy.config;
 
 import org.springframework.context.annotation.Configuration;
 
