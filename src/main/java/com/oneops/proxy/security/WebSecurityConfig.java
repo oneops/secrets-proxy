@@ -17,22 +17,30 @@
  *******************************************************************************/
 package com.oneops.proxy.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oneops.proxy.auth.JWTAuthFilter;
+import com.oneops.proxy.auth.JWTAuthService;
+import com.oneops.proxy.auth.JWTLoginFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.oneops.proxy.web.EndPoints.AUTH_TOKEN;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 /**
  * Web security configurer for the application.
@@ -49,6 +57,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${management.context-path}")
     private String mgmtContext;
 
+    private final JWTAuthService jwtAuthService;
+
+    private final ObjectMapper objectMapper;
+
+    @Autowired
+    public WebSecurityConfig(JWTAuthService jwtAuthService, ObjectMapper objectMapper) {
+        this.jwtAuthService = jwtAuthService;
+        this.objectMapper = objectMapper;
+    }
+
     @Bean
     @Lazy
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -59,17 +77,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
         http.sessionManagement()
-                  .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                  .sessionCreationPolicy(STATELESS)
+                .and()
+                  .requiresChannel().anyRequest().requiresSecure()
                 .and()
                     .authorizeRequests()
                     .antMatchers(GET, "/").permitAll()
+                    .antMatchers(POST, AUTH_TOKEN).permitAll()
+                    .antMatchers(GET, AUTH_TOKEN).denyAll()
                     .antMatchers(GET,  mgmtContext + "/info").permitAll()
                     .antMatchers(GET, mgmtContext + "/health").permitAll()
                     .antMatchers(GET,mgmtContext + "/**").hasRole("ADMIN")
-                    .antMatchers(POST, "/login").permitAll()
                     .anyRequest().fullyAuthenticated()
                 .and()
-                   .httpBasic()
+                    .addFilterBefore(new JWTLoginFilter(AUTH_TOKEN, authenticationManager(),jwtAuthService,objectMapper),UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(new JWTAuthFilter(jwtAuthService),UsernamePasswordAuthenticationFilter.class)
+                    .httpBasic()
                 .and()
                    .formLogin()//.loginPage("/login")
                 .and()
@@ -84,7 +107,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        // For static resources.
-        web.ignoring().antMatchers(GET, "/assets/**");
+        web.ignoring().antMatchers(GET, "/assets/**"); // Static resources.
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        log.info("Configuring application authentication manager.");
+        auth.inMemoryAuthentication()
+                .withUser("oouser")
+                .password("oouser")
+                .roles("USER", "ADMIN");
     }
 }
