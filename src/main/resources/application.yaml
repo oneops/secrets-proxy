@@ -5,16 +5,22 @@ logging:
   level:
     root: INFO
     org.springframework.web: INFO
-    org.springframework.security: INFO
+    org.springframework.security: DEBUG
 
 server:
   address: 0.0.0.0
-  port: 8080
+  port: 8443
   compression:
     enabled: true
   session:
     cookie:
       name: SESSION
+  ssl:
+    enabled: true
+    key-store: classpath:keystores/keywhiz_proxy_keystore.p12
+    key-store-type: pkcs12
+    key-password: kwproxy-password
+    key-store-password: kwproxy-password
 
 #security:
 #  user:
