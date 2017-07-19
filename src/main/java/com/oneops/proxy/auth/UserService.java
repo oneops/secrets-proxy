@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.authz;
+package com.oneops.proxy.auth;
 
 import com.oneops.proxy.ldap.LDAPClient;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

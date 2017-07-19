@@ -17,27 +17,63 @@
  *******************************************************************************/
 package com.oneops.proxy.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
 
 /**
  * Login request for user authentication.
  *
  * @author Suresh
  */
-@AutoValue
-public abstract class LoginRequest {
+public class LoginRequest {
 
     @JsonProperty
-    public abstract String userName();
+    public String username;
 
     @JsonProperty
-    public abstract char[] password();
+    public String password;
 
-    @JsonCreator
-    public static LoginRequest of(@JsonProperty("userName") String userName,
-                                  @JsonProperty("password") char[] password) {
-        return new AutoValue_LoginRequest(userName, password);
+    @JsonProperty
+    public String domain; //For mgmt domain (prod/dev/stg)
+
+    public LoginRequest() {
+    }
+
+    public LoginRequest(String username, String password, String domain) {
+        this.username = username;
+        this.password = password;
+        this.domain = domain;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    @Override
+    public String toString() {
+        return "LoginRequest{" +
+                "username='" + username + '\'' +
+                ", password=******" +
+                ", domain='" + domain + '\'' +
+                '}';
     }
 }
