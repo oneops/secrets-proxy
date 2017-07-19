@@ -41,16 +41,10 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
 
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {
-        log.info("Enabling global security config.");
-        // @formatter:off
+        log.info("Configuring global authentication manager.");
         auth.inMemoryAuthentication()
                 .withUser("ooadmin")
                 .password("ooadmin") // For testing only.
-                .roles("USER", "ADMIN")
-            .and()
-                .withUser("oouser")
-                .password("oouser")
-                .roles("USER");
-         // @formatter:on
+                .roles("USER", "ADMIN");
     }
 }

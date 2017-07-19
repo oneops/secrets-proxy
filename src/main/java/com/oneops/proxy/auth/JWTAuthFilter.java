@@ -15,8 +15,10 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.authz;
+package com.oneops.proxy.auth;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -30,16 +32,19 @@ import java.io.IOException;
  *
  * @author Suresh
  */
-public class JWTAuthFilter extends GenericFilterBean{
+public class JWTAuthFilter extends GenericFilterBean {
+
+    private static final Logger log = LoggerFactory.getLogger(JWTAuthFilter.class);
 
     private JWTAuthService tokenAuthService;
 
     public JWTAuthFilter(JWTAuthService tokenAuthService) {
+        log.info("Initializing JWT Auth Filter.");
         this.tokenAuthService = tokenAuthService;
     }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-
+        chain.doFilter(req, res);
     }
 }

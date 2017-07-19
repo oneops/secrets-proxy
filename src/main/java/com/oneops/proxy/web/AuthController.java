@@ -20,10 +20,7 @@ package com.oneops.proxy.web;
 import com.oneops.proxy.model.LoginRequest;
 import com.oneops.proxy.model.LoginResponse;
 import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Proxy authentication controller.
@@ -31,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Suresh G
  */
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
 
     @GetMapping(path = "/")
@@ -40,7 +38,7 @@ public class AuthController {
 
     // @PostAuthorize("returnObject?.accessToken() == principal.username")
     @PostMapping(path = "/token")
-    public LoginResponse login(@RequestBody LoginRequest creds) {
+    public LoginResponse login(LoginRequest creds) {
         return LoginResponse.of("xxxx", "Bearer", 3600);
     }
 

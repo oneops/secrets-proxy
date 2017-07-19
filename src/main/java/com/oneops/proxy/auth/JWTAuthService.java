@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.authz;
+package com.oneops.proxy.auth;
 
 import com.oneops.proxy.config.OneOpsConfig;
 import io.jsonwebtoken.*;
@@ -47,12 +47,25 @@ public class JWTAuthService {
 
     private static final String ROLE_CLAIM = "roles";
 
-    private final OneOpsConfig.Auth authConfig;
-
     private static SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
+    private final char[] secretKey;
+
+    private final int expiresInSec;
+
+    private final String issuer;
+
+    private final String tokenHeader;
+
+    private final String tokenType;
+
     public JWTAuthService(OneOpsConfig config) {
-        authConfig = config.getAuth();
+        final OneOpsConfig.Auth authConfig = config.getAuth();
+        secretKey = authConfig.getSigningKey();
+        expiresInSec = authConfig.getExpiresInSec();
+        issuer = authConfig.getIssuer();
+        tokenHeader = authConfig.getHeader();
+        tokenType = authConfig.getTokenType();
     }
 
     /**
@@ -78,14 +91,14 @@ public class JWTAuthService {
     String generateToken(@Nonnull String userName,
                          @Nullable List<String> roles) {
         Instant now = Instant.now();
-        Instant expiresIn = now.plusSeconds(authConfig.getExpiresInSec());
+        Instant expiresIn = now.plusSeconds(expiresInSec);
 
         JwtBuilder jwt = Jwts.builder()
                 .setSubject(userName)
-                .setIssuer(authConfig.getIssuer())
+                .setIssuer(issuer)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiresIn))
-                .signWith(SIGNATURE_ALGORITHM, String.valueOf(authConfig.getSigningKey()));
+                .signWith(SIGNATURE_ALGORITHM, String.valueOf(secretKey));
         if (roles != null) {
             jwt.claim(ROLE_CLAIM, String.join(",", roles));
         }
@@ -103,7 +116,7 @@ public class JWTAuthService {
         Claims claims;
         try {
             claims = Jwts.parser()
-                    .setSigningKey(String.valueOf(authConfig.getSigningKey()))
+                    .setSigningKey(String.valueOf(secretKey))
                     .parseClaimsJws(token)
                     .getBody();
         } catch (SignatureException e) {
@@ -152,9 +165,9 @@ public class JWTAuthService {
      */
     public Authentication getAuthentication(HttpServletRequest req) {
         log.debug("Getting the authentication object for " + req.getRequestURI());
-        String bearerToken = req.getHeader(authConfig.getHeader());
+        String bearerToken = req.getHeader(tokenHeader);
         if (bearerToken != null) {
-            String jwtToken = bearerToken.replaceFirst(authConfig.getTokenType(), "");
+            String jwtToken = bearerToken.replaceFirst(tokenType, "").trim();
             Claims claims = getClaims(jwtToken);
             if (claims != null) {
                 return new UsernamePasswordAuthenticationToken(claims.getSubject(), null, getAuthorities(claims));
@@ -171,9 +184,8 @@ public class JWTAuthService {
      * @param auth authentication object.
      */
     public void addAuthentication(HttpServletResponse res, Authentication auth) {
-        List<String> roles = getRoles(auth);
-        String jwtToken = generateToken(auth.getName(), roles);
-        res.addHeader(authConfig.getHeader(), authConfig.getTokenType() + " " + jwtToken);
+        String jwtToken = generateToken(auth.getName(), getRoles(auth));
+        res.addHeader(tokenHeader, tokenType + " " + jwtToken);
     }
 }
 
