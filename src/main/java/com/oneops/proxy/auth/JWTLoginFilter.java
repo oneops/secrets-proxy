@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED;
 
 /**
  * Login authentication filter.
@@ -87,7 +88,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
         String httpMethod = req.getMethod();
         if (!HttpMethod.POST.name().equalsIgnoreCase(httpMethod)) {
-            res.sendError(BAD_REQUEST.value(), "Invalid HTTP method. Use POST.");
+            res.sendError(METHOD_NOT_ALLOWED.value(), String.format("Http method (%s) is not supported for the requested resource", httpMethod));
             throw new HttpRequestMethodNotSupportedException(httpMethod, new String[]{HttpMethod.POST.name()});
         }
 
