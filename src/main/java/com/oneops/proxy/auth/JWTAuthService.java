@@ -119,7 +119,7 @@ public class JWTAuthService {
                     .setSigningKey(String.valueOf(secretKey))
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (SignatureException e) {
+        } catch (JwtException e) {
             log.debug("JWT token parser error.", e);
             claims = null;
         }
