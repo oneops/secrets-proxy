@@ -57,15 +57,18 @@ Java Doc : https://oneops.github.com/keywhiz-proxy/javadocs
       from the TLS endpoint.   
       
       
+### Generate source
 
+```
+$ ./mvnw clean package -P generate
+```
 TODO
 #####
 
-1. TLS
-2. Https Redirect
-3. Jetty server config
-4. Logging configuration
-5. User (ACL) API
+1. Jetty server config
+2. Logging configuration
+3. User (ACL) API
+
 
 https://www.jetbrains.com/research/devecosystem-2017/java/
       
