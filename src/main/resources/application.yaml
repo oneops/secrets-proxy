@@ -1,11 +1,12 @@
 # OneOps Proxy Application config
 # ===============================
-
 logging:
   level:
     root: INFO
     org.springframework.web: INFO
     org.springframework.security: DEBUG
+    org.jooq.tools: INFO
+    com.zaxxer.hikari: INFO
 
 server:
   address: 0.0.0.0
@@ -21,6 +22,7 @@ server:
     key-store-type: pkcs12
     key-password: kwproxy-password
     key-store-password: kwproxy-password
+  use-forward-headers: true
 
 #security:
 #  user:
@@ -67,12 +69,23 @@ oneops:
        signing-key: ${SIGNING_KEY:xxxxxxxxx}
        expires-in-sec: 3600
 
+
 spring:
   jmx:
     enabled: true
     default-domain: oneops
   jackson.serialization:
       INDENT_OUTPUT: true
+  datasource:
+    url: ${ONEOPS_DB_URL:jdbc:postgresql://cmsdb.server:5432/kloopzapp}
+    username: ${ONEOPS_DB_USER:xxx}
+    password: ${ONEOPS_DB_PASS:xxx}
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+       maximum-pool-size: 4
+       pool-name: keywhiz-proxy
+  jooq:
+    sql-dialect: postgres
 
 management:
   context-path: /app
