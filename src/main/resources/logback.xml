@@ -7,11 +7,11 @@
             <pattern>${FILE_LOG_PATTERN}</pattern>
         </encoder>
 
-        <file>${LOG_FILE}</file>
+        <file>${LOG_FILE}.log</file>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>${LOG_FILE}-%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <fileNamePattern>${LOG_FILE}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- each file should be at most 50MB, keep 14 days worth of history, but at most 2GB -->
             <maxFileSize>50MB</maxFileSize>
             <maxHistory>14</maxHistory>
