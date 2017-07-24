@@ -25,10 +25,10 @@ import org.springframework.stereotype.Repository;
 import static com.oneops.user.tables.Users.USERS;
 
 /**
- * User repository class to fetch oneop user/team/group info.
- * This is mainly used to enforce the ACL for application groups,
- * which is the env nspath. Only the user with "Admin" privilage
- * for an assembly is authrorized to do any
+ * User repository class to fetch oneop user/team/group info. This is mainly used to
+ * enforce the ACL for application groups, which is the env nspath. Only the user
+ * with "Admin" privilege (ie, part of <stron>keywhiz-admin</stron> team) for an
+ * assembly is authorized to add/update/delete the secrets.
  *
  * @author Suresh
  */

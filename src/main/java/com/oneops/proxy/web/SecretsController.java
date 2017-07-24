@@ -19,6 +19,7 @@ package com.oneops.proxy.web;
 
 import com.oneops.proxy.keywhiz.KeywhizClient;
 import com.oneops.proxy.keywhiz.model.SanitizedSecret;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +44,7 @@ public class SecretsController {
     }
 
     @GetMapping("{groupName}")
+    @Cacheable("secrets")
     public List<SanitizedSecret> getSecrets(@PathVariable("groupName") String groupName) throws IOException {
         return kwClient.allSecrets();
     }

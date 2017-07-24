@@ -4,6 +4,7 @@ Keywhiz proxy service for the CLI app. **The service is not production ready and
 
 
 Api Doc  : https://oneops.github.com/keywhiz-proxy/apidocs
+
 Java Doc : https://oneops.github.com/keywhiz-proxy/javadocs
 
 ## OneOps Keywhiz-Proxy Keystores
@@ -62,12 +63,16 @@ Java Doc : https://oneops.github.com/keywhiz-proxy/javadocs
 ```
 $ ./mvnw clean package -P generate
 ```
+
+#### https://github.com/oneops/keywhiz-proxy/releases/tag/tools
+
 TODO
 #####
 
-1. Jetty server config
-2. Logging configuration
-3. User (ACL) API
+ * Http2/Grpc (May be with JDK 9)
+ * Better Exception/Http Status code handling.
+ * Add application metrics (Actuator/Dropwizard)
+ * User (ACL) API
 
 
 https://www.jetbrains.com/research/devecosystem-2017/java/

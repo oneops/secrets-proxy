@@ -37,11 +37,11 @@ import static java.util.Collections.singletonList;
  * @author Suresh
  */
 //@Service
-public class UserService implements UserDetailsService {
+public class OneOpsUserDetailsService implements UserDetailsService {
 
     private LDAPClient adAuthClient;
 
-    public UserService(LDAPClient adAuthClient) {
+    public OneOpsUserDetailsService(LDAPClient adAuthClient) {
         this.adAuthClient = adAuthClient;
     }
 
