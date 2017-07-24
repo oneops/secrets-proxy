@@ -27,5 +27,5 @@ public interface EndPoints {
     /**
      * Authentication token path.
      */
-    String AUTH_TOKEN = "/auth/token";
+    String AUTH_TOKEN_URI = "/auth/token";
 }

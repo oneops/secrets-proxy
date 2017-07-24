@@ -37,7 +37,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.oneops.proxy.web.EndPoints.AUTH_TOKEN;
+import static com.oneops.proxy.web.EndPoints.AUTH_TOKEN_URI;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -83,14 +83,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests()
                     .antMatchers(GET, "/").permitAll()
-                    .antMatchers(POST, AUTH_TOKEN).permitAll()
-                    .antMatchers(GET, AUTH_TOKEN).denyAll()
+                    .antMatchers(POST, AUTH_TOKEN_URI).permitAll()
+                    .antMatchers(GET, AUTH_TOKEN_URI).denyAll()
                     .antMatchers(GET,  mgmtContext + "/info").permitAll()
                     .antMatchers(GET, mgmtContext + "/health").permitAll()
                     .antMatchers(GET,mgmtContext + "/**").hasRole("ADMIN")
                     .anyRequest().fullyAuthenticated()
                 .and()
-                    .addFilterBefore(new JWTLoginFilter(AUTH_TOKEN, authenticationManager(),jwtAuthService,objectMapper),UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(new JWTLoginFilter(AUTH_TOKEN_URI, authenticationManager(),jwtAuthService,objectMapper),UsernamePasswordAuthenticationFilter.class)
                     .addFilterBefore(new JWTAuthFilter(jwtAuthService),UsernamePasswordAuthenticationFilter.class)
                     .httpBasic()
                 .and()
