@@ -17,6 +17,7 @@
  *******************************************************************************/
 package com.oneops.proxy.config;
 
+import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletConta
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.lang.management.ManagementFactory;
 import java.time.ZoneId;
 
 /**
@@ -53,7 +55,8 @@ public class EmbeddedServerConfig {
     public JettyEmbeddedServletContainerFactory jettyEmbeddedServletContainerFactory(@Value("${server.port:8443}") final int port,
                                                                                      @Value("${jetty.thread-pool.max-threads:200}") final int maxThreads,
                                                                                      @Value("${jetty.thread-pool.min-threads:8}") final int minThreads,
-                                                                                     @Value("${jetty.thread-pool.idle-timeout:60000}") final int idleTimeout) {
+                                                                                     @Value("${jetty.thread-pool.idle-timeout:60000}") final int idleTimeout,
+                                                                                     @Value("${jetty.jmx.enabled:true}") final boolean jmxEnabled) {
         log.info("Configuring Jetty server");
         final JettyEmbeddedServletContainerFactory factory = new JettyEmbeddedServletContainerFactory(port);
         factory.addServerCustomizers(server -> {
@@ -62,6 +65,10 @@ public class EmbeddedServerConfig {
             threadPool.setMaxThreads(maxThreads);
             threadPool.setIdleTimeout(idleTimeout);
             log.info("Server thread pool config:  " + server.getThreadPool());
+            if (jmxEnabled) {
+                log.info("Exposing Jetty managed beans to the JMX platform server.");
+                server.addBean(new MBeanContainer(ManagementFactory.getPlatformMBeanServer()));
+            }
         });
         return factory;
     }

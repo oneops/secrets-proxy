@@ -72,8 +72,13 @@ TODO
  * Http2/Grpc (May be with JDK 9)
  * Better Exception/Http Status code handling.
  * Add application metrics (Actuator/Dropwizard)
- * User (ACL) API
+ * Move to new User (ACL) API 
 
 
-https://www.jetbrains.com/research/devecosystem-2017/java/
+### Why we chose Spring Boot
+
+ * https://twitter.com/springcentral/status/878264199729860608
+ * https://twitter.com/fintanr/status/877988573399531520
+ * https://www.jetbrains.com/research/devecosystem-2017/java/ (Check the Webframework section)
+ 
       
