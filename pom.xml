@@ -58,6 +58,7 @@
         <commonlang.version>3.5</commonlang.version>
         <postgresql.version>9.3-1104-jdbc4</postgresql.version>
         <hikaricp.version>2.6.3</hikaricp.version>
+        <build.timestamp>${maven.build.timestamp}</build.timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd hh:mm:ss a z</maven.build.timestamp.format>
     </properties>
 
@@ -74,6 +75,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
         <!-- Adding Jetty support -->
         <dependency>
@@ -169,6 +174,12 @@
             <groupId>org.ldaptive</groupId>
             <artifactId>ldaptive</artifactId>
             <version>${ldaptive.version}</version>
+        </dependency>
+        <!-- Caffeine high perf caching -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
         </dependency>
         <!-- JWT Token Auth -->
         <dependency>
