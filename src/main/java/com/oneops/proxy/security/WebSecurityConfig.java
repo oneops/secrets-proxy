@@ -36,8 +36,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 import static com.oneops.proxy.web.EndPoints.AUTH_TOKEN_URI;
+import static java.util.Collections.singletonList;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -57,12 +63,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${management.context-path}")
     private String mgmtContext;
 
+    private final RestAuthEntryPoint authEntryPoint;
+
     private final JWTAuthService jwtAuthService;
 
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public WebSecurityConfig(JWTAuthService jwtAuthService, ObjectMapper objectMapper) {
+    public WebSecurityConfig(RestAuthEntryPoint authEntryPoint, JWTAuthService jwtAuthService, ObjectMapper objectMapper) {
+        this.authEntryPoint = authEntryPoint;
         this.jwtAuthService = jwtAuthService;
         this.objectMapper = objectMapper;
     }
@@ -85,8 +94,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-        http.sessionManagement()
-                  .sessionCreationPolicy(STATELESS)
+        http.cors()
+                .and()
+                   .exceptionHandling().authenticationEntryPoint(authEntryPoint)
+                .and()
+                  .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and()
                   .requiresChannel().anyRequest().requiresSecure()
                 .and()
@@ -106,9 +118,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                    .formLogin().disable()//.loginPage("/login")
                    .logout().disable()
                    .csrf().disable()
-                   .cors()
+                .headers()
+                   .httpStrictTransportSecurity()
                 .and()
-                   .headers()
                    .frameOptions().disable();
         // @formatter:on
     }
@@ -127,5 +139,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("oouser")
                 .password("oouser")
                 .roles("USER", "ADMIN");
+    }
+
+    /**
+     * Cross-Origin Resource Sharing (CORS) configuration for all the
+     * cross-domain REST API calls.
+     *
+     * @return cors filter bean
+     */
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(singletonList("*"));
+        config.setAllowedHeaders(singletonList("*"));
+        config.setAllowedMethods(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }
