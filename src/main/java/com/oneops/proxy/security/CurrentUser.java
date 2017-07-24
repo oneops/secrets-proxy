@@ -25,7 +25,7 @@ import java.lang.annotation.*;
 /**
  * A meta annotation, annotates spring MVC method args with this annotation
  * to indicate you wish to specify the argument with the value of current
- * ${@link AuthenticationPrincipal} found on {@link SecurityContextHolder}
+ * {@link AuthenticationPrincipal} found on {@link SecurityContextHolder}
  *
  * @author Suresh
  */

@@ -143,7 +143,7 @@ public class JWTAuthService {
     }
 
     /**
-     * Returns the list of roles from ${@link Authentication}
+     * Returns the list of roles from {@link Authentication}
      *
      * @param auth authentication object
      * @return list of strings.
@@ -163,7 +163,7 @@ public class JWTAuthService {
      * @param req http request.
      * @return {@link Authentication}
      */
-    public Authentication getAuthentication(HttpServletRequest req) {
+    public Authentication getAuthenticationFromReq(HttpServletRequest req) {
         log.debug("Getting the authentication object for " + req.getRequestURI());
         String bearerToken = req.getHeader(tokenHeader);
         if (bearerToken != null) {
@@ -183,7 +183,7 @@ public class JWTAuthService {
      * @param res  http response
      * @param auth authentication object.
      */
-    public void addAuthentication(HttpServletResponse res, Authentication auth) {
+    public void setAuthenticationToRes(HttpServletResponse res, Authentication auth) {
         String jwtToken = generateToken(auth.getName(), getRoles(auth));
         res.addHeader(tokenHeader, tokenType + " " + jwtToken);
     }

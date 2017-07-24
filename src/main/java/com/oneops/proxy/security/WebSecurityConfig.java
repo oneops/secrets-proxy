@@ -73,6 +73,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures two filters namely, login and auth filter in the same order.
+     * {@link JWTLoginFilter} is for all the login (/auth/token) requests and
+     * {@link JWTAuthFilter} is for other requests to check the presence of JWT
+     * in header.
+     *
+     * @param http http security
+     * @throws Exception throws if any error configuring Web security.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off

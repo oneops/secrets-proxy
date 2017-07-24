@@ -52,7 +52,7 @@ public class ApplicationConfig {
     private static final Logger log = LoggerFactory.getLogger(ApplicationConfig.class);
 
     /**
-     * A ${@link BeanFactoryPostProcessor} to validate the properties.
+     * A {@link BeanFactoryPostProcessor} to validate the properties.
      *
      * @return {@link PropertyVerifier}
      */
@@ -64,7 +64,7 @@ public class ApplicationConfig {
     /**
      * Show application arguments.
      *
-     * @param config ${@link OneOpsConfig}
+     * @param config {@link OneOpsConfig}
      * @return {@link CommandLineRunner}
      */
     @Bean

@@ -53,11 +53,11 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
     private final JWTAuthService authService;
 
     /**
-     * Creates new JWT filter for the specific url using the given ${@link AuthenticationManager}
+     * Creates new JWT filter for the specific url using the given {@link AuthenticationManager}
      *
      * @param url         filter processing url.
      * @param authMgr     authentication manager.
-     * @param authService ${@link JWTAuthService}
+     * @param authService {@link JWTAuthService}
      * @param mapper      Json object mapper.
      */
     public JWTLoginFilter(String url, AuthenticationManager authMgr, JWTAuthService authService, ObjectMapper mapper) {
@@ -75,7 +75,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
     }
 
     /**
-     * Helper method to validate and read the ${@link LoginRequest}. The login
+     * Helper method to validate and read the {@link LoginRequest}. The login
      * reques to get token should be a <b>POST</b> call.
      *
      * @param req http request
@@ -105,7 +105,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
     @Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         // Add token to response header
-        authService.addAuthentication(res, authResult);
+        authService.setAuthenticationToRes(res, authResult);
     }
 
     @Override

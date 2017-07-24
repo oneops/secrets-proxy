@@ -31,7 +31,7 @@ import static java.util.Collections.singletonList;
  * uses the AD/LDAP directory service for user authentication.
  * <p>
  * Note: Right now it doesn't uses Spring security LDAP, as the current
- * implementation (${@link LDAPClient}) is good enough and does support
+ * implementation ({@link LDAPClient}) is good enough and does support
  * caching and connection pooling.
  *
  * @author Suresh
