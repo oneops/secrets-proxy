@@ -19,9 +19,9 @@ package com.oneops.proxy;
 
 import com.oneops.proxy.config.OneOpsConfig;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 
 /**
  * Keywhiz proxy application.
@@ -29,10 +29,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * @author Suresh
  */
 @SpringBootApplication
-@EnableAutoConfiguration
+@EnableCaching
 @EnableConfigurationProperties(OneOpsConfig.class)
 public class Application {
+
     public static void main(String[] args) {
+        System.setProperty("org.jooq.no-logo", "true");
         SpringApplication.run(Application.class, args);
     }
 }
