@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
 import com.oneops.proxy.keywhiz.KeywhizClient;
-import com.oneops.proxy.ldap.LDAPClient;
+import com.oneops.proxy.ldap.LdapClient;
 import com.oneops.proxy.security.KeywhizKeyStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,8 +125,8 @@ public class ApplicationConfig {
      */
     @Bean
     @Lazy
-    public LDAPClient ldapClient(OneOpsConfig config, @Qualifier("ldapKeyStore") KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
-        return new LDAPClient(config.getLdap(), keywhizKeyStore);
+    public LdapClient ldapClient(OneOpsConfig config, @Qualifier("ldapKeyStore") KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
+        return new LdapClient(config.getLdap(), keywhizKeyStore);
     }
 
     /**

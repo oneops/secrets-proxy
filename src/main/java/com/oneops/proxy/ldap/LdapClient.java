@@ -39,16 +39,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * LDAP client for authenticating/searching AD accounts.
+ * Ldap client for authenticating/searching AD accounts.
  * <p>
  * ToDo: Remove sun.security.x509.X500Name. This might be an
  * issue in future java versions with JPMS (Jigsaw).
  *
  * @author Suresh G
  */
-public class LDAPClient {
+public class LdapClient {
 
-    private static final Logger log = LoggerFactory.getLogger(LDAPClient.class);
+    private static final Logger log = LoggerFactory.getLogger(LdapClient.class);
     private static final String USERNAME_PATTERN = "[^A-Za-z0-9-_.]";
     private final ConnectionFactory pcf;
     private final OneOpsConfig.LDAP config;
@@ -69,7 +69,7 @@ public class LDAPClient {
      * @param keywhizKeyStore LDAP keystore.
      * @throws GeneralSecurityException
      */
-    public LDAPClient(OneOpsConfig.LDAP config, KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
+    public LdapClient(OneOpsConfig.LDAP config, KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
         log.info("Initializing the LDAP client...");
         this.config = config;
         SslConfig ssl = new SslConfig();
@@ -179,14 +179,28 @@ public class LDAPClient {
      * @return The userDN of successfully authenticated userId else return <code>null</code>.
      */
     public @Nullable
-    String authenticate(String userId, char[] password) throws LdapException {
+    String authenticate(String userId, String password) throws LdapException {
+        LdapEntry ldapEntry = authenticate(userId, password.toCharArray());
+        if (ldapEntry != null) {
+            return ldapEntry.getDn();
+        }
+        return null;
+    }
+
+    /**
+     * Authenticates the AD/Ldap user.
+     *
+     * @return The {@link LdapEntry} of successfully authenticated userId else return <code>null</code>.
+     */
+    public @Nullable
+    LdapEntry authenticate(String userId, char[] password) throws LdapException {
         if (!isSanitizedUsername(userId)) {
             throw new LdapException("Invalid user id: " + userId);
         }
         AuthenticationResponse response = auth.authenticate(new AuthenticationRequest(userId, new Credential(password)));
         if (response.getResult()) {
-            log.info(userId + " authentication succeeded.");
-            return response.getResolvedDn();
+            log.debug(userId + " authentication succeeded.");
+            return response.getLdapEntry();
         } else {
             log.error(userId + " authentication failed!");
             return null;
