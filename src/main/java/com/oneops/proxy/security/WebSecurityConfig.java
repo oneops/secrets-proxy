@@ -19,8 +19,8 @@ package com.oneops.proxy.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oneops.proxy.auth.JWTAuthFilter;
-import com.oneops.proxy.auth.JWTAuthService;
-import com.oneops.proxy.auth.JWTLoginFilter;
+import com.oneops.proxy.auth.LoginProcessingFilter;
+import com.oneops.proxy.auth.UserAuthProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +29,15 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -42,7 +45,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
-import static com.oneops.proxy.web.EndPoints.AUTH_TOKEN_URI;
+import static com.oneops.proxy.auth.user.OneOpsUser.Role.MGMT;
+import static com.oneops.proxy.config.Constants.AUTH_TOKEN_URI;
 import static java.util.Collections.singletonList;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -52,28 +56,37 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
  * Web security configurer for the application.
  *
  * @author Suresh
- * @see <a href="https://goo.gl/pSsmpy">Spring-boot-sample-web-security</a>
  */
 @EnableWebSecurity
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final Logger log = LoggerFactory.getLogger(WebSecurityConfig.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Value("${management.context-path}")
     private String mgmtContext;
 
+    private final UserAuthProvider userAuthProvider;
     private final RestAuthEntryPoint authEntryPoint;
-
-    private final JWTAuthService jwtAuthService;
-
+    private final JwtTokenService jwtTokenService;
     private final ObjectMapper objectMapper;
+    private final AuthenticationSuccessHandler successHandler;
+    private final AuthenticationFailureHandler failureHandler;
+
 
     @Autowired
-    public WebSecurityConfig(RestAuthEntryPoint authEntryPoint, JWTAuthService jwtAuthService, ObjectMapper objectMapper) {
+    public WebSecurityConfig(UserAuthProvider userAuthProvider,
+                             AuthenticationSuccessHandler successHandler,
+                             AuthenticationFailureHandler failureHandler,
+                             RestAuthEntryPoint authEntryPoint,
+                             JwtTokenService jwtTokenService,
+                             ObjectMapper objectMapper) {
+        this.userAuthProvider = userAuthProvider;
         this.authEntryPoint = authEntryPoint;
-        this.jwtAuthService = jwtAuthService;
+        this.jwtTokenService = jwtTokenService;
         this.objectMapper = objectMapper;
+        this.successHandler = successHandler;
+        this.failureHandler = failureHandler;
     }
 
     @Bean
@@ -82,9 +95,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        log.info("Configuring user authentication providers.");
+        auth.authenticationProvider(userAuthProvider);
+        auth.inMemoryAuthentication()
+                .withUser("ooadmin")
+                .password("0n30ps")
+                .roles(MGMT.name());
+    }
+
     /**
-     * Configures two filters namely, login and auth filter in the same order.
-     * {@link JWTLoginFilter} is for all the login (/auth/token) requests and
+     * Build  {@link LoginProcessingFilter} with the current {@link AuthenticationManager}
+     *
+     * @return {@link LoginProcessingFilter}
+     */
+    private LoginProcessingFilter buildLoginProcessingFilter() throws Exception {
+        LoginProcessingFilter loginFilter = new LoginProcessingFilter(AUTH_TOKEN_URI, successHandler, failureHandler, objectMapper);
+        loginFilter.setAuthenticationManager(authenticationManager());
+        return loginFilter;
+    }
+
+    private JWTAuthFilter buildAuthProcessingFilter() {
+        return new JWTAuthFilter(jwtTokenService);
+    }
+
+    /**
+     * Configures two filters namely, login and auth filters in the same order.
+     * {@link LoginProcessingFilter} is for all the login (/auth/token) requests and
      * {@link JWTAuthFilter} is for other requests to check the presence of JWT
      * in header.
      *
@@ -94,9 +133,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // @formatter:off
-        http.cors()
-                .and()
-                   .exceptionHandling().authenticationEntryPoint(authEntryPoint)
+        http.exceptionHandling().authenticationEntryPoint(authEntryPoint)
                 .and()
                   .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and()
@@ -108,18 +145,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(GET, AUTH_TOKEN_URI).denyAll()
                     .antMatchers(GET,  mgmtContext + "/info").permitAll()
                     .antMatchers(GET, mgmtContext + "/health").permitAll()
-                    .antMatchers(GET,mgmtContext + "/**").hasRole("ADMIN")
+                    .antMatchers(GET,mgmtContext + "/**").hasAnyRole(MGMT.name())
                     .anyRequest().fullyAuthenticated()
                 .and()
-                    .addFilterBefore(new JWTLoginFilter(AUTH_TOKEN_URI, authenticationManager(),jwtAuthService,objectMapper),UsernamePasswordAuthenticationFilter.class)
-                    .addFilterBefore(new JWTAuthFilter(jwtAuthService),UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(buildLoginProcessingFilter(),UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(buildAuthProcessingFilter(),UsernamePasswordAuthenticationFilter.class)
                     .httpBasic()
                 .and()
                    .formLogin().disable()//.loginPage("/login")
                    .logout().disable()
                    .csrf().disable()
-                .headers()
-                   .httpStrictTransportSecurity()
+                   .cors()
+                .and()
+                   .headers().httpStrictTransportSecurity()
                 .and()
                    .frameOptions().disable();
         // @formatter:on
@@ -132,15 +170,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(GET, "/static/**"); // Static resources.
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        log.info("Configuring application authentication manager.");
-        auth.inMemoryAuthentication()
-                .withUser("oouser")
-                .password("oouser")
-                .roles("USER", "ADMIN");
-    }
-
     /**
      * Cross-Origin Resource Sharing (CORS) configuration for all the
      * cross-domain REST API calls.
@@ -148,7 +177,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @return cors filter bean
      */
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.setAllowedOrigins(singletonList("*"));
