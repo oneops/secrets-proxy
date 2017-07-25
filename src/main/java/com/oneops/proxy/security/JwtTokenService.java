@@ -15,8 +15,9 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.auth;
+package com.oneops.proxy.security;
 
+import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.config.OneOpsConfig;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
@@ -30,9 +31,11 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.time.Instant;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -41,11 +44,13 @@ import java.util.stream.Collectors;
  * @author Suresh
  */
 @Service
-public class JWTAuthService {
+public class JwtTokenService {
 
-    private static final Logger log = LoggerFactory.getLogger(JWTAuthService.class);
+    private static final Logger log = LoggerFactory.getLogger(JwtTokenService.class);
 
     private static final String ROLE_CLAIM = "roles";
+
+    private static final String DOMAIN_CLAIM = "domain";
 
     private static SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
@@ -59,7 +64,7 @@ public class JWTAuthService {
 
     private final String tokenType;
 
-    public JWTAuthService(OneOpsConfig config) {
+    public JwtTokenService(OneOpsConfig config) {
         final OneOpsConfig.Auth authConfig = config.getAuth();
         secretKey = authConfig.getSigningKey();
         expiresInSec = authConfig.getExpiresInSec();
@@ -68,39 +73,31 @@ public class JWTAuthService {
         tokenType = authConfig.getTokenType();
     }
 
-    /**
-     * Generate a JWT token for the given user.
-     *
-     * @param userName username (subject)
-     * @return compact JWS (JSON Web Signature)
-     */
-    public @Nonnull
-    String generateToken(@Nonnull String userName) {
-        return generateToken(userName, null);
-    }
 
     /**
      * Generate a JWT token for the given user. The roles will be
      * stored as a claim in JWT token as a comma separated string.
      *
-     * @param userName username (subject)
-     * @param roles    user roles (Used for ACL)
+     * @param user authenticated user details object.
      * @return compact JWS (JSON Web Signature)
      */
     public @Nonnull
-    String generateToken(@Nonnull String userName,
-                         @Nullable List<String> roles) {
+    String generateToken(OneOpsUser user) {
         Instant now = Instant.now();
         Instant expiresIn = now.plusSeconds(expiresInSec);
 
         JwtBuilder jwt = Jwts.builder()
-                .setSubject(userName)
+                .setSubject(user.getUsername())
                 .setIssuer(issuer)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(expiresIn))
                 .signWith(SIGNATURE_ALGORITHM, String.valueOf(secretKey));
-        if (roles != null) {
+        if (user.getAuthorities() != null) {
+            List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
             jwt.claim(ROLE_CLAIM, String.join(",", roles));
+        }
+        if (user.getDomain() != null) {
+            jwt.claim(DOMAIN_CLAIM, user.getDomain());
         }
         return jwt.compact();
     }
@@ -177,15 +174,31 @@ public class JWTAuthService {
         return null;
     }
 
-    /**
-     * Add authenticated JWT token to response header.
-     *
-     * @param res  http response
-     * @param auth authentication object.
-     */
-    public void setAuthenticationToRes(HttpServletResponse res, Authentication auth) {
-        String jwtToken = generateToken(auth.getName(), getRoles(auth));
-        res.addHeader(tokenHeader, tokenType + " " + jwtToken);
+//    /**
+//     * Add authenticated JWT token to response header.
+//     *
+//     * @param res  http response
+//     * @param auth authentication object.
+//     */
+//    public void setAuthenticationToRes(HttpServletResponse res, Authentication auth) {
+//        String jwtToken = generateToken(auth.getName(), getRoles(auth), (String) auth.getDetails());
+//        res.addHeader(tokenHeader, tokenType + " " + jwtToken);
+//    }
+
+    public int getExpiresInSec() {
+        return expiresInSec;
+    }
+
+    public String getIssuer() {
+        return issuer;
+    }
+
+    public String getTokenHeader() {
+        return tokenHeader;
+    }
+
+    public String getTokenType() {
+        return tokenType;
     }
 }
 
