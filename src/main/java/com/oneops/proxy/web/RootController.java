@@ -17,25 +17,23 @@
  *******************************************************************************/
 package com.oneops.proxy.web;
 
-import org.springframework.security.web.csrf.CsrfToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Proxy authentication controller. Right now it's only only used
- * for providing the CSRF token because login/auth is implemented
- * in Login filters.
+ * Application root controller.
  *
- * @author Suresh G
+ * @author Suresh
  */
 @RestController
-@RequestMapping("/auth")
-public class AuthController {
+public class RootController {
 
-    // @PostAuthorize("returnObject?.accessToken() == principal.username")
-    @GetMapping("/csrf")
-    public CsrfToken csrf(CsrfToken token) {
-        return token;
+    @Value("${info.version}")
+    private String version;
+
+    @GetMapping(path = "/")
+    public String root() {
+        return "OneOps Keywhiz Proxy v" + version;
     }
 }
