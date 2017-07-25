@@ -69,16 +69,19 @@ $ ./mvnw clean package -P generate
 TODO
 #####
 
+ * Feature toggles implementation
+ * Add support for different mgmt domains.
  * Http2/Grpc (May be with JDK 9)
  * Better Exception/Http Status code handling.
  * Add application metrics (Actuator/Dropwizard)
  * Move to new User (ACL) API 
+ * JTI claim to maintain list of blacklisted or revoked tokens.
 
 
 ### Why we chose Spring Boot
 
  * https://twitter.com/springcentral/status/878264199729860608
  * https://twitter.com/fintanr/status/877988573399531520
- * https://www.jetbrains.com/research/devecosystem-2017/java/ (Check the Webframework section)
+ * https://www.jetbrains.com/research/devecosystem-2017/java/ (Check the Web framework section)
  
       
