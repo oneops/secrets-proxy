@@ -15,17 +15,27 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.web;
+package com.oneops.proxy.config;
 
 /**
- * Rest endpoint paths used in the application.
+ * Constants used in the application.
  *
  * @author Suresh
  */
-public interface EndPoints {
+public interface Constants {
 
     /**
-     * Authentication token path.
+     * Authentication token path URI.
      */
     String AUTH_TOKEN_URI = "/auth/token";
+
+    /**
+     * Default mgmt domain for keywhiz requests.
+     */
+    String DEFAULT_DOMAIN = "prod";
+
+    /**
+     * Default access token type (Eg: Bearer, JWT etc)
+     */
+    String DEFAULT_TOKEN_TYPE = "JWT";
 }

@@ -17,31 +17,62 @@
  *******************************************************************************/
 package com.oneops.proxy.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.auto.value.AutoValue;
+
+import static com.oneops.proxy.config.Constants.DEFAULT_TOKEN_TYPE;
 
 /**
  * Login response.
  *
  * @author Suresh
  */
-@AutoValue
-public abstract class LoginResponse {
+public class LoginResponse {
 
     @JsonProperty
-    public abstract String accessToken();
+    public String accessToken;
 
     @JsonProperty
-    public abstract String tokenType();
+    public String tokenType = DEFAULT_TOKEN_TYPE;
 
     @JsonProperty
-    public abstract int expiresInSec();
+    public int expiresInSec;
 
-    @JsonCreator
-    public static LoginResponse of(@JsonProperty("accessToken") String accessToken,
-                                   @JsonProperty("tokenType") String tokenType,
-                                   @JsonProperty("expiresInSec") int expiresInSec) {
-        return new AutoValue_LoginResponse(accessToken, tokenType, expiresInSec);
+    public LoginResponse(String accessToken, String tokenType, int expiresInSec) {
+        this.accessToken = accessToken;
+        this.tokenType = tokenType;
+        this.expiresInSec = expiresInSec;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
+    }
+
+    public int getExpiresInSec() {
+        return expiresInSec;
+    }
+
+    public void setExpiresInSec(int expiresInSec) {
+        this.expiresInSec = expiresInSec;
+    }
+
+    @Override
+    public String toString() {
+        return "LoginResponse{" +
+                "accessToken=******" +
+                ", tokenType='" + tokenType + '\'' +
+                ", expiresInSec=" + expiresInSec +
+                '}';
     }
 }

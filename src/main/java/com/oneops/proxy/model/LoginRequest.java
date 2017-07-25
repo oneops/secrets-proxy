@@ -18,6 +18,9 @@
 package com.oneops.proxy.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.oneops.proxy.config.Constants;
+
+import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 
 /**
  * Login request for user authentication.
@@ -33,7 +36,7 @@ public class LoginRequest {
     public String password;
 
     @JsonProperty
-    public String domain; //For mgmt domain (prod/dev/stg)
+    public String domain = DEFAULT_DOMAIN;
 
     public LoginRequest() {
     }
