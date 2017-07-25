@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.auth;
+package com.oneops.proxy.auth.user;
 
 import org.jooq.DSLContext;
 import org.slf4j.Logger;
