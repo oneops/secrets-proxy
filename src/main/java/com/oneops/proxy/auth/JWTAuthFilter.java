@@ -17,6 +17,7 @@
  *******************************************************************************/
 package com.oneops.proxy.auth;
 
+import com.oneops.proxy.security.JwtTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -39,9 +40,9 @@ public class JWTAuthFilter extends GenericFilterBean {
 
     private static final Logger log = LoggerFactory.getLogger(JWTAuthFilter.class);
 
-    private JWTAuthService tokenAuthService;
+    private JwtTokenService tokenAuthService;
 
-    public JWTAuthFilter(JWTAuthService tokenAuthService) {
+    public JWTAuthFilter(JwtTokenService tokenAuthService) {
         log.info("Initializing JWT Auth Filter.");
         this.tokenAuthService = tokenAuthService;
     }
