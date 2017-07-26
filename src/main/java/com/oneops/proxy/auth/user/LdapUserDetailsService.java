@@ -47,7 +47,7 @@ import static java.util.Collections.singletonList;
 //@Service
 public class LdapUserDetailsService implements UserDetailsService {
 
-    private static final Logger log = LoggerFactory.getLogger(LdapUserDetailsService.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private LdapClient ldapClient;
 

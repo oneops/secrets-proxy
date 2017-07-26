@@ -45,7 +45,7 @@ public class OneOpsUser extends User {
     /**
      * Creates a new OneOps user from the {@link UserDetails} object.
      *
-     * @param user
+     * @param user user details.
      */
     public OneOpsUser(User user) {
         this(user.getUsername(), user.getPassword(), user.getAuthorities(), user.getUsername(), DEFAULT_DOMAIN);
