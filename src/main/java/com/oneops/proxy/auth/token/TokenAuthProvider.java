@@ -53,6 +53,7 @@ public class TokenAuthProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        log.debug("Validating and authenticating the token.");
         JwtAuthToken authToken = (JwtAuthToken) authentication;
         String jwtToken = (String) authToken.getCredentials();
         // Now we can erase the credentials from authentication object.

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -111,7 +112,7 @@ public class JwtTokenService {
      * @param token jwt token
      * @return {@link OneOpsUser}
      */
-    public OneOpsUser createUser(String token) {
+    public OneOpsUser createUser(String token) throws AuthenticationException {
         try {
             Claims claims = Jwts.parser()
                     .setSigningKey(String.valueOf(secretKey))
