@@ -39,9 +39,14 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
 
     private static final Logger log = LoggerFactory.getLogger(GlobalSecurityConfig.class);
 
+    /**
+     * This is a workaround to avoid generating default password as an
+     * <code>InMemoryAuthentication</code> manager is already configured
+     * in {@link WebSecurityConfig}.
+     */
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {
         log.info("Configuring global authentication manager.");
-        //auth.inMemoryAuthentication().withUser("ooadmin").password("ooadmin").roles(MGMT.name());
+        auth.inMemoryAuthentication();
     }
 }
