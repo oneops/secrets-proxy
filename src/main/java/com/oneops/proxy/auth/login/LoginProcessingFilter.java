@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.auth;
+package com.oneops.proxy.auth.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oneops.proxy.model.LoginRequest;
@@ -47,7 +47,7 @@ import static org.springframework.util.StringUtils.isEmpty;
  * Login processing filter. De-serialization and basic validation of
  * the incoming JSON {@link LoginRequest} payload is done here. Upon
  * successful validation, the authentication logic is delegated to
- * {@link UserAuthProvider}.
+ * {@link LoginAuthProvider}.
  *
  * @author Suresh
  */
@@ -68,11 +68,29 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) throws AuthenticationException, IOException, ServletException {
+        log.debug("Attempting login authentication.");
+        LoginRequest loginReq = getLoginRequest(req, res);
+
+        LoginAuthToken auth = new LoginAuthToken(loginReq.getUsername(), loginReq.getPassword(), Collections.emptyList());
+        auth.setDetails(loginReq.getDomain());
+        return getAuthenticationManager().authenticate(auth);
+    }
+
+    /**
+     * Helper method to validate and create the {@link LoginRequest}
+     *
+     * @param req http request
+     * @param res http response
+     * @return {@link LoginRequest}
+     * @throws IOException
+     * @throws HttpRequestMethodNotSupportedException
+     */
+    private LoginRequest getLoginRequest(HttpServletRequest req, HttpServletResponse res) throws IOException, HttpRequestMethodNotSupportedException {
         String httpMethod = req.getMethod();
         if (!POST.name().equalsIgnoreCase(httpMethod)) {
             String resMsg = String.format("Authentication method not supported. Request method: %s", httpMethod);
             res.sendError(METHOD_NOT_ALLOWED.value(), resMsg);
-            throw new HttpRequestMethodNotSupportedException(httpMethod, new String[]{POST.name()}, resMsg);
+            throw new AuthenticationServiceException(resMsg);
         }
 
         LoginRequest loginReq;
@@ -81,10 +99,7 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
         } catch (IOException ioe) {
             String errMsg = "Bad login request json!";
             res.sendError(BAD_REQUEST.value(), errMsg);
-            if (log.isDebugEnabled()) {
-                log.debug(errMsg, ioe);
-            }
-            throw ioe;
+            throw new AuthenticationServiceException(errMsg, ioe);
         }
 
         if (isEmpty(loginReq.getUsername()) || isEmpty(loginReq.getPassword())) {
@@ -92,10 +107,7 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
             res.sendError(BAD_REQUEST.value(), errMsg);
             throw new AuthenticationServiceException(errMsg);
         }
-
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword(), Collections.emptyList());
-        auth.setDetails(loginReq.getDomain());
-        return getAuthenticationManager().authenticate(auth);
+        return loginReq;
     }
 
     @Override
@@ -105,7 +117,7 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest req, HttpServletResponse res, AuthenticationException failed) throws IOException, ServletException {
-        log.debug("Login authentication failed. Clearing the security holder context.");
+        log.debug("Login Authentication failed. Clearing the security holder context", failed);
         SecurityContextHolder.clearContext();
         failureHandler.onAuthenticationFailure(req, res, failed);
     }

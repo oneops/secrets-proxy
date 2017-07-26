@@ -15,8 +15,9 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.auth;
+package com.oneops.proxy.auth.login;
 
+import com.oneops.proxy.auth.token.TokenAuthProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
@@ -29,7 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Invoked by {@link UserAuthProvider} in case of authentication failures.
+ * Invoked by {@link LoginAuthProvider} or {@link TokenAuthProvider} in case of
+ * authentication failures. Need to send proper JSON error responses in future.
  *
  * @author Suresh G
  */

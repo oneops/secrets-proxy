@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.auth;
+package com.oneops.proxy.auth.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oneops.proxy.auth.user.OneOpsUser;
@@ -41,7 +41,7 @@ import java.io.IOException;
 import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 
 /**
- * A login success handle, invoked by {@link UserAuthProvider} when
+ * A login success handle, invoked by {@link LoginAuthProvider} when
  * the user is successfully authenticated. This class is responsible
  * for returning {@link LoginResponse} with <b>access_token</b> on
  * successful login.
@@ -113,7 +113,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
      *
      * @param request http request.
      */
-    protected final void clearAuthenticationAttributes(HttpServletRequest request) {
+    private void clearAuthenticationAttributes(HttpServletRequest request) {
         // Don't create new session.
         HttpSession session = request.getSession(false);
         if (session == null) {

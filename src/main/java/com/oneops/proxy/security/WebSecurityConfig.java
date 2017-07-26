@@ -18,9 +18,11 @@
 package com.oneops.proxy.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oneops.proxy.auth.JWTAuthFilter;
-import com.oneops.proxy.auth.LoginProcessingFilter;
-import com.oneops.proxy.auth.UserAuthProvider;
+import com.oneops.proxy.auth.login.LoginAuthProvider;
+import com.oneops.proxy.auth.login.LoginProcessingFilter;
+import com.oneops.proxy.auth.token.SkipPathRequestMatcher;
+import com.oneops.proxy.auth.token.TokenAuthProcessingFilter;
+import com.oneops.proxy.auth.token.TokenAuthProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +51,6 @@ import static com.oneops.proxy.auth.user.OneOpsUser.Role.MGMT;
 import static com.oneops.proxy.config.Constants.AUTH_TOKEN_URI;
 import static java.util.Collections.singletonList;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 /**
@@ -66,7 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${management.context-path}")
     private String mgmtContext;
 
-    private final UserAuthProvider userAuthProvider;
+    private final LoginAuthProvider loginAuthProvider;
+    private final TokenAuthProvider tokenAuthProvider;
     private final RestAuthEntryPoint authEntryPoint;
     private final JwtTokenService jwtTokenService;
     private final ObjectMapper objectMapper;
@@ -75,13 +77,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
-    public WebSecurityConfig(UserAuthProvider userAuthProvider,
+    public WebSecurityConfig(LoginAuthProvider loginAuthProvider,
+                             TokenAuthProvider tokenAuthProvider,
                              AuthenticationSuccessHandler successHandler,
                              AuthenticationFailureHandler failureHandler,
                              RestAuthEntryPoint authEntryPoint,
                              JwtTokenService jwtTokenService,
                              ObjectMapper objectMapper) {
-        this.userAuthProvider = userAuthProvider;
+        this.loginAuthProvider = loginAuthProvider;
+        this.tokenAuthProvider = tokenAuthProvider;
         this.authEntryPoint = authEntryPoint;
         this.jwtTokenService = jwtTokenService;
         this.objectMapper = objectMapper;
@@ -96,20 +100,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    /**
+     * The method configures 3 authentication providers, namely
+     * <p>
+     * 1. {@link LoginAuthProvider} - Only for login requests
+     * 2. {@link TokenAuthProvider} - For all requests except management endpoints
+     * 3. InMemoryAuthentication -  For management endpoints and user/password auth fallback.
+     */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         log.info("Configuring user authentication providers.");
-        auth.authenticationProvider(userAuthProvider);
-        auth.inMemoryAuthentication()
-                .withUser("ooadmin")
-                .password("0n30ps")
-                .roles(MGMT.name());
+        auth.inMemoryAuthentication().withUser("ooadmin").password("0n30ps").roles(MGMT.name());
+        auth.authenticationProvider(loginAuthProvider);
+        auth.authenticationProvider(tokenAuthProvider);
     }
 
     /**
-     * Build  {@link LoginProcessingFilter} with the current {@link AuthenticationManager}
+     * Builds  {@link LoginProcessingFilter} with the current {@link AuthenticationManager}
      *
      * @return {@link LoginProcessingFilter}
+     * @throws Exception
      */
     private LoginProcessingFilter buildLoginProcessingFilter() throws Exception {
         LoginProcessingFilter loginFilter = new LoginProcessingFilter(AUTH_TOKEN_URI, successHandler, failureHandler, objectMapper);
@@ -117,15 +127,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return loginFilter;
     }
 
-    private JWTAuthFilter buildAuthProcessingFilter() {
-        return new JWTAuthFilter(jwtTokenService);
+    /**
+     * Builds {@link TokenAuthProcessingFilter} with the current {@link AuthenticationManager}.
+     * The filter won't be apply for <b>management</b> request paths.
+     *
+     * @return Token authentication filter
+     * @throws Exception
+     */
+    private TokenAuthProcessingFilter buildAuthProcessingFilter() throws Exception {
+        SkipPathRequestMatcher requestMatcher = new SkipPathRequestMatcher(singletonList(mgmtContext + "/**"));
+        TokenAuthProcessingFilter authFilter = new TokenAuthProcessingFilter(requestMatcher, failureHandler, jwtTokenService);
+        authFilter.setAuthenticationManager(authenticationManager());
+        return authFilter;
     }
 
     /**
      * Configures two filters namely, login and auth filters in the same order.
      * {@link LoginProcessingFilter} is for all the login (/auth/token) requests and
-     * {@link JWTAuthFilter} is for other requests to check the presence of JWT
-     * in header.
+     * {@link TokenAuthProcessingFilter} is for other requests to check the presence
+     * of JWT in header.
      *
      * @param http http security
      * @throws Exception throws if any error configuring Web security.
@@ -141,8 +161,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .authorizeRequests()
                     .antMatchers(GET, "/").permitAll()
-                    .antMatchers(POST, AUTH_TOKEN_URI).permitAll()
-                    .antMatchers(GET, AUTH_TOKEN_URI).denyAll()
                     .antMatchers(GET,  mgmtContext + "/info").permitAll()
                     .antMatchers(GET, mgmtContext + "/health").permitAll()
                     .antMatchers(GET,mgmtContext + "/**").hasAnyRole(MGMT.name())

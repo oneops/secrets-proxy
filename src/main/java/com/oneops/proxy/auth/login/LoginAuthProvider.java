@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.auth;
+package com.oneops.proxy.auth.login;
 
 import com.oneops.proxy.auth.user.LdapUserService;
 import com.oneops.proxy.auth.user.OneOpsUser;
@@ -37,12 +37,12 @@ import org.springframework.util.Assert;
  * @author Suresh
  */
 @Component
-public class UserAuthProvider implements AuthenticationProvider {
+public class LoginAuthProvider implements AuthenticationProvider {
 
     private LdapUserService ldapUserService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public UserAuthProvider(LdapUserService ldapUserService) {
+    public LoginAuthProvider(LdapUserService ldapUserService) {
         this.ldapUserService = ldapUserService;
     }
 
@@ -73,14 +73,14 @@ public class UserAuthProvider implements AuthenticationProvider {
 
         // Check for user privileges.
         if (user.getAuthorities().isEmpty()) {
-            throw new InsufficientAuthenticationException("User has no roles assigned.");
+            throw new InsufficientAuthenticationException(user.getUsername() + " user has no roles assigned.");
         }
 
-        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        return new LoginAuthToken(user, null, user.getAuthorities());
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
+        return LoginAuthToken.class.isAssignableFrom(authentication);
     }
 }
