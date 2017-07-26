@@ -69,7 +69,8 @@ $ ./mvnw clean package -P generate
 TODO
 #####
 
- * Feature toggles implementation
+ * Guard debug logs.
+ * Feature toggles implementation.
  * Add support for different mgmt domains.
  * Http2/Grpc (May be with JDK 9)
  * Better Exception/Http Status code handling.
