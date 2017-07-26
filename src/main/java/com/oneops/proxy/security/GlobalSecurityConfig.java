@@ -42,9 +42,6 @@ public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter 
     @Override
     public void init(AuthenticationManagerBuilder auth) throws Exception {
         log.info("Configuring global authentication manager.");
-        auth.inMemoryAuthentication()
-                .withUser("ooadmin")
-                .password("ooadmin") // For testing only.
-                .roles("USER", "ADMIN");
+        //auth.inMemoryAuthentication().withUser("ooadmin").password("ooadmin").roles(MGMT.name());
     }
 }
