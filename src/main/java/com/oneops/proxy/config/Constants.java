@@ -37,5 +37,5 @@ public interface Constants {
     /**
      * Default access token type (Eg: Bearer, JWT etc)
      */
-    String DEFAULT_TOKEN_TYPE = "JWT";
+    String DEFAULT_TOKEN_TYPE = "Bearer";
 }

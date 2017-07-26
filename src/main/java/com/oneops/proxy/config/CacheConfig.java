@@ -47,13 +47,14 @@ public class CacheConfig {
     }
 
     /**
-     * Default cache spec configuration for all the caches.
+     * Default cache spec configuration for all the caches. The default cache
+     * size is 100 and would expire after a min (60sec) of write operation.
      *
      * @return {@link CaffeineSpec}
      */
     @Bean
     public CaffeineSpec caffeineSpec() {
-        CaffeineSpec spec = CaffeineSpec.parse("maximumSize=1000,expireAfterWrite=60s");
+        CaffeineSpec spec = CaffeineSpec.parse("maximumSize=100,expireAfterWrite=60s");
         log.info("Using CaffeineSpec " + spec.toParsableString());
         return spec;
     }
