@@ -1,12 +1,15 @@
 # OneOps Proxy Application config
 # ===============================
 logging:
+  file: logs/keywhiz-proxy
   level:
     root: INFO
+    com.oneops.proxy: DEBUG
     org.springframework.web: INFO
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
     org.jooq.tools: INFO
     com.zaxxer.hikari: INFO
+  config: classpath:logback.xml
 
 server:
   address: 0.0.0.0
@@ -24,51 +27,54 @@ server:
     key-store-password: kwproxy-password
   use-forward-headers: true
 
-#security:
-#  user:
-#    role: ADMIN
-#    name: oneops
-#    password: 0n30ps
+jetty:
+  thread-pool:
+    min-threads: 8
+    max-threads: 250
+    idle-timeout: 60000
+  request-log:
+    file: logs/keywhiz-proxy-request-yyyy_mm_dd.log
+    retain-days: 14
+  jmx:
+    enabled: true
 
 oneops:
-   keywhiz:
+  keywhiz:
        base-url: https://keywhiz:4444/
        svc-user: ${KEYWHIZ_USER:admin}
        svc-password: ${KEYWHIZ_PASS:xxxxx}
-       trust-store:
-          path: classpath:keystores/keywhiz_truststore.p12
-          type: pkcs12
-          store-password: changeit
-       #key-store:
-          #path:
-          #type:
-          #store-password:
-          #key-password:
-       cli:
-          version: ${KEYWHIZ_CLI_VERSION:1.0.1}
-          download-url: https://github.com/oneops/keywhiz-cli/releases/download/${oneops.keywhiz.cli.version}/keywhiz-cli
-   ldap:
+    trust-store:
+      path: classpath:keystores/keywhiz_truststore.p12
+      type: pkcs12
+      store-password: changeit
+    #key-store:
+      #path:
+      #type:
+      #store-password:
+      #key-password:
+    cli:
+      version: ${KEYWHIZ_CLI_VERSION:1.0.1}
+      download-url: https://github.com/oneops/keywhiz-cli/releases/download/${oneops.keywhiz.cli.version}/keywhiz-cli
+  ldap:
        server: ldap://ldap.com
-       port: 3269
+    port: 3269
        user-dn: CN=xxxxx,OU=Users,OU=xxxxx,DC=com
        password: ${LDAP_PASS:xxxxx}
        user-base-dn: OU=Users,OU=xxxxx,DC=com
-       user-attribute: sAMAccountName
-       role-base-dn:
-       role-attribute: uniqueMember
-       roles[0]:
-       trust-store:
-           path: classpath:keystores/ldap_truststore.p12
-           type: pkcs12
-           store-password: changeit
-   auth:
-       issuer: OneOps-Proxy
-       header: Authorization
-       token-type: Bearer
-       # HMAC using SHA-512
-       signing-key: ${SIGNING_KEY:xxxxxxxxx}
-       expires-in-sec: 3600
-
+    user-attribute: sAMAccountName
+    role-base-dn:
+    role-attribute: uniqueMember
+    roles[0]:
+    trust-store:
+      path: classpath:keystores/ldap_truststore.p12
+      type: pkcs12
+      store-password: changeit
+  auth:
+    issuer: OneOps-Proxy
+    header: X-Authorization
+    token-type: Bearer
+    signing-key: ${SIGNING_KEY:xxxxxxxxx}
+    expires-in-sec: 3600
 
 spring:
   jmx:
@@ -77,7 +83,7 @@ spring:
   jackson.serialization:
       INDENT_OUTPUT: true
   datasource:
-    url: ${ONEOPS_DB_URL:jdbc:postgresql://cmsdb.server:5432/kloopzapp}
+    url: ${ONEOPS_DB_URL:jdbc:postgresql://kloopzappdb.server:5432/kloopzapp}
     username: ${ONEOPS_DB_USER:xxx}
     password: ${ONEOPS_DB_PASS:xxx}
     type: com.zaxxer.hikari.HikariDataSource
@@ -86,24 +92,36 @@ spring:
        pool-name: keywhiz-proxy
   jooq:
     sql-dialect: postgres
+  cache:
+    type: caffeine
+  application:
+      name: OneOps Keywhiz Proxy
+
+#security:
+#  user:
+#    role: ADMIN
+#    name: oneops
+#    password: 0n30ps
 
 management:
   context-path: /app
   security:
     enabled: false
-    roles: ADMIN
+    roles: MGMT
+  add-application-context-header: false
 
 banner:
   location: banner.txt
 
 info:
-    name: @project.artifactId@
-    description: @project.description@
-    version: @project.version@
-    keywhiz-cli-version: ${oneops.keywhiz.cli.version}
-    keywhiz-cli-url: ${oneops.keywhiz.cli.download-url}
-    java: ${java.version}
-    java-vendor: ${java.vendor}
-    os-name: ${os.name}
-    os-arch: ${os.arch}
-    os-version: ${os.version}
+  name: @project.artifactId@
+  description: @project.description@
+  version: @project.version@
+  build-time: @build.timestamp@
+  keywhiz-cli-version: ${oneops.keywhiz.cli.version}
+  keywhiz-cli-url: ${oneops.keywhiz.cli.download-url}
+  java: ${java.version}
+  java-vendor: ${java.vendor}
+  os-name: ${os.name}
+  os-arch: ${os.arch}
+  os-version: ${os.version}
