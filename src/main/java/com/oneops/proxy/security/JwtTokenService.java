@@ -17,12 +17,14 @@
  *******************************************************************************/
 package com.oneops.proxy.security;
 
+import com.oneops.proxy.auth.token.JwtAuthToken;
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.config.OneOpsConfig;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,14 +34,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
+import static org.springframework.util.StringUtils.isEmpty;
+
 /**
- * JWT (JWS) authentication service and other helper methods.
+ * Token (JWT) generation and validation services.
  *
  * @author Suresh
  */
@@ -103,6 +105,31 @@ public class JwtTokenService {
     }
 
     /**
+     * Validates token and creates the user details object by extracting
+     * identity and authorization claims.
+     *
+     * @param token jwt token
+     * @return {@link OneOpsUser}
+     */
+    public OneOpsUser createUser(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(String.valueOf(secretKey))
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            String username = claims.getSubject();
+            List<GrantedAuthority> authorities = getAuthorities(claims);
+            String domain = claims.getOrDefault(DOMAIN_CLAIM, DEFAULT_DOMAIN).toString();
+            return new OneOpsUser(username, "", authorities, username, domain);
+        } catch (ExpiredJwtException ex) {
+            throw new CredentialsExpiredException("Token has expired", ex);
+        } catch (JwtException jex) {
+            throw new BadCredentialsException("Invalid Authorization Token", jex);
+        }
+    }
+
+    /**
      * Validates and returns the claims of given JWS
      *
      * @param token compact JWS (JSON Web Signature)
@@ -155,35 +182,24 @@ public class JwtTokenService {
     }
 
     /**
-     * Get the authentication object from http request.
+     * Retrieves the JWT authentication token from http request.
      *
      * @param req http request.
-     * @return {@link Authentication}
+     * @return {@link JwtAuthToken} or <code>null</code> if the Bearer token is not present or empty.
      */
-    public Authentication getAuthenticationFromReq(HttpServletRequest req) {
-        log.debug("Getting the authentication object for " + req.getRequestURI());
+    public @Nullable
+    JwtAuthToken getAccessToken(@Nonnull HttpServletRequest req) {
+        log.debug("Getting the access token for " + req.getRequestURI());
         String bearerToken = req.getHeader(tokenHeader);
         if (bearerToken != null) {
             String jwtToken = bearerToken.replaceFirst(tokenType, "").trim();
-            Claims claims = getClaims(jwtToken);
-            if (claims != null) {
-                return new UsernamePasswordAuthenticationToken(claims.getSubject(), null, getAuthorities(claims));
+            if (!isEmpty(jwtToken)) {
+                return new JwtAuthToken("JwtToken", jwtToken, Collections.emptyList());
             }
         }
-        log.debug("Bearer token/Claim is null for " + req.getRequestURI());
+        log.debug("JWT Bearer token is null/empty for " + req.getRequestURI());
         return null;
     }
-
-//    /**
-//     * Add authenticated JWT token to response header.
-//     *
-//     * @param res  http response
-//     * @param auth authentication object.
-//     */
-//    public void setAuthenticationToRes(HttpServletResponse res, Authentication auth) {
-//        String jwtToken = generateToken(auth.getName(), getRoles(auth), (String) auth.getDetails());
-//        res.addHeader(tokenHeader, tokenType + " " + jwtToken);
-//    }
 
     public int getExpiresInSec() {
         return expiresInSec;
