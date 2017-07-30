@@ -107,6 +107,7 @@ public class ApplicationConfig {
      * Returns the keywhiz http client
      */
     @Bean
+    @Lazy
     public KeywhizClient keywhizClient(OneOpsConfig config, @Qualifier("keywhizKeyStore") KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
         return new KeywhizClient(config.getKeywhiz().getBaseUrl(), keywhizKeyStore);
     }
@@ -115,7 +116,6 @@ public class ApplicationConfig {
      * Returns the keywhiz automation client
      */
     @Bean
-    @Lazy
     public KeywhizAutomationClient keywhizAutomationClient(OneOpsConfig config, @Qualifier("keywhizKeyStore") KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
         return new KeywhizAutomationClient(config.getKeywhiz().getBaseUrl(), keywhizKeyStore);
     }
@@ -148,5 +148,4 @@ public class ApplicationConfig {
     public ObjectMapper objectMapper() {
         return new Jackson2ObjectMapperBuilder().serializationInclusion(JsonInclude.Include.NON_NULL).build();
     }
-
 }
