@@ -21,7 +21,6 @@ import com.oneops.proxy.config.OneOpsConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cache.annotation.EnableCaching;
 
 /**
  * Keywhiz proxy application.
@@ -29,7 +28,6 @@ import org.springframework.cache.annotation.EnableCaching;
  * @author Suresh
  */
 @SpringBootApplication
-@EnableCaching
 @EnableConfigurationProperties(OneOpsConfig.class)
 public class Application {
 
