@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.security;
+package com.oneops.proxy.security.annotations;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,7 +25,10 @@ import java.lang.annotation.*;
 /**
  * A meta annotation, annotates spring MVC method args with this annotation
  * to indicate you wish to specify the argument with the value of current
- * {@link AuthenticationPrincipal} found on {@link SecurityContextHolder}
+ * {@link AuthenticationPrincipal} found on {@link SecurityContextHolder}.
+ * You could instead use {@link AuthenticationPrincipal} directly , but this
+ * meta annotation is useful to decouple your Rest controller logic from
+ * spring security.
  *
  * @author Suresh
  */
