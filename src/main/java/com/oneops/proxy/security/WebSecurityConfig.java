@@ -45,10 +45,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-
 import static com.oneops.proxy.auth.user.OneOpsUser.Role.MGMT;
 import static com.oneops.proxy.config.Constants.AUTH_TOKEN_URI;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
@@ -160,10 +159,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                   .requiresChannel().anyRequest().requiresSecure()
                 .and()
                     .authorizeRequests()
-                    .antMatchers(GET, "/").permitAll()
-                    .antMatchers(GET,  mgmtContext + "/info").permitAll()
-                    .antMatchers(GET, mgmtContext + "/health").permitAll()
-                    .antMatchers(GET,mgmtContext + "/**").hasAnyRole(MGMT.name())
+                    .mvcMatchers(GET, "/").permitAll()
+                    .mvcMatchers(GET,  mgmtContext + "/info").permitAll()
+                    .mvcMatchers(GET, mgmtContext + "/health").permitAll()
+                    .mvcMatchers(GET,mgmtContext + "/**").hasAnyRole(MGMT.name())
+                    //.mvcMatchers("/auth/{userId}").access("@authz.isAuthorized(#userId,principal)")
                     .anyRequest().fullyAuthenticated()
                 .and()
                     .addFilterBefore(buildLoginProcessingFilter(),UsernamePasswordAuthenticationFilter.class)
@@ -189,8 +189,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * Cross-Origin Resource Sharing (CORS) configuration for all the
-     * cross-domain REST API calls.
+     * Cross-Origin Resource Sharing (CORS) configuration for all the cross-domain
+     * REST API calls. Its' applied to all request paths (<b>/**</b>).
      *
      * @return cors filter bean
      */
@@ -200,7 +200,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(singletonList("*"));
         config.setAllowedHeaders(singletonList("*"));
-        config.setAllowedMethods(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedMethods(asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

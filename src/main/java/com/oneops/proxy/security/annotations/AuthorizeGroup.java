@@ -17,12 +17,11 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * {@link Authz#isAuthorized(String, OneOpsUser)} with keywhiz application
  * group name as first argument and the current authenticated {@link OneOpsUser}
  * as second argument.
- * <p>
  * <ul>
  * <li> <code>appGroup</code> is the name of path argument used in RestControllers.
  * <li> <code>principal</code> is the current authenticated user, provided by spring
  * security.
- * <p>
+ * </ul>
  * {@link PreAuthorize} uses <code>Spring SPEL</code> to invoke the {@link Authz#isAuthorized(String, OneOpsUser)} method.
  *
  * @author Suresh G

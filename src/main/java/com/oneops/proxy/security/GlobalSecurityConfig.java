@@ -29,12 +29,14 @@ import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 /**
  * A Global authentication manager(AM) config for the application.
+ * This configuration also enables the Spring security Pre/Post
+ * authorization on methods.
  *
  * @author Suresh
  */
 @Configuration
 @Order(HIGHEST_PRECEDENCE)
-@EnableGlobalMethodSecurity(securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(GlobalSecurityConfig.class);

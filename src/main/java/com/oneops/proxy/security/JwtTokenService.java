@@ -23,10 +23,7 @@ import com.oneops.proxy.config.OneOpsConfig;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -55,6 +52,8 @@ public class JwtTokenService {
 
     private static final String DOMAIN_CLAIM = "domain";
 
+    private static final String CN_CLAIM = "cn";
+
     private static SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
     private final char[] secretKey;
@@ -67,6 +66,8 @@ public class JwtTokenService {
 
     private final String tokenType;
 
+    private final boolean compressionEnabled;
+
     public JwtTokenService(OneOpsConfig config) {
         final OneOpsConfig.Auth authConfig = config.getAuth();
         secretKey = authConfig.getSigningKey();
@@ -74,6 +75,7 @@ public class JwtTokenService {
         issuer = authConfig.getIssuer();
         tokenHeader = authConfig.getHeader();
         tokenType = authConfig.getTokenType();
+        compressionEnabled = authConfig.isCompressionEnabled();
     }
 
 
@@ -102,32 +104,34 @@ public class JwtTokenService {
         if (user.getDomain() != null) {
             jwt.claim(DOMAIN_CLAIM, user.getDomain());
         }
+        if (user.getCn() != null) {
+            jwt.claim(CN_CLAIM, user.getCn());
+        }
+        if (compressionEnabled) {
+            jwt.compressWith(CompressionCodecs.DEFLATE);
+        }
         return jwt.compact();
     }
 
     /**
      * Validates token and creates the user details object by extracting
-     * identity and authorization claims.
+     * identity and authorization claims. It throws a Runtime exception
+     * if the token is invalid or expired.
      *
      * @param token jwt token
      * @return {@link OneOpsUser}
      */
-    public OneOpsUser createUser(String token) throws AuthenticationException {
-        try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(String.valueOf(secretKey))
-                    .parseClaimsJws(token)
-                    .getBody();
+    public OneOpsUser createUser(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(String.valueOf(secretKey))
+                .parseClaimsJws(token)
+                .getBody();
 
-            String username = claims.getSubject();
-            List<GrantedAuthority> authorities = getAuthorities(claims);
-            String domain = claims.getOrDefault(DOMAIN_CLAIM, DEFAULT_DOMAIN).toString();
-            return new OneOpsUser(username, "", authorities, username, domain);
-        } catch (ExpiredJwtException ex) {
-            throw new CredentialsExpiredException("Token has expired", ex);
-        } catch (JwtException jex) {
-            throw new BadCredentialsException("Invalid Authorization Token", jex);
-        }
+        String username = claims.getSubject();
+        List<GrantedAuthority> authorities = getAuthorities(claims);
+        String domain = claims.getOrDefault(DOMAIN_CLAIM, DEFAULT_DOMAIN).toString();
+        String cn = claims.getOrDefault(CN_CLAIM, username).toString();
+        return new OneOpsUser(username, "", authorities, cn, domain);
     }
 
     /**
