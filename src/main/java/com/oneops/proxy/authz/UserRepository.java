@@ -17,6 +17,7 @@
  *******************************************************************************/
 package com.oneops.proxy.authz;
 
+import com.oneops.proxy.model.AppGroup;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -42,8 +43,8 @@ import static com.oneops.user.tables.Users.USERS;
  * is authorized to add/update/delete the secrets.
  * <p>
  * Note: JOOQ query has 1:1 mapping with SQL and is very easy to understand. If you want
- * to see the generated SQL (for debugging), add <b>org.jooq.tools: DEBUG</b> to
- * application.yaml.
+ * to see the generated SQL (for debugging), add <b>org.jooq.tools: DEBUG</b> in
+ * application.yaml file.
  *
  * @author Suresh
  */
@@ -68,18 +69,17 @@ public class UserRepository {
 
 
     /**
-     * Returns all the teams having the given user in the given org and assembly.
+     * Returns all teams having given user in the application group assembly.
      *
      * @param userName oneops user name (usually it's your AD/LDAP user name)
-     * @param org      oneops org name
-     * @param assembly oneops assembly name
+     * @param appGroup {@link AppGroup}
      * @return List of {@link OneOpsTeam}
      */
-    public List<OneOpsTeam> getTeams(@Nonnull final String userName, @Nonnull final String org, @Nonnull final String assembly) {
-        log.debug("Retrieving teams having user: " + userName + " in assembly: /" + org + "/" + assembly);
+    public List<OneOpsTeam> getTeams(@Nonnull final String userName, @Nonnull final AppGroup appGroup) {
+        log.debug("Retrieving teams having user: " + userName + " for application group: " + appGroup.getNsPath());
         Condition teamCondition = USERS.USERNAME.equalIgnoreCase(userName)
-                .and(CI_PROXIES.NS_PATH.equalIgnoreCase("/" + org)
-                        .and(CI_PROXIES.CI_NAME.equalIgnoreCase(assembly)
+                .and(CI_PROXIES.NS_PATH.equalIgnoreCase(appGroup.getOrgNsPath())
+                        .and(CI_PROXIES.CI_NAME.equalIgnoreCase(appGroup.getAssembly())
                                 .and(CI_PROXIES.CI_CLASS_NAME.eq("account.Assembly"))));
         // Read like SQL :)
         Result<Record> records = dslContext.select(TEAMS.fields()).from(CI_PROXIES)
@@ -93,16 +93,15 @@ public class UserRepository {
     }
 
     /**
-     * Returns all the teams in the given org and assembly.
+     * Returns all teams in the application group assembly.
      *
-     * @param org      oneops org name
-     * @param assembly oneops assembly name
+     * @param appGroup {@link AppGroup}
      * @return List of {@link OneOpsTeam}
      */
-    public List<OneOpsTeam> getAllTeams(@Nonnull final String org, @Nonnull final String assembly) {
-        log.debug("Retrieving all teams for assembly: /" + org + "/" + assembly);
-        Condition teamCondition = CI_PROXIES.NS_PATH.equalIgnoreCase("/" + org)
-                .and(CI_PROXIES.CI_NAME.equalIgnoreCase(assembly)
+    public List<OneOpsTeam> getAllTeams(@Nonnull final AppGroup appGroup) {
+        log.debug("Retrieving all teams for application group: " + appGroup.getNsPath());
+        Condition teamCondition = CI_PROXIES.NS_PATH.equalIgnoreCase(appGroup.getOrgNsPath())
+                .and(CI_PROXIES.CI_NAME.equalIgnoreCase(appGroup.getAssembly())
                         .and(CI_PROXIES.CI_CLASS_NAME.eq("account.Assembly")));
 
         // Read like SQL :)

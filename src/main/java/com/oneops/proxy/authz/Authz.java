@@ -23,13 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 import static com.oneops.proxy.authz.OneOpsTeam.KEYWHIZ_ADMIN_TEAM;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * Implements Keywhiz application group authorization logic. The application group
@@ -66,16 +64,16 @@ public class Authz {
         try {
             appGroup = AppGroup.from(user.getDomain(), groupName);
         } catch (Exception e) {
-            throw new HttpClientErrorException(BAD_REQUEST, "Invalid application group name: " + groupName + ". The format is 'org_assembly_env'.");
+            throw new IllegalArgumentException("Invalid application group name: " + groupName + ". The format is 'org_assembly_env'.");
         }
 
-        List<OneOpsTeam> teams = userRepo.getTeams(user.getUsername(), appGroup.getOrg(), appGroup.getAssembly());
+        List<OneOpsTeam> teams = userRepo.getTeams(user.getUsername(), appGroup);
         boolean hasAccess = teams.stream().anyMatch(t -> t.isKeywhizAdmin(appGroup.getAssembly()));
-
         if (!hasAccess) {
             throw new AuthorizationServiceException("OneOps user '" + user.getCn() + "' is not a '" + KEYWHIZ_ADMIN_TEAM
                     + "' or not authorized to manage the secrets for environment: " + appGroup.getNsPath());
         }
+
         return true;
     }
 }

@@ -102,9 +102,9 @@ public class OneOpsTeam {
      * Checks if team is a Keywhiz admin for the given assembly. For a team to be
      * Keywhiz Admin, the following naming conventions are used.
      * <ul>
-     * <p>
      * <li> Team name should <b>keywhiz-admin</b>  OR
      * <li> Team name should <b>keywhiz-admin-${AssemblyName}</b>
+     * </ul>
      *
      * @return <code>true</code> if the team is a Keywhiz admin for given assembly.
      */
