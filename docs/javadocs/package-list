@@ -1,4 +1,8 @@
 com.oneops.proxy
+com.oneops.proxy.auth.login
+com.oneops.proxy.auth.token
+com.oneops.proxy.auth.user
+com.oneops.proxy.authz
 com.oneops.proxy.config
 com.oneops.proxy.exception
 com.oneops.proxy.keywhiz
@@ -6,4 +10,10 @@ com.oneops.proxy.keywhiz.http
 com.oneops.proxy.keywhiz.model
 com.oneops.proxy.keywhiz.model.v2
 com.oneops.proxy.ldap
+com.oneops.proxy.model
 com.oneops.proxy.security
+com.oneops.proxy.security.annotations
+com.oneops.proxy.web
+com.oneops.user
+com.oneops.user.tables
+com.oneops.user.tables.records
