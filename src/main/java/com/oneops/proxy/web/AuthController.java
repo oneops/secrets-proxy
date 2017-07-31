@@ -17,15 +17,15 @@
  *******************************************************************************/
 package com.oneops.proxy.web;
 
+import com.oneops.proxy.auth.user.OneOpsUser;
+import com.oneops.proxy.security.annotations.CurrentUser;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Proxy authentication controller. Right now it's only only used
- * for providing the CSRF token because login/auth is implemented
- * in Login filters.
+ * A rest controller to retrieve authenticated user details.
  *
  * @author Suresh G
  */
@@ -33,7 +33,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    // @PostAuthorize("returnObject?.accessToken() == principal.username")
+    /**
+     * Returns the authenticated current user info.
+     *
+     * @param user {@link OneOpsUser}
+     * @return OneOps user details.
+     */
+    @GetMapping("/user")
+    public OneOpsUser user(@CurrentUser OneOpsUser user) {
+        return user;
+    }
+
+    /**
+     * Returns the current CSRF token details.
+     *
+     * @param token injected csrf token
+     * @return csrf token.
+     */
     @GetMapping("/csrf")
     public CsrfToken csrf(CsrfToken token) {
         return token;

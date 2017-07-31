@@ -29,9 +29,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RootController {
 
+    /**
+     * Maven artifact version.
+     */
     @Value("${info.version}")
     private String version;
 
+    /**
+     * Root of the application.
+     */
     @GetMapping(path = "/")
     public String root() {
         return "OneOps Keywhiz Proxy v" + version;
