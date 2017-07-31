@@ -1,8 +1,7 @@
-   ____             ____
-  / __ \____  ___  / __ \____  _____
- / / / / __ \/ _ \/ / / / __ \/ ___/
-/ /_/ / / / /  __/ /_/ / /_/ (__  )
-\____/_/ /_/\___/\____/ .___/____/
-                     /_/
-Keywhiz Proxy Version : ${AnsiColor.GREEN} ${AnsiStyle.BOLD}${application.version} ${AnsiStyle.NORMAL}
+  ____           ____
+ / __ \___  ___ / __ \___  ___
+/ /_/ / _ \/ -_) /_/ / _ \(_-<
+\____/_//_/\__/\____/ .__/___/
+                   /_/
+${application.title}: ${AnsiColor.GREEN} ${AnsiStyle.BOLD}v${application.version} ${AnsiStyle.NORMAL}
 
