@@ -58,17 +58,28 @@ Java Doc : https://oneops.github.com/keywhiz-proxy/javadocs
       from the TLS endpoint.   
       
       
-### Generate source
+### Generate source.
 
 ```
 $ ./mvnw clean package -P generate
 ```
 
-#### https://github.com/oneops/keywhiz-proxy/releases/tag/tools
+#### Check for new dependency updates.
+
+```
+$ ./mvnw versions:display-dependency-updates
+```
+
+#### Tools
+ 
+  * Keywhiz Tools - https://github.com/oneops/keywhiz-proxy/releases/tag/tools
+  * JWT Token Verification - https://jwt.io/
 
 TODO
 #####
 
+ * Update to the latest keysync.
+ * Validation for OneOps assembly and env.
  * Guard debug logs.
  * Feature toggles implementation.
  * Add support for different mgmt domains.
@@ -77,6 +88,7 @@ TODO
  * Add application metrics (Actuator/Dropwizard)
  * Move to new User (ACL) API 
  * JTI claim to maintain list of blacklisted or revoked tokens.
+ * Springboot admin integration.
 
 
 ### Why we chose Spring Boot
