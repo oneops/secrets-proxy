@@ -39,8 +39,9 @@ import org.springframework.util.Assert;
 @Component
 public class LoginAuthProvider implements AuthenticationProvider {
 
-    private LdapUserService ldapUserService;
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    private LdapUserService ldapUserService;
 
     public LoginAuthProvider(LdapUserService ldapUserService) {
         this.ldapUserService = ldapUserService;

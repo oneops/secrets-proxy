@@ -71,18 +71,23 @@ public class LdapUserService {
     }
 
     /**
-     * Returns the common name from LDAP entry.
+     * Returns the common name from LDAP entry. Usually, AD common name has
+     * <b>"FullName - UserId"</b> format. If that's the case, only full name
+     * is returned as the common name.
      *
-     * @param ldapUser    ldap entry
-     * @param defaultName default name if there is no cn.
+     * @param ldapUser ldap entry
+     * @param username default name if there is no cn.
      * @return common name.
      */
-    private String getCommonName(LdapEntry ldapUser, String defaultName) {
+    private String getCommonName(LdapEntry ldapUser, String username) {
         String cn;
         try {
             cn = new X500Name(ldapUser.getDn()).getCommonName();
+            if (cn != null && cn.endsWith(username)) {
+                cn = cn.split("-")[0].trim();
+            }
         } catch (IOException e) {
-            cn = defaultName;
+            cn = username;
         }
         return cn;
     }

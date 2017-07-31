@@ -17,6 +17,7 @@
  *******************************************************************************/
 package com.oneops.proxy.auth.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,20 +27,16 @@ import java.util.Collection;
 import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 
 /**
- * OneOps user details.
+ * OneOps user details. The user credential (<b>password</b>) is ignored
+ * from JSON serialization in case it's used as Rest controller response.
  *
  * @author Suresh
  */
+@JsonIgnoreProperties("password")
 public class OneOpsUser extends User {
 
-    /**
-     * Common name.
-     */
     private final String cn;
 
-    /**
-     * OneOps management domain.
-     */
     private final String domain;
 
     /**
@@ -57,10 +54,16 @@ public class OneOpsUser extends User {
         this.domain = domain;
     }
 
+    /**
+     * Returns OneOps mgmt domain.
+     */
     public String getDomain() {
         return domain;
     }
 
+    /**
+     * Returns the OneOps user common name. Usually it's your full name.
+     */
     public String getCn() {
         return cn;
     }

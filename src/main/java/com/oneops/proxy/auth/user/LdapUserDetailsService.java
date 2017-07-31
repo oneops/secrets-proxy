@@ -62,12 +62,9 @@ public class LdapUserDetailsService implements UserDetailsService {
             if (x500Names.size() == 0) {
                 throw new UsernameNotFoundException("Can't load the user details for " + username);
             }
-
             X500Name x500Name = x500Names.get(0);
-            return new OneOpsUser(username,
-                    null,
-                    singletonList(new SimpleGrantedAuthority(USER.authority())),
-                    x500Name.getCommonName(), DEFAULT_DOMAIN);
+            List<SimpleGrantedAuthority> authorities = singletonList(new SimpleGrantedAuthority(USER.authority()));
+            return new OneOpsUser(username, null, authorities, x500Name.getCommonName(), DEFAULT_DOMAIN);
 
         } catch (IOException | LdapException e) {
             throw new UsernameNotFoundException("Can't load the user details for " + username, e);
