@@ -417,6 +417,11 @@ public class OneOpsConfig {
         private String tokenType = "Bearer";
 
         /**
+         * Enable JWT body compression.
+         */
+        private boolean compressionEnabled;
+
+        /**
          * Token expiry in secs.
          */
         @NotNull
@@ -462,13 +467,21 @@ public class OneOpsConfig {
             this.tokenType = tokenType;
         }
 
+        public boolean isCompressionEnabled() {
+            return compressionEnabled;
+        }
+
+        public void setCompressionEnabled(boolean compressionEnabled) {
+            this.compressionEnabled = compressionEnabled;
+        }
+
         @Override
         public String toString() {
             return "Auth{" +
-                    "signingKey=******" +
-                    ", header='" + header + '\'' +
+                    "header='" + header + '\'' +
                     ", issuer='" + issuer + '\'' +
                     ", tokenType='" + tokenType + '\'' +
+                    ", compressionEnabled=" + compressionEnabled +
                     ", expiresInSec=" + expiresInSec +
                     '}';
         }
