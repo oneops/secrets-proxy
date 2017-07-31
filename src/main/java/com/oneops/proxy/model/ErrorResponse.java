@@ -17,44 +17,87 @@
  *******************************************************************************/
 package com.oneops.proxy.model;
 
-import com.oneops.proxy.auth.login.LoginFailureHandler;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.autoconfigure.web.ErrorAttributes;
+
+import java.util.Date;
+import java.util.Map;
 
 /**
- * Login failure error response ({@link LoginFailureHandler}).
+ * Login failure error response.
  *
  * @author Suresh G
  */
 public class ErrorResponse {
 
+    private final long timestamp;
+    private final int status;
+    private final String error;
     private final String message;
-    private final int errorCode;
-    private final HttpStatus status;
+    private final String path;
 
-    public ErrorResponse(String message, int errorCode, HttpStatus status) {
-        this.message = message;
-        this.errorCode = errorCode;
+    /**
+     * Error response constructor.
+     *
+     * @param timestamp A time stamp when the error occurred.
+     * @param status    The HTTP status code
+     * @param error     The HTTP status code description
+     * @param message   A message which elaborates the error further
+     * @param path      The path that was requested
+     */
+    public ErrorResponse(long timestamp, int status, String error, String message, String path) {
+        this.timestamp = timestamp;
         this.status = status;
+        this.error = error;
+        this.message = message;
+        this.path = path;
+    }
+
+    /**
+     * Error response constructor from {@link ErrorAttributes}
+     *
+     * @param errAttrs error attributes.
+     */
+    public ErrorResponse(Map<String, Object> errAttrs) {
+        Object ts = errAttrs.get("timestamp");
+        timestamp = ts instanceof Date ? ((Date) ts).getTime() : System.currentTimeMillis();
+        Object st = errAttrs.get("status");
+        status = st instanceof Integer ? (int) st : 500;
+        Object err = errAttrs.get("error");
+        error = (err != null) ? err.toString() : "None";
+        Object msg = errAttrs.get("message");
+        message = (msg != null) ? msg.toString() : "None";
+        Object pt = errAttrs.get("path");
+        path = (pt != null) ? pt.toString() : "";
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public String getError() {
+        return error;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
+    public String getPath() {
+        return path;
     }
 
     @Override
     public String toString() {
         return "ErrorResponse{" +
-                "message='" + message + '\'' +
-                ", errorCode=" + errorCode +
+                "timestamp=" + timestamp +
                 ", status=" + status +
+                ", error='" + error + '\'' +
+                ", message='" + message + '\'' +
+                ", path='" + path + '\'' +
                 '}';
     }
 }

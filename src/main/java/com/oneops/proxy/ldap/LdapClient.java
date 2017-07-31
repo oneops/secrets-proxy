@@ -161,8 +161,8 @@ public class LdapClient {
         executor.setBaseDn(baseDn);
         executor.setSearchScope(SearchScope.SUBTREE);
         executor.setSearchCache(cache);
+        // Use "*" to query all the attributes.
         SearchFilter filter = new SearchFilter(String.format("(%s=%s)", attributeName, name));
-        // User "*" to query all the attributes.
         SearchResult result = executor.search(pcf, filter).getResult();
         return result.getEntries().stream().map(entry -> {
             try {
