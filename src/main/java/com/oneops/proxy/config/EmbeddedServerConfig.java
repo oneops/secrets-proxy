@@ -57,7 +57,7 @@ public class EmbeddedServerConfig {
                                                                                      @Value("${jetty.thread-pool.min-threads:8}") final int minThreads,
                                                                                      @Value("${jetty.thread-pool.idle-timeout:60000}") final int idleTimeout,
                                                                                      @Value("${jetty.jmx.enabled:true}") final boolean jmxEnabled) {
-        log.info("Configuring Jetty server");
+        log.info("Configuring Jetty server.");
         final JettyEmbeddedServletContainerFactory factory = new JettyEmbeddedServletContainerFactory(port);
         factory.addServerCustomizers(server -> {
             final QueuedThreadPool threadPool = server.getBean(QueuedThreadPool.class);
@@ -78,24 +78,31 @@ public class EmbeddedServerConfig {
      * By default, request log will use the system default time zone. Request log
      * configuration can be done in the <b>application.yaml</b>
      *
-     * @param file       request log file.
-     * @param retainDays number of days to keep a log file
+     * @param file        request log file.
+     * @param retainDays  number of days to keep a log file
+     * @param ignorePaths request paths that will not be logged.
      * @return {@link EmbeddedServletContainerCustomizer}
      */
     @Bean
     public EmbeddedServletContainerCustomizer configureJettyRequestLog(@Value("${jetty.request-log.file}") final String file,
-                                                                       @Value("${jetty.request-log.retain-days}") final int retainDays) {
+                                                                       @Value("${jetty.request-log.retain-days}") final int retainDays,
+                                                                       @Value("${jetty.request-log.ignore-paths}") final String ignorePaths) {
         return container -> {
             if (container instanceof JettyEmbeddedServletContainerFactory) {
                 JettyEmbeddedServletContainerFactory jetty = (JettyEmbeddedServletContainerFactory) container;
                 jetty.addServerCustomizers(server -> {
-                    NCSARequestLog requestLog = new NCSARequestLog(file);
-                    requestLog.setAppend(true);
-                    requestLog.setExtended(true);
-                    requestLog.setLogTimeZone(ZoneId.systemDefault().getId());
-                    requestLog.setLogLatency(true);
-                    requestLog.setRetainDays(retainDays);
-                    server.setRequestLog(requestLog);
+                    NCSARequestLog reqLog = new NCSARequestLog(file);
+                    reqLog.setAppend(true);
+                    reqLog.setLogServer(true);
+                    reqLog.setPreferProxiedForAddress(true);
+                    reqLog.setExtended(true);
+                    reqLog.setLogTimeZone(ZoneId.systemDefault().getId());
+                    reqLog.setLogLatency(true);
+                    reqLog.setRetainDays(retainDays);
+                    if (ignorePaths != null) {
+                        reqLog.setIgnorePaths(ignorePaths.split(","));
+                    }
+                    server.setRequestLog(reqLog);
                 });
             }
         };
