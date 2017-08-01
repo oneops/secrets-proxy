@@ -18,6 +18,8 @@
 package com.oneops.proxy.model;
 
 import javax.annotation.Nonnull;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Represents keywhiz application group.
@@ -25,6 +27,11 @@ import javax.annotation.Nonnull;
  * @author Suresh G
  */
 public class AppGroup {
+
+    /**
+     * Parameter name used by default.
+     */
+    public static final String APP_GROUP_PARAM = "appGroup";
 
     /**
      * Application group name separator.
@@ -120,11 +127,19 @@ public class AppGroup {
 
     /**
      * Returns the keywhiz group name. The keywhiz group name is using the format
-     * <b>{domain}_{org}_{assembly}_{env}</b> . The domain is used to support
+     * <b>/{domain}/{org}/{assembly}/{env}</b>. The domain is used to support
      * multiple OneOps instances and is defaults to <b>prod</b>.
      */
-    public String getKeywhizGroup() {
+    public String getGroupName() {
         return String.format("/%s/%s/%s/%s", domain, org, assembly, env).toLowerCase();
+    }
+
+    /**
+     * Returns the http url encoded {@link #getGroupName()}. Use this method when making
+     * requests to keywhiz servers.
+     */
+    public String getKeywhizGroup() throws UnsupportedEncodingException {
+        return URLEncoder.encode(getGroupName(), "UTF-8");
     }
 
     @Override
