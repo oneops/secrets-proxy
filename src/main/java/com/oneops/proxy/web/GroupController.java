@@ -107,14 +107,15 @@ public class GroupController {
     }
 
     /**
-     * @param appGroup OneOps environment name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
-     * @param user     Secret name.
+     * Creates new secret.
+     *
+     * @param name     Secret name
      * @param secret   Secret request {@link SecretRequest}
+     * @param appGroup OneOps environment name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
      * @param user     Authorized {@link OneOpsUser}
-     * @return Secret Response details {@link SecretDetailResponseV2}.
      * @throws IOException              Throws if the request could not be executed due to cancellation, a connectivity
      *                                  problem or timeout.
-     * @throws IllegalArgumentException For bad request..
+     * @throws IllegalArgumentException For bad request.
      */
     @PostMapping(value = "/secrets/{name}")
     public void createSecret(@PathVariable("name") String name,
