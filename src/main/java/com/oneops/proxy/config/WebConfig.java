@@ -17,14 +17,20 @@
  *******************************************************************************/
 package com.oneops.proxy.config;
 
+import com.oneops.proxy.model.AppGroup;
+import com.oneops.proxy.web.AppGroupArgResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import java.util.List;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.APPLICATION_XML;
 
 /**
@@ -46,8 +52,25 @@ public class WebConfig extends WebMvcConfigurerAdapter {
                 parameterName("mediaType").
                 ignoreAcceptHeader(true).
                 useJaf(false).
-                defaultContentType(APPLICATION_JSON).
+                defaultContentType(APPLICATION_JSON_UTF8).
                 mediaType("xml", APPLICATION_XML).
-                mediaType("json", APPLICATION_JSON);
+                mediaType("json", APPLICATION_JSON_UTF8);
+    }
+
+    /**
+     * Turn on path variable suffix pattern matching ONLY for suffixes you explicitly
+     * register using {@link #configureContentNegotiation(ContentNegotiationConfigurer)}.
+     */
+    @Override
+    public void configurePathMatch(PathMatchConfigurer matcher) {
+        matcher.setUseRegisteredSuffixPatternMatch(true);
+    }
+
+    /**
+     * {@link AppGroup} argument resolver used in Rest controllers.
+     */
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argResolvers) {
+        argResolvers.add(new AppGroupArgResolver());
     }
 }
