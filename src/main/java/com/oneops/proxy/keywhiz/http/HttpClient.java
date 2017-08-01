@@ -26,6 +26,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.oneops.proxy.security.KeywhizKeyStore;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.HttpLoggingInterceptor.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +34,6 @@ import javax.net.ssl.*;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.security.GeneralSecurityException;
-import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.Collections;
 
@@ -103,7 +103,8 @@ public abstract class HttpClient {
     }
 
     /**
-     * Creates a {@link OkHttpClient} to start a TLS connection.
+     * Creates a {@link OkHttpClient} to start a TLS connection. The OKHttp logging is
+     * enabled if the debug log is enabled for {@link HttpClient}.
      */
     protected OkHttpClient createHttpsClient() throws GeneralSecurityException {
         TrustManager[] trustManagers = keywhizKeyStore.getTrustManagers();
@@ -112,8 +113,12 @@ public abstract class HttpClient {
         sslContext.init(keyManagers, trustManagers, new SecureRandom());
         SSLSocketFactory socketFactory = sslContext.getSocketFactory();
 
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(log::info);
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(msg -> {
+            if (log.isDebugEnabled()) {
+                log.debug(msg);
+            }
+        });
+        loggingInterceptor.setLevel(Level.BASIC);
 
         OkHttpClient.Builder client = new OkHttpClient().newBuilder()
                 .sslSocketFactory(socketFactory, (X509TrustManager) trustManagers[0])
