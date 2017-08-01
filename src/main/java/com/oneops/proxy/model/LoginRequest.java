@@ -17,6 +17,7 @@
  *******************************************************************************/
 package com.oneops.proxy.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.oneops.proxy.config.Constants;
 
