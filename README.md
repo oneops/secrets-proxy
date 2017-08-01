@@ -79,14 +79,13 @@ TODO
 #####
 
  * Update to the latest keysync.
+ * Mgmt www basic auth.
  * Validation for OneOps assembly and env.
  * Guard debug logs.
  * Feature toggles implementation.
  * Add support for different mgmt domains.
  * Http2/Grpc (May be with JDK 9)
- * Better Exception/Http Status code handling.
- * Add application metrics (Actuator/Dropwizard)
- * Move to new User (ACL) API 
+ * Add application metrics (Actuator/Dropwizard) 
  * JTI claim to maintain list of blacklisted or revoked tokens.
  * Springboot admin integration.
 
