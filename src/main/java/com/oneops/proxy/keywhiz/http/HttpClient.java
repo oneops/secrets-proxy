@@ -124,7 +124,7 @@ public abstract class HttpClient {
                 .sslSocketFactory(socketFactory, (X509TrustManager) trustManagers[0])
                 .connectionSpecs(Collections.singletonList(ConnectionSpec.MODERN_TLS))
                 .followSslRedirects(false)
-                .retryOnConnectionFailure(false)
+                .retryOnConnectionFailure(true)
                 .connectTimeout(5, SECONDS)
                 .readTimeout(5, SECONDS)
                 .writeTimeout(5, SECONDS)
