@@ -25,7 +25,6 @@ import com.oneops.proxy.auth.token.TokenAuthProcessingFilter;
 import com.oneops.proxy.auth.token.TokenAuthProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -74,8 +73,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationSuccessHandler successHandler;
     private final AuthenticationFailureHandler failureHandler;
 
-
-    @Autowired
     public WebSecurityConfig(LoginAuthProvider loginAuthProvider,
                              TokenAuthProvider tokenAuthProvider,
                              AuthenticationSuccessHandler successHandler,

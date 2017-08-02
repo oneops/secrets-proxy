@@ -68,6 +68,7 @@ public class SecretContentService {
 
     /**
      * Validate and enrich {@link SecretRequest} for it's content and other metadata.
+     * Keywhiz expects the secret content to be Base64 encoded string.
      *
      * @param req  Secret request.
      * @param name Secret name.

@@ -30,7 +30,6 @@ import com.oneops.proxy.security.annotations.CurrentUser;
 import com.oneops.proxy.services.SecretContentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -63,7 +62,6 @@ public class GroupController {
      * @param kwClient      Keywhiz automation client.
      * @param secretService Service containing utility functions to validate the secrets.
      */
-    @Autowired
     public GroupController(KeywhizAutomationClient kwClient, SecretContentService secretService) {
         this.kwClient = kwClient;
         this.secretService = secretService;
