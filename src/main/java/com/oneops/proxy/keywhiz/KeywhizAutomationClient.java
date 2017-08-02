@@ -18,6 +18,7 @@
 package com.oneops.proxy.keywhiz;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.ImmutableMap;
 import com.oneops.proxy.keywhiz.http.HttpClient;
 import com.oneops.proxy.keywhiz.model.v2.*;
 import com.oneops.proxy.security.KeywhizKeyStore;
@@ -104,13 +105,13 @@ public class KeywhizAutomationClient extends HttpClient {
     /**
      * Retrieve information on a client
      *
-     * @param name Client name.
+     * @param client Client name.
      * @return Client information ({@link ClientDetailResponseV2}) retrieved.
      * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
      *                     problem or timeout.
      */
-    public ClientDetailResponseV2 getClientDetails(String name) throws IOException {
-        String httpResponse = httpGet(baseUrl.resolve("/automation/v2/clients/" + name));
+    public ClientDetailResponseV2 getClientDetails(String client) throws IOException {
+        String httpResponse = httpGet(baseUrl.resolve("/automation/v2/clients/" + client));
         return mapper.readValue(httpResponse, new TypeReference<ClientDetailResponseV2>() {
         });
     }
@@ -134,14 +135,11 @@ public class KeywhizAutomationClient extends HttpClient {
      *
      * @param name   Secret name.
      * @param secret Secret details,  ${@link CreateOrUpdateSecretRequestV2}
-     * @return Created or updated secret details response (${@link SecretDetailResponseV2})
      * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
      *                     problem or timeout.
      */
-    public SecretDetailResponseV2 createOrUpdateSecret(String name, CreateOrUpdateSecretRequestV2 secret) throws IOException {
-        String httpResponse = httpPost(baseUrl.resolve("/automation/v2/secrets/" + name), secret);
-        return mapper.readValue(httpResponse, new TypeReference<List<SecretDetailResponseV2>>() {
-        });
+    public void createOrUpdateSecret(String name, CreateOrUpdateSecretRequestV2 secret) throws IOException {
+        httpPost(baseUrl.resolve("/automation/v2/secrets/" + name), secret);
     }
 
     /**
@@ -156,9 +154,54 @@ public class KeywhizAutomationClient extends HttpClient {
     }
 
     /**
+     * Listing of groups a secret is assigned to.
+     *
+     * @param secret Secret name
+     * @return List of group name.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public List<String> getGroupsForSecret(String secret) throws IOException {
+        String httpResponse = httpGet(baseUrl.resolve("/automation/v2/secrets/" + secret + "/groups"));
+        return mapper.readValue(httpResponse, new TypeReference<List<String>>() {
+        });
+    }
+
+    /**
+     * Retrieve information on a secret series.
+     *
+     * @param secret Secret name.
+     * @return Secret detail response.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public SecretDetailResponseV2 getSecretDetails(String secret) throws IOException {
+        String httpResponse = httpGet(baseUrl.resolve("/automation/v2/secrets/" + secret));
+        return mapper.readValue(httpResponse, new TypeReference<SecretDetailResponseV2>() {
+        });
+    }
+
+    /**
+     * Retrieve contents for a set of secret series.
+     *
+     * @param secrets List of secrets.
+     * @return Secrets content
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public SecretContentsResponseV2 getSecretsContent(String... secrets) throws IOException {
+        SecretContentsRequestV2 reqBody = SecretContentsRequestV2.builder().secrets(secrets).build();
+        String httpResponse = httpPost(baseUrl.resolve("/automation/v2/secrets/request/contents"), reqBody);
+        return mapper.readValue(httpResponse, new TypeReference<SecretContentsResponseV2>() {
+        });
+    }
+
+    /**
      * Creates a client and assigns to given groups.
      *
      * @return Client create response.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
      */
     public String createClient(String name, String description, String... groups) throws IOException {
         CreateClientRequestV2 clientReq = CreateClientRequestV2.builder()
@@ -166,6 +209,21 @@ public class KeywhizAutomationClient extends HttpClient {
                 .description(description)
                 .groups(groups).build();
         return httpPost(baseUrl.resolve("/automation/v2/clients"), clientReq);
+    }
+
+    /**
+     * Creates a group
+     *
+     * @param name        Group name
+     * @param description Group description.
+     * @param metadata    Group metadata.
+     * @return Create group response
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public String createGroup(String name, String description, ImmutableMap<String, String> metadata) throws IOException {
+        CreateGroupRequestV2 groupReq = CreateGroupRequestV2.fromParts(name, description, metadata);
+        return httpPost(baseUrl.resolve("/automation/v2/groups"), groupReq);
     }
 
     /**
