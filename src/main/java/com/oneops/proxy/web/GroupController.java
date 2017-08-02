@@ -27,12 +27,13 @@ import com.oneops.proxy.model.AppGroup;
 import com.oneops.proxy.model.SecretRequest;
 import com.oneops.proxy.security.annotations.AuthzRestController;
 import com.oneops.proxy.security.annotations.CurrentUser;
+import com.oneops.proxy.services.SecretContentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Base64;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
@@ -54,13 +55,18 @@ public class GroupController {
      */
     private KeywhizAutomationClient kwClient;
 
+    private final SecretContentService secretService;
+
     /**
      * {@link GroupController} constructor.
      *
-     * @param kwClient Keywhiz automation client.
+     * @param kwClient      Keywhiz automation client.
+     * @param secretService Service containing utility functions to validate the secrets.
      */
-    public GroupController(KeywhizAutomationClient kwClient) {
+    @Autowired
+    public GroupController(KeywhizAutomationClient kwClient, SecretContentService secretService) {
         this.kwClient = kwClient;
+        this.secretService = secretService;
     }
 
 
@@ -109,32 +115,28 @@ public class GroupController {
     /**
      * Creates new secret.
      *
-     * @param name     Secret name
-     * @param secret   Secret request {@link SecretRequest}
-     * @param appGroup OneOps environment name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
-     * @param user     Authorized {@link OneOpsUser}
+     * @param name          Secret name
+     * @param secretRequest Secret request {@link SecretRequest}
+     * @param appGroup      OneOps environment name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
+     * @param user          Authorized {@link OneOpsUser}
      * @throws IOException              Throws if the request could not be executed due to cancellation, a connectivity
      *                                  problem or timeout.
      * @throws IllegalArgumentException For bad request.
      */
     @PostMapping(value = "/secrets/{name}")
     public void createSecret(@PathVariable("name") String name,
-                             @RequestBody SecretRequest secret,
+                             @RequestBody SecretRequest secretRequest,
                              AppGroup appGroup,
                              @CurrentUser OneOpsUser user) throws IOException {
-        CreateSecretRequestV2 secretReq;
-        try {
-            if (secret.getContent().length() > (1024 * 1024)) {
-                throw new IllegalArgumentException("Entity too large!");
-            }
-            String content = Base64.getEncoder().encodeToString(secret.getContent().getBytes("UTF-8"));
 
-            secretReq = CreateSecretRequestV2.fromParts(name, content, secret.getDescription(),
-                    secret.getMetadata(), secret.getExpiry(), secret.getType(), singletonList(appGroup.getGroupName()));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new IllegalArgumentException("Invalid cert request, " + ex.getMessage());
-        }
+        SecretRequest secret = secretService.validateAndEnrich(secretRequest, name, user);
+        CreateSecretRequestV2 secretReq = CreateSecretRequestV2.fromParts(name,
+                secret.getContent(),
+                secret.getDescription(),
+                secret.getMetadata(),
+                secret.getExpiry(),
+                secret.getType(),
+                singletonList(appGroup.getGroupName()));
         kwClient.createSecret(secretReq);
     }
 }
