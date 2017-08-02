@@ -174,7 +174,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                    .headers().httpStrictTransportSecurity()
                 .and()
-                   .frameOptions().disable();
+                   .frameOptions().deny()
+                   .cacheControl()
+                .and()
+                   .xssProtection().xssProtectionEnabled(true);
         // @formatter:on
     }
 
