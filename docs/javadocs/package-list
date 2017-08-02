@@ -13,6 +13,7 @@ com.oneops.proxy.ldap
 com.oneops.proxy.model
 com.oneops.proxy.security
 com.oneops.proxy.security.annotations
+com.oneops.proxy.services
 com.oneops.proxy.web
 com.oneops.user
 com.oneops.user.tables
