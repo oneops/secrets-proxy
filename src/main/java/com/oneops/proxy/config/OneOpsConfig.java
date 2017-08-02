@@ -86,6 +86,11 @@ public class OneOpsConfig {
 
         private char[] svcPassword;
 
+        /**
+         * Secret max size in bytes.
+         */
+        private long secretMaxSize;
+
         @NotNull
         @NestedConfigurationProperty
         private TrustStore trustStore;
@@ -146,12 +151,21 @@ public class OneOpsConfig {
             this.cli = cli;
         }
 
+        public long getSecretMaxSize() {
+            return secretMaxSize;
+        }
+
+        public void setSecretMaxSize(long secretMaxSize) {
+            this.secretMaxSize = secretMaxSize;
+        }
+
         @Override
         public String toString() {
             return "Keywhiz{" +
                     "baseUrl='" + baseUrl + '\'' +
                     ", svcUser=******" +
                     ", svcPassword=******" +
+                    ", secretMaxSize=" + secretMaxSize +
                     ", trustStore=" + trustStore +
                     ", keyStore=" + keyStore +
                     ", cli=" + cli +
