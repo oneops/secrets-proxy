@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static com.oneops.proxy.authz.OneOpsTeam.KEYWHIZ_ADMIN_TEAM;
+import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
 
 /**
  * Implements Keywhiz application group authorization logic. The application group
@@ -62,10 +62,10 @@ public class Authz {
         }
 
         List<OneOpsTeam> teams = userRepo.getTeams(user.getUsername(), appGroup);
-        boolean hasAccess = teams.stream().anyMatch(t -> t.isKeywhizAdmin(appGroup.getAssembly()));
+        boolean hasAccess = teams.stream().anyMatch(t -> t.isSecretsAdmin(appGroup.getAssembly()));
         if (!hasAccess) {
             throw new AuthorizationServiceException("OneOps user '" + user.getCn() + "' is not a '"
-                    + KEYWHIZ_ADMIN_TEAM + "' or not authorized to manage the secrets for environment: "
+                    + SECRETS_ADMIN_TEAM + "' or not authorized to manage the secrets for environment: "
                     + appGroup.getNsPath());
         }
         return true;

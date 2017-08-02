@@ -27,7 +27,7 @@ public class OneOpsTeam {
     /**
      * The default team name the users to be part of to manage keywhiz secrets.
      */
-    public static final String KEYWHIZ_ADMIN_TEAM = "keywhiz-admin";
+    public static final String SECRETS_ADMIN_TEAM = "secrets-admin";
 
     private final String name;
     private final String description;
@@ -90,27 +90,27 @@ public class OneOpsTeam {
 
 
     /**
-     * Checks if it's Keywhiz Admin team.
+     * Checks if it's Secrets Admin team.
      *
-     * @return <code>true</code> if the team name is {@link #KEYWHIZ_ADMIN_TEAM}
+     * @return <code>true</code> if the team name is {@link #SECRETS_ADMIN_TEAM}
      */
-    public boolean isKeywhizAdmin() {
-        return KEYWHIZ_ADMIN_TEAM.equalsIgnoreCase(name);
+    public boolean isSecretsAdmin() {
+        return SECRETS_ADMIN_TEAM.equalsIgnoreCase(name);
     }
 
     /**
-     * Checks if team is a Keywhiz admin for the given assembly. For a team to be
-     * Keywhiz Admin, the following naming conventions are used.
+     * Checks if team is a Secrets admin for the given assembly. For a team to be
+     * Secrets Admin, the following naming conventions are used.
      * <ul>
-     * <li> Team name should <b>keywhiz-admin</b>  OR
-     * <li> Team name should <b>keywhiz-admin-${AssemblyName}</b>
+     * <li> Team name should <b>secrets-admin</b>  OR
+     * <li> Team name should <b>secrets-admin-${AssemblyName}</b>
      * </ul>
      *
-     * @return <code>true</code> if the team is a Keywhiz admin for given assembly.
+     * @return <code>true</code> if the team is a Secrets admin for given assembly.
      */
-    public boolean isKeywhizAdmin(String assembly) {
-        String assemblyKeywhizAdmin = KEYWHIZ_ADMIN_TEAM + "-" + assembly;
-        return isKeywhizAdmin() || assemblyKeywhizAdmin.equalsIgnoreCase(name);
+    public boolean isSecretsAdmin(String assembly) {
+        String assemblySecretsAdmin = SECRETS_ADMIN_TEAM + "-" + assembly;
+        return isSecretsAdmin() || assemblySecretsAdmin.equalsIgnoreCase(name);
     }
 
 

@@ -48,7 +48,7 @@ public class AppGroup {
      * Creates new {@link AppGroup} from the given domain and app group name.
      *
      * @param domain OneOps mgmt domain
-     * @param name   application group name
+     * @param name   application group name. OneOps environment name with <b>{org}_{assembly}_{env}</b> format.
      * @return {@link AppGroup}
      * @throws IllegalArgumentException if the app group name format is not valid.
      */

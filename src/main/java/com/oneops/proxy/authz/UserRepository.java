@@ -39,7 +39,7 @@ import static com.oneops.user.tables.Users.USERS;
 /**
  * User repository class to fetch OneOps user/team/group info. This is mainly used to
  * enforce the ACL for application groups, which is the env nspath. Only the user with
- * "Admin" privilege (ie, part of <strong>keywhiz-admin</strong> team) for an assembly
+ * "Admin" privilege (ie, part of <strong>secrets-admin</strong> team) for an assembly
  * is authorized to add/update/delete the secrets.
  * <p>
  * Note: JOOQ query has 1:1 mapping with SQL and is very easy to understand. If you want
