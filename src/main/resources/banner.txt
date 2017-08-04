@@ -1,7 +1,8 @@
+${AnsiColor.CYAN}${AnsiStyle.BOLD}
   ____           ____
  / __ \___  ___ / __ \___  ___
 / /_/ / _ \/ -_) /_/ / _ \(_-<
 \____/_//_/\__/\____/ .__/___/
                    /_/
-${application.title}: ${AnsiColor.GREEN} ${AnsiStyle.BOLD}v${application.version} ${AnsiStyle.NORMAL}
+${AnsiStyle.NORMAL} ${application.title}: ${AnsiColor.GREEN} ${AnsiStyle.BOLD}v${application.version} ${AnsiStyle.NORMAL}
 

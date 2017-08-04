@@ -25,4 +25,4 @@ nbdist/
 
 ### Ignore the Keystores
 src/main/resources/**/*.p12
-logs/
+log/

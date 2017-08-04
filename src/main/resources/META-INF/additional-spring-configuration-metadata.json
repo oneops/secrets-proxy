@@ -1,0 +1,49 @@
+{
+  "properties": [
+    {
+      "name": "logging.audit-file",
+      "type": "java.lang.String",
+      "description": "Audit log file name."
+    },
+    {
+      "name": "logback.access.file",
+      "type": "java.lang.String",
+      "description": "Jetty access log file name."
+    },
+    {
+      "name": "logback.access.ignore-paths",
+      "type": "java.lang.String",
+      "description": "Jetty access log ignore paths."
+    },
+    {
+      "name": "jetty.thread-pool.min-threads",
+      "type": "java.lang.String",
+      "description": "Jetty thread pool min threads."
+    },
+    {
+      "name": "jetty.thread-pool.max-threads",
+      "type": "java.lang.String",
+      "description": "Jetty thread pool min threads."
+    },
+    {
+      "name": "jetty.thread-pool.idle-timeout",
+      "type": "java.lang.String",
+      "description": "Jetty thread pool idle-timeout."
+    },
+    {
+      "name": "jetty.jmx.enabled",
+      "type": "java.lang.String",
+      "description": "Jetty jmx enabled."
+    },
+    {
+      "name": "management.user",
+      "type": "java.lang.String",
+      "description": "Management custom user name."
+    },
+    {
+      "name": "management.password",
+      "type": "java.lang.String",
+      "description": "Management custom password."
+    }
+  ]
+}

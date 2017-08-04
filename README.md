@@ -78,10 +78,10 @@ $ ./mvnw versions:display-dependency-updates
 TODO
 #####
 
+ * Proper HTTP status code and error messages.
+ * X509 Authentication ??
  * Update to the latest keysync.
- * Mgmt www basic auth.
  * Validation for OneOps assembly and env.
- * Guard debug logs.
  * Feature toggles implementation.
  * Add support for different mgmt domains.
  * Http2/Grpc (May be with JDK 9)
