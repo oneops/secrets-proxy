@@ -57,6 +57,7 @@ public class AppGroupArgResolver implements HandlerMethodArgumentResolver {
         OneOpsUser user = (OneOpsUser) auth.getPrincipal();
 
         // Get the path variable.
+        @SuppressWarnings("unchecked")
         Map<String, String> pathVars = (Map<String, String>) webReq.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, SCOPE_REQUEST);
         String group = pathVars != null ? pathVars.get(APP_GROUP_PARAM) : "";
         return AppGroup.from(user.getDomain(), group);

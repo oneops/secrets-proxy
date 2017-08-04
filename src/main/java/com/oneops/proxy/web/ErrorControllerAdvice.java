@@ -19,13 +19,16 @@ package com.oneops.proxy.web;
 
 import com.oneops.proxy.model.ErrorResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
  * A rest controller advice to return {@link ErrorResponse} for a
@@ -49,6 +52,22 @@ public class ErrorControllerAdvice {
     public ErrorResponse handleControllerException(HttpServletRequest req, Throwable ex) {
         String path = getReqPath(req);
         return new ErrorResponse(System.currentTimeMillis(), BAD_REQUEST.value(), BAD_REQUEST.getReasonPhrase(), ex.getMessage(), path);
+    }
+
+    /**
+     * An exception handler method for {@link IOException} thrown
+     * from all the Rest controllers.
+     *
+     * @param req http request.
+     * @param ex  exception thrown.
+     * @return {@link ErrorResponse}
+     */
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<?> handleIOException(HttpServletRequest req, Throwable ex) {
+        String path = getReqPath(req);
+        HttpStatus status = NOT_FOUND;
+        ErrorResponse errRes = new ErrorResponse(System.currentTimeMillis(), status.value(), status.getReasonPhrase(), ex.getMessage(), path);
+        return new ResponseEntity<>(errRes, status);
     }
 
     /**
