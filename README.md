@@ -79,6 +79,7 @@ TODO
 #####
 
  * Proper HTTP status code and error messages.
+ * Secrets setversion/versions API call.
  * X509 Authentication ??
  * Update to the latest keysync.
  * Validation for OneOps assembly and env.

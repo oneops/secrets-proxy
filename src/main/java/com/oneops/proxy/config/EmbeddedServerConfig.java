@@ -18,6 +18,10 @@
 package com.oneops.proxy.config;
 
 import org.eclipse.jetty.jmx.MBeanContainer;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,5 +72,25 @@ public class EmbeddedServerConfig {
             }
         });
         return factory;
+    }
+
+    /**
+     * Helper method set max post size for Jetty.
+     *
+     * @param maxHttpPostSize max post size in bytes
+     * @param handlers        Server handlers.
+     */
+    @SuppressWarnings("unused")
+    private void setHandlerMaxHttpPostSize(int maxHttpPostSize, Handler... handlers) {
+        for (Handler handler : handlers) {
+            if (handler instanceof ContextHandler) {
+                ((ContextHandler) handler).setMaxFormContentSize(maxHttpPostSize);
+                ((ContextHandler) handler).setMaxFormKeys(1000);
+            } else if (handler instanceof HandlerWrapper) {
+                setHandlerMaxHttpPostSize(maxHttpPostSize, ((HandlerWrapper) handler).getHandler());
+            } else if (handler instanceof HandlerCollection) {
+                setHandlerMaxHttpPostSize(maxHttpPostSize, ((HandlerCollection) handler).getHandlers());
+            }
+        }
     }
 }
