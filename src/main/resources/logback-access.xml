@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty name="LOG_PATH" scope="context" source="logging.path"/>
+    <springProperty name="LOG_FILE" scope="context" source="logback.access.file"/>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/access/${LOG_FILE}.log</file>
+        <encoder>
+            <pattern>combined</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>${LOG_PATH}/access/${LOG_FILE}-%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <!-- each file should be at most 50MB, keep 30 days worth of history, but at most 1GB -->
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <appender-ref ref="FILE"/>
+
+</configuration>
