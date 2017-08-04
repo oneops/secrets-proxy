@@ -17,7 +17,6 @@
  *******************************************************************************/
 package com.oneops.proxy.security;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
@@ -27,6 +26,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import static org.springframework.http.HttpHeaders.WWW_AUTHENTICATE;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 /**
  * Authentication entry point bean to commences an authentication
@@ -39,6 +41,7 @@ public class RestAuthEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest req, HttpServletResponse res, AuthenticationException authException) throws IOException, ServletException {
-        res.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized");
+        res.addHeader(WWW_AUTHENTICATE, "Basic realm=\"OneOps Keywhiz Proxy\"");
+        res.sendError(UNAUTHORIZED.value(), authException.getMessage());
     }
 }
