@@ -109,6 +109,24 @@ public class GroupController {
         return kwClient.getClients(appGroup.getKeywhizGroup());
     }
 
+
+    /**
+     * Retrieve information on a client.
+     *
+     * @param name     Client name
+     * @param appGroup OneOps environment name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
+     * @param user     Authorized {@link OneOpsUser}
+     * @return Client information ({@link ClientDetailResponseV2}) retrieved.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    @GetMapping("/clients/{name}")
+    public ClientDetailResponseV2 getClientDetails(@PathVariable("name") String name, AppGroup appGroup, @CurrentUser OneOpsUser user) throws IOException {
+        checkClientInGroup(name, appGroup);
+        return kwClient.getClientDetails(name);
+    }
+
+
     /**
      * Retrieve metadata for secrets in a particular group.
      *
@@ -121,6 +139,21 @@ public class GroupController {
     @GetMapping("/secrets")
     public List<SecretDetailResponseV2> getSecrets(AppGroup appGroup, @CurrentUser OneOpsUser user) throws IOException {
         return kwClient.getSecrets(appGroup.getKeywhizGroup());
+    }
+
+    /**
+     * Retrieve listing of secrets expiring soon in a group.
+     *
+     * @param time     Timestamp for farthest expiry to include.
+     * @param appGroup OneOps environment name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
+     * @param user     Authorized {@link OneOpsUser}
+     * @return List of secrets expiring soon in group.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    @GetMapping("/secrets/expiring/{time}")
+    public List<SecretDetailResponseV2> getSecretsExpiring(@PathVariable("time") long time, AppGroup appGroup, @CurrentUser OneOpsUser user) throws IOException {
+        return kwClient.getSecretsExpiring(appGroup.getKeywhizGroup(), time);
     }
 
     /**
@@ -223,12 +256,32 @@ public class GroupController {
     }
 
     /**
+     * Checks if the client is assigned to given application group.
+     * Else throw {@link IllegalArgumentException}.
+     *
+     * @param clientName Client name.
+     * @param appGroup   Application group.
+     * @throws IOException              Throws if  the client is not part of given application group.
+     * @throws IllegalArgumentException For bad request.
+     */
+    private void checkClientInGroup(String clientName, AppGroup appGroup) throws IOException {
+        String groupName = appGroup.getGroupName();
+        List<ClientDetailResponseV2> clients = kwClient.getClients(groupName);
+        boolean clientExists = clients.stream().anyMatch(client -> client.name().equalsIgnoreCase(clientName));
+        if (!clientExists) {
+            log.error(String.format("Client %s not found for app %s", clientName, groupName));
+            throw new IllegalArgumentException("Client " + clientName + " not found.");
+        }
+    }
+
+    /**
      * Checks if the secret is assigned to given application group.
      * Else throw {@link IllegalArgumentException}.
      *
      * @param secretName Secret name.
      * @param appGroup   Application group.
-     * @throws IOException Throws if  the secret is not part of given application group.
+     * @throws IOException              Throws if  the secret is not part of given application group.
+     * @throws IllegalArgumentException For bad request.
      */
     private void checkSecretInGroup(String secretName, AppGroup appGroup) throws IOException {
         List<String> groups = kwClient.getGroupsForSecret(secretName);
