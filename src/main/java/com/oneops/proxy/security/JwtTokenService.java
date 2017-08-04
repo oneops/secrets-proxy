@@ -23,6 +23,7 @@ import com.oneops.proxy.config.OneOpsConfig;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -42,6 +43,7 @@ import static org.springframework.util.StringUtils.isEmpty;
  * Token (JWT) generation and validation services.
  *
  * @author Suresh
+ * @see <a href="https://www.iana.org/assignments/http-authschemes/http-authschemes.xhtml">Authentication schemes.</a>
  */
 @Service
 public class JwtTokenService {
@@ -195,13 +197,20 @@ public class JwtTokenService {
     public @Nullable
     JwtAuthToken getAccessToken(@Nonnull HttpServletRequest req) {
         log.debug("Getting the access token for " + req.getRequestURI());
+
         String bearerToken = req.getHeader(tokenHeader);
         if (bearerToken != null) {
+            // Make sure it's valid token type.
+            if (!bearerToken.startsWith(tokenType)) {
+                throw new AuthenticationCredentialsNotFoundException("Invalid Authorization Token.");
+            }
+
             String jwtToken = bearerToken.replaceFirst(tokenType, "").trim();
             if (!isEmpty(jwtToken)) {
                 return new JwtAuthToken("JwtToken", jwtToken, Collections.emptyList());
             }
         }
+
         log.debug("JWT Bearer token is null/empty for " + req.getRequestURI());
         return null;
     }
