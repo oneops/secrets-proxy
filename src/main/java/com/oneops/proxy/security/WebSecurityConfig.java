@@ -44,6 +44,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 import static com.oneops.proxy.auth.user.OneOpsUser.Role.MGMT;
 import static com.oneops.proxy.config.Constants.AUTH_TOKEN_URI;
 import static java.util.Arrays.asList;
@@ -64,6 +66,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${management.context-path}")
     private String mgmtContext;
+
+    @Value("${management.user}")
+    private String mgmtUser;
+
+    @Value("${management.password}")
+    private String mgmtPasswd;
 
     private final LoginAuthProvider loginAuthProvider;
     private final TokenAuthProvider tokenAuthProvider;
@@ -106,7 +114,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         log.info("Configuring user authentication providers.");
-        auth.inMemoryAuthentication().withUser("ooadmin").password("0n30ps").roles(MGMT.name());
+        auth.inMemoryAuthentication().withUser(mgmtUser).password(mgmtPasswd).roles(MGMT.name());
         auth.authenticationProvider(loginAuthProvider);
         auth.authenticationProvider(tokenAuthProvider);
     }
@@ -125,13 +133,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * Builds {@link TokenAuthProcessingFilter} with the current {@link AuthenticationManager}.
-     * The filter won't be apply for <b>management</b> request paths.
+     * The filter won't be apply for <b>management</b> and ROOT request paths.
      *
      * @return Token authentication filter
      * @throws Exception
      */
     private TokenAuthProcessingFilter buildAuthProcessingFilter() throws Exception {
-        SkipPathRequestMatcher requestMatcher = new SkipPathRequestMatcher(singletonList(mgmtContext + "/**"));
+        List<String> pathsToSkip = asList(mgmtContext + "/**", "/");
+        log.info("Configured to skip " + pathsToSkip + " path from TokenAuthProcessingFilter.");
+        SkipPathRequestMatcher requestMatcher = new SkipPathRequestMatcher(pathsToSkip);
         TokenAuthProcessingFilter authFilter = new TokenAuthProcessingFilter(requestMatcher, failureHandler, jwtTokenService);
         authFilter.setAuthenticationManager(authenticationManager());
         return authFilter;
