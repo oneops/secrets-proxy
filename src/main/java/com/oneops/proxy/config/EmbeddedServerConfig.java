@@ -18,18 +18,15 @@
 package com.oneops.proxy.config;
 
 import org.eclipse.jetty.jmx.MBeanContainer;
-import org.eclipse.jetty.server.NCSARequestLog;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.lang.management.ManagementFactory;
-import java.time.ZoneId;
 
 /**
  * Embedded jetty server configuration.
@@ -71,40 +68,5 @@ public class EmbeddedServerConfig {
             }
         });
         return factory;
-    }
-
-    /**
-     * Configures the jetty request log (access log) in standard NCSA format.
-     * By default, request log will use the system default time zone. Request log
-     * configuration can be done in the <b>application.yaml</b>
-     *
-     * @param file        request log file.
-     * @param retainDays  number of days to keep a log file
-     * @param ignorePaths request paths that will not be logged.
-     * @return {@link EmbeddedServletContainerCustomizer}
-     */
-    @Bean
-    public EmbeddedServletContainerCustomizer configureJettyRequestLog(@Value("${jetty.request-log.file}") final String file,
-                                                                       @Value("${jetty.request-log.retain-days}") final int retainDays,
-                                                                       @Value("${jetty.request-log.ignore-paths}") final String ignorePaths) {
-        return container -> {
-            if (container instanceof JettyEmbeddedServletContainerFactory) {
-                JettyEmbeddedServletContainerFactory jetty = (JettyEmbeddedServletContainerFactory) container;
-                jetty.addServerCustomizers(server -> {
-                    NCSARequestLog reqLog = new NCSARequestLog(file);
-                    reqLog.setAppend(true);
-                    reqLog.setLogServer(true);
-                    reqLog.setPreferProxiedForAddress(true);
-                    reqLog.setExtended(true);
-                    reqLog.setLogTimeZone(ZoneId.systemDefault().getId());
-                    reqLog.setLogLatency(true);
-                    reqLog.setRetainDays(retainDays);
-                    if (ignorePaths != null) {
-                        reqLog.setIgnorePaths(ignorePaths.split(","));
-                    }
-                    server.setRequestLog(reqLog);
-                });
-            }
-        };
     }
 }
