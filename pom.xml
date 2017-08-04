@@ -100,6 +100,12 @@
             <artifactId>jetty-jmx</artifactId>
             <version>${jetty.version}</version>
         </dependency>
+        <!--  Logback access starter -->
+        <dependency>
+            <groupId>net.rakugakibox.spring.boot</groupId>
+            <artifactId>logback-access-spring-boot-starter</artifactId>
+            <version>2.5.0</version>
+        </dependency>
         <!-- For ConfigurationProperties metadata -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
