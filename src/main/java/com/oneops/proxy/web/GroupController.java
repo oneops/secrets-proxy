@@ -18,6 +18,8 @@
 package com.oneops.proxy.web;
 
 import com.google.common.collect.ImmutableMap;
+import com.oneops.proxy.audit.AuditLog;
+import com.oneops.proxy.audit.Event;
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
 import com.oneops.proxy.keywhiz.model.v2.*;
@@ -34,6 +36,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import static com.oneops.proxy.audit.EventTag.*;
 import static java.util.Collections.singletonList;
 
 /**
@@ -41,18 +44,27 @@ import static java.util.Collections.singletonList;
  * name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
  *
  * @author Suresh
+ * @see AuthzRestController
  */
 @AuthzRestController
-@RequestMapping("/groups/{appGroup}")
+@RequestMapping("/apps/{appGroup}")
 public class GroupController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    /**
+     * A logger to audit all important events.
+     */
+    private final AuditLog auditLog;
 
     /**
      * Keywhiz automation client.
      */
     private KeywhizAutomationClient kwClient;
 
+    /**
+     * For validating secrets content.
+     */
     private final SecretContentService secretService;
 
     /**
@@ -60,10 +72,12 @@ public class GroupController {
      *
      * @param kwClient      Keywhiz automation client.
      * @param secretService Service containing utility functions to validate the secrets.
+     * @param auditLog      Audit logger.
      */
-    public GroupController(KeywhizAutomationClient kwClient, SecretContentService secretService) {
+    public GroupController(KeywhizAutomationClient kwClient, SecretContentService secretService, AuditLog auditLog) {
         this.kwClient = kwClient;
         this.secretService = secretService;
+        this.auditLog = auditLog;
     }
 
 
@@ -136,6 +150,8 @@ public class GroupController {
                 singletonList(groupName));
 
         kwClient.createSecret(secretRequestV2);
+
+        auditLog.log(new Event(SECRET_CREATE, user.getUsername(), appGroup.getName(), name));
         log.info(String.format("Created new secret %s for application group: %s", name, groupName));
     }
 
@@ -164,6 +180,8 @@ public class GroupController {
                 secret.getType());
 
         kwClient.createOrUpdateSecret(name, secretRequestV2);
+
+        auditLog.log(new Event(SECRET_UPDATE, user.getUsername(), appGroup.getName(), name));
         log.info(String.format("Updated the secret %s for %s", name, appGroup.getGroupName()));
     }
 
@@ -199,6 +217,8 @@ public class GroupController {
     public Map<String, String> getSecretContent(@PathVariable("name") String name, AppGroup appGroup, @CurrentUser OneOpsUser user) throws IOException {
         checkSecretInGroup(name, appGroup);
         SecretContentsResponseV2 secretsContent = kwClient.getSecretsContent(name);
+
+        auditLog.log(new Event(SECRET_READCONTENT, user.getUsername(), appGroup.getName(), name));
         return secretsContent.successSecrets();
     }
 
@@ -237,9 +257,12 @@ public class GroupController {
         } catch (Exception ex) {
             log.error(group + " NOT exists, Error: " + ex.getMessage());
         }
+
         log.info("Creating the application group: " + group + ".");
         ImmutableMap<String, String> metadata = ImmutableMap.of("userId", user.getUsername());
         kwClient.createGroup(group, "Created by OneOps Proxy.", metadata);
+
+        auditLog.log(new Event(GROUP_CREATE, user.getUsername(), group));
     }
 }
 
