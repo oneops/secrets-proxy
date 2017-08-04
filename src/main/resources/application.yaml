@@ -1,16 +1,35 @@
-# OneOps Proxy Application config
-# ===============================
+########################################################################
+# OneOps Proxy Application config.                                     #
+#                                                                      #
+# See resources/META-INF/additional-spring-configuration-metadata.json #
+# for custom properties added and it's description.                    #
+########################################################################
+
+# Application and Audit Log Configuration
+# =======================================
 logging:
-  file: logs/keywhiz-proxy
   level:
     root: INFO
     com.oneops.proxy: DEBUG
-    org.springframework.web: INFO
-    org.springframework.security: INFO
     org.jooq.tools: INFO
     com.zaxxer.hikari: INFO
-  config: classpath:logback.xml
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+  path: log
+  file: keywhiz-proxy
+  audit-file: keywhiz-proxy-audit
+  config: classpath:logback-spring.xml
 
+# Jetty Access Log Configuration
+# ==============================
+logback:
+  access:
+    file: keywhiz-proxy-access
+    ignore-paths: ${management.context-path}/health
+    config: classpath:logback-access.xml
+
+# Jetty Server & TLS Configuration
+# ================================
 server:
   address: 0.0.0.0
   port: 8443
@@ -23,44 +42,48 @@ server:
     enabled: true
     key-store: classpath:keystores/keywhiz_proxy_keystore.p12
     key-store-type: pkcs12
-    key-password: kwproxy-password
-    key-store-password: kwproxy-password
+    key-password: changeit
+    key-store-password: changeit
   use-forward-headers: true
+  jetty:
+    max-http-post-size: 1000000
 
+# Jetty Server ThreadPool Configuration
+# =====================================
 jetty:
   thread-pool:
     min-threads: 8
     max-threads: 250
     idle-timeout: 60000
-  request-log:
-    file: logs/keywhiz-proxy-request-yyyy_mm_dd.log
-    retain-days: 14
   jmx:
     enabled: true
 
+# Proxy Configuration
+# ===================
 oneops:
   keywhiz:
-       base-url: https://keywhiz:4444/
-       svc-user: ${KEYWHIZ_USER:admin}
-       svc-password: ${KEYWHIZ_PASS:xxxxx}
+    base-url: https://keywhiz.com:4444/
+    svc-user: ${KEYWHIZ_USER}
+    svc-password: ${KEYWHIZ_PASS}
+    secret-max-size: 100000
     trust-store:
       path: classpath:keystores/keywhiz_truststore.p12
       type: pkcs12
       store-password: changeit
-    #key-store:
-      #path:
-      #type:
-      #store-password:
-      #key-password:
+    key-store:
+      path: classpath:keystores/keywhiz_keystore.p12
+      type: pkcs12
+      store-password: changeit
+      key-password: changeit
     cli:
       version: ${KEYWHIZ_CLI_VERSION:1.0.1}
       download-url: https://github.com/oneops/keywhiz-cli/releases/download/${oneops.keywhiz.cli.version}/keywhiz-cli
   ldap:
-       server: ldap://ldap.com
+    server: ldap://ldap.com
     port: 3269
-       user-dn: CN=xxxxx,OU=Users,OU=xxxxx,DC=com
-       password: ${LDAP_PASS:xxxxx}
-       user-base-dn: OU=Users,OU=xxxxx,DC=com
+    user-dn: CN=xxx,DC=xxx,DC=com
+    password: ${LDAP_PASS}
+    user-base-dn: dc=xxx,dc=xxxx,dc=com
     user-attribute: sAMAccountName
     role-base-dn:
     role-attribute: uniqueMember
@@ -70,12 +93,16 @@ oneops:
       type: pkcs12
       store-password: changeit
   auth:
-    issuer: OneOps-Proxy
+    issuer: Keywhiz-Proxy
     header: X-Authorization
     token-type: Bearer
-    signing-key: ${SIGNING_KEY:xxxxxxxxx}
+    signing-key: ${SIGNING_KEY}
     expires-in-sec: 3600
+    compression-enabled: false
 
+
+# Spring datasource Configuration
+# ===============================
 spring:
   jmx:
     enabled: true
@@ -83,9 +110,9 @@ spring:
   jackson.serialization:
       INDENT_OUTPUT: true
   datasource:
-    url: ${ONEOPS_DB_URL:jdbc:postgresql://kloopzappdb.server:5432/kloopzapp}
-    username: ${ONEOPS_DB_USER:xxx}
-    password: ${ONEOPS_DB_PASS:xxx}
+    url: ${ONEOPS_DB_URL:jdbc:postgresql://xxxx:5432/xxxx}
+    username: ${ONEOPS_DB_USER}
+    password: ${ONEOPS_DB_PASS}
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
        maximum-pool-size: 4
@@ -100,19 +127,27 @@ spring:
 #security:
 #  user:
 #    role: ADMIN
-#    name: oneops
-#    password: 0n30ps
+#    name: xxxx
+#    password: xxxx
 
+
+# Mgmt app Configuration
+# ======================
 management:
   context-path: /app
   security:
     enabled: false
     roles: MGMT
+  user: xxxx
+  password: xxxx
   add-application-context-header: false
 
 banner:
   location: banner.txt
 
+
+# Info Endpoint details
+# =====================
 info:
   name: @project.artifactId@
   description: @project.description@
