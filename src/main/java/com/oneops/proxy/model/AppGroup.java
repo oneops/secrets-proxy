@@ -21,6 +21,8 @@ import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 /**
  * Represents keywhiz application group.
  *
@@ -68,12 +70,13 @@ public class AppGroup {
         this.name = name;
 
         String[] paths = name.split(GROUP_SEP);
-        if (paths.length != 3) {
+        if (paths.length != 3 || isBlank(paths[0]) || isBlank(paths[1]) || isBlank(paths[2])) {
             throw new IllegalArgumentException("Invalid application group name: " + name + ". The format is 'org_assembly_env'.");
         }
-        org = paths[0];
-        assembly = paths[1];
-        env = paths[2];
+
+        org = paths[0].trim();
+        assembly = paths[1].trim();
+        env = paths[2].trim();
     }
 
     /**
