@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.oneops.proxy.keywhiz.KeywhizException;
 import com.oneops.proxy.security.KeywhizKeyStore;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -39,6 +40,7 @@ import java.util.Collections;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.HttpHeaders.USER_AGENT;
+import static com.oneops.proxy.keywhiz.http.HttpStatus.*;
 import static java.net.CookiePolicy.ACCEPT_ALL;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -166,35 +168,36 @@ public abstract class HttpClient {
      */
     public abstract boolean isClientAuthEnabled();
 
+
     /**
      * Maps some of the common HTTP errors to the corresponding exceptions.
      */
-    protected void throwOnCommonError(int status) throws IOException {
+    protected void throwOnCommonError(int status, String message) throws IOException {
         switch (status) {
             case HttpStatus.SC_BAD_REQUEST:
-                throw new MalformedRequestException();
+                throw new KeywhizException(status, "Malformed request syntax from client.");
             case HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE:
-                throw new UnsupportedMediaTypeException();
+                throw new KeywhizException(status, "Resource media type is incorrect or incompatible.");
             case HttpStatus.SC_NOT_FOUND:
-                throw new NotFoundException();
+                throw new KeywhizException(status, "Resource not found.");
             case HttpStatus.SC_UNAUTHORIZED:
-                throw new UnauthorizedException();
+                throw new KeywhizException(status, "Not allowed to login, password may be incorrect.");
             case HttpStatus.SC_FORBIDDEN:
-                throw new ForbiddenException();
+                throw new KeywhizException(status, "Resource forbidden.");
             case HttpStatus.SC_CONFLICT:
-                throw new ConflictException();
+                throw new KeywhizException(status, "Resource already exists. Conflicting resource.");
             case HttpStatus.SC_UNPROCESSABLE_ENTITY:
-                throw new ValidationException();
+                throw new KeywhizException(status, "Malformed request semantics from client.");
         }
         if (status >= 400) {
-            throw new IOException("Unexpected status code on response: " + status);
+            throw new KeywhizException(status, "Unknown Error: " + message);
         }
     }
 
     protected String makeCall(Request request) throws IOException {
         Response response = client.newCall(request).execute();
         try {
-            throwOnCommonError(response.code());
+            throwOnCommonError(response.code(), response.message());
         } catch (IOException e) {
             response.body().close();
             throw e;
@@ -238,63 +241,6 @@ public abstract class HttpClient {
                 .build();
 
         return makeCall(request);
-    }
-
-
-    public static class MalformedRequestException extends IOException {
-
-        @Override
-        public String getMessage() {
-            return "Malformed request syntax from client (400)";
-        }
-    }
-
-    public static class UnauthorizedException extends IOException {
-
-        @Override
-        public String getMessage() {
-            return "Not allowed to login, password may be incorrect (401)";
-        }
-    }
-
-    public static class ForbiddenException extends IOException {
-
-        @Override
-        public String getMessage() {
-            return "Resource forbidden (403)";
-        }
-    }
-
-    public static class NotFoundException extends IOException {
-
-        @Override
-        public String getMessage() {
-            return "Resource not found (404)";
-        }
-    }
-
-    public static class UnsupportedMediaTypeException extends IOException {
-
-        @Override
-        public String getMessage() {
-            return "Resource media type is incorrect or incompatible (415)";
-        }
-    }
-
-    public static class ConflictException extends IOException {
-
-        @Override
-        public String getMessage() {
-            return "Conflicting resource (409)";
-        }
-    }
-
-    public static class ValidationException extends IOException {
-
-        @Override
-        public String getMessage() {
-            return "Malformed request semantics from client (422)";
-        }
     }
 
 }

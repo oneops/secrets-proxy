@@ -17,6 +17,7 @@
  *******************************************************************************/
 package com.oneops.proxy.web;
 
+import com.oneops.proxy.keywhiz.KeywhizException;
 import com.oneops.proxy.model.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.util.StringUtils.isEmpty;
 
 /**
  * A rest controller advice to return {@link ErrorResponse} for a
@@ -55,17 +57,18 @@ public class ErrorControllerAdvice {
     }
 
     /**
-     * An exception handler method for {@link IOException} thrown
+     * An exception handler method for {@link KeywhizException} thrown
      * from all the Rest controllers.
      *
-     * @param req http request.
+     * @param req Hhttp request.
+     * @param res Http Response.
      * @param ex  exception thrown.
      * @return {@link ErrorResponse}
      */
-    @ExceptionHandler(IOException.class)
-    public ResponseEntity<?> handleIOException(HttpServletRequest req, Throwable ex) {
+    @ExceptionHandler(KeywhizException.class)
+    public ResponseEntity<?> handleIOException(HttpServletRequest req, HttpServletResponse res, KeywhizException ex) {
         String path = getReqPath(req);
-        HttpStatus status = NOT_FOUND;
+        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode());
         ErrorResponse errRes = new ErrorResponse(System.currentTimeMillis(), status.value(), status.getReasonPhrase(), ex.getMessage(), path);
         return new ResponseEntity<>(errRes, status);
     }
@@ -86,6 +89,6 @@ public class ErrorControllerAdvice {
      */
     private String getReqPath(HttpServletRequest req) {
         String path = (String) req.getAttribute("javax.servlet.error.request_uri");
-        return path == null ? "" : path;
+        return (path == null || isEmpty(path)) ? req.getRequestURI() : path;
     }
 }
