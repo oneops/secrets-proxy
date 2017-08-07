@@ -36,12 +36,12 @@ import java.io.IOException;
 import java.net.CookieManager;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
-import java.util.Collections;
 
 import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
 import static com.google.common.net.HttpHeaders.USER_AGENT;
 import static com.oneops.proxy.keywhiz.http.HttpStatus.*;
 import static java.net.CookiePolicy.ACCEPT_ALL;
+import static java.util.Collections.singletonList;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
@@ -124,7 +124,7 @@ public abstract class HttpClient {
 
         OkHttpClient.Builder client = new OkHttpClient().newBuilder()
                 .sslSocketFactory(socketFactory, (X509TrustManager) trustManagers[0])
-                .connectionSpecs(Collections.singletonList(ConnectionSpec.MODERN_TLS))
+                .connectionSpecs(singletonList(ConnectionSpec.MODERN_TLS))
                 .followSslRedirects(false)
                 .retryOnConnectionFailure(true)
                 .connectTimeout(5, SECONDS)
@@ -137,14 +137,14 @@ public abstract class HttpClient {
                             .build();
                     return chain.proceed(req);
                 })
-                .addInterceptor(loggingInterceptor)
-                .addNetworkInterceptor(new XsrfTokenInterceptor());
+                .addInterceptor(loggingInterceptor);
 
         if (!isClientAuthEnabled()) {
-            log.info("Client auth is disabled. Configuring the cookie manager!");
+            log.info("Client auth is disabled. Configuring the cookie manager and XSRF interceptor.");
             cookieMgr = new CookieManager();
             cookieMgr.setCookiePolicy(ACCEPT_ALL);
-            client.cookieJar(new JavaNetCookieJar(cookieMgr));
+            client.cookieJar(new JavaNetCookieJar(cookieMgr))
+                    .addNetworkInterceptor(new XsrfTokenInterceptor());
         }
         return client.build();
     }
@@ -174,19 +174,19 @@ public abstract class HttpClient {
      */
     protected void throwOnCommonError(int status, String message) throws IOException {
         switch (status) {
-            case HttpStatus.SC_BAD_REQUEST:
+            case SC_BAD_REQUEST:
                 throw new KeywhizException(status, "Malformed request syntax from client.");
-            case HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE:
+            case SC_UNSUPPORTED_MEDIA_TYPE:
                 throw new KeywhizException(status, "Resource media type is incorrect or incompatible.");
-            case HttpStatus.SC_NOT_FOUND:
+            case SC_NOT_FOUND:
                 throw new KeywhizException(status, "Resource not found.");
-            case HttpStatus.SC_UNAUTHORIZED:
+            case SC_UNAUTHORIZED:
                 throw new KeywhizException(status, "Not allowed to login, password may be incorrect.");
-            case HttpStatus.SC_FORBIDDEN:
+            case SC_FORBIDDEN:
                 throw new KeywhizException(status, "Resource forbidden.");
-            case HttpStatus.SC_CONFLICT:
+            case SC_CONFLICT:
                 throw new KeywhizException(status, "Resource already exists. Conflicting resource.");
-            case HttpStatus.SC_UNPROCESSABLE_ENTITY:
+            case SC_UNPROCESSABLE_ENTITY:
                 throw new KeywhizException(status, "Malformed request semantics from client.");
         }
         if (status >= 400) {

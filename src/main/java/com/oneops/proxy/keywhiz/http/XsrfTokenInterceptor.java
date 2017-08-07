@@ -61,6 +61,9 @@ public class XsrfTokenInterceptor implements Interceptor {
             for (String header : req.headers(HttpHeaders.COOKIE)) {
                 for (Cookie cookie : decodeCookies(header, req.url().host())) {
                     if (cookie.name().equalsIgnoreCase(xsrfCookieName)) {
+                        if (log.isDebugEnabled()) {
+                            log.debug(String.format("Setting XSRF token header: %s to request.", xsrfHeaderName));
+                        }
                         req = req.newBuilder().addHeader(xsrfHeaderName, cookie.value()).build();
                     }
                 }
