@@ -1,4 +1,5 @@
 com.oneops.proxy
+com.oneops.proxy.audit
 com.oneops.proxy.auth.login
 com.oneops.proxy.auth.token
 com.oneops.proxy.auth.user
