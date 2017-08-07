@@ -18,6 +18,8 @@
 package com.oneops.proxy.auth.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oneops.proxy.audit.AuditLog;
+import com.oneops.proxy.audit.Event;
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.model.LoginResponse;
 import com.oneops.proxy.security.JwtTokenService;
@@ -38,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static com.oneops.proxy.audit.EventTag.GENERATE_TOKEN;
 import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 
 /**
@@ -54,10 +57,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final ObjectMapper mapper;
     private final JwtTokenService jwtTokenService;
+    private final AuditLog auditLog;
 
-    public LoginSuccessHandler(ObjectMapper mapper, JwtTokenService jwtTokenService) {
+    public LoginSuccessHandler(ObjectMapper mapper, JwtTokenService jwtTokenService, AuditLog auditLog) {
         this.mapper = mapper;
         this.jwtTokenService = jwtTokenService;
+        this.auditLog = auditLog;
     }
 
     /**
@@ -81,11 +86,13 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         }
 
         String token = jwtTokenService.generateToken(user);
-        LoginResponse loginResponse = new LoginResponse(token, jwtTokenService.getTokenType(), jwtTokenService.getExpiresInSec());
+        auditLog.log(new Event(GENERATE_TOKEN, user.getUsername(), ""));
 
+        LoginResponse loginResponse = new LoginResponse(token, jwtTokenService.getTokenType(), jwtTokenService.getExpiresInSec());
         res.setStatus(HttpStatus.OK.value());
         res.setContentType(MediaType.APPLICATION_JSON_VALUE);
         mapper.writeValue(res.getWriter(), loginResponse);
+
         clearAuthenticationAttributes(req);
     }
 
