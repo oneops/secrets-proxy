@@ -225,12 +225,12 @@ public abstract class HttpClient {
         return makeCall(request);
     }
 
-    protected String httpPut(HttpUrl url) throws IOException {
+    protected String httpPut(HttpUrl url, Object content) throws IOException {
+        RequestBody body = RequestBody.create(JSON, mapper.writeValueAsString(content));
         Request request = new Request.Builder()
                 .url(url)
-                .put(RequestBody.create(MediaType.parse("text/plain"), ""))
+                .put(body)
                 .build();
-
         return makeCall(request);
     }
 

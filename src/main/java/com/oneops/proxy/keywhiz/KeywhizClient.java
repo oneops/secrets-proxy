@@ -178,7 +178,7 @@ public class KeywhizClient extends HttpClient {
     }
 
     public void enrollClientInGroupByIds(long clientId, long groupId) throws IOException {
-        httpPut(baseUrl.resolve(format("/admin/memberships/clients/%d/groups/%d", clientId, groupId)));
+        httpPut(baseUrl.resolve(format("/admin/memberships/clients/%d/groups/%d", clientId, groupId)), "");
     }
 
     public void evictClientFromGroupByIds(long clientId, long groupId) throws IOException {
@@ -186,7 +186,7 @@ public class KeywhizClient extends HttpClient {
     }
 
     public void grantSecretToGroupByIds(long secretId, long groupId) throws IOException {
-        httpPut(baseUrl.resolve(format("/admin/memberships/secrets/%d/groups/%d", secretId, groupId)));
+        httpPut(baseUrl.resolve(format("/admin/memberships/secrets/%d/groups/%d", secretId, groupId)), "");
     }
 
     public void revokeSecretFromGroupByIds(long secretId, long groupId) throws IOException {

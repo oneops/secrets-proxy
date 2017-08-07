@@ -89,6 +89,17 @@ public class KeywhizAutomationClient extends HttpClient {
     }
 
     /**
+     * Delete a group.
+     *
+     * @param group Keywhiz group name.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public void deleteGroup(String group) throws IOException {
+        httpDelete(baseUrl.resolve("/automation/v2/groups/" + group));
+    }
+
+    /**
      * Retrieve metadata for clients in a particular group.
      *
      * @param group Keywhiz Group name.
@@ -117,6 +128,29 @@ public class KeywhizAutomationClient extends HttpClient {
     }
 
     /**
+     * Delete a client.
+     *
+     * @param client Client name.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public void deleteClient(String client) throws IOException {
+        httpDelete(baseUrl.resolve("/automation/v2/clients/" + client));
+    }
+
+    /**
+     * Modify groups a client has membership in.
+     *
+     * @param client        Client name.
+     * @param groupsRequest JSON request specifying which groups to add or remove.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public void modifyClientGroups(String client, ModifyGroupsRequestV2 groupsRequest) throws IOException {
+        httpPut(baseUrl.resolve("/automation/v2/clients/" + client + "/groups"), groupsRequest);
+    }
+
+    /**
      * Retrieve metadata for secrets in a particular group
      *
      * @param group Keywhiz group name.
@@ -141,6 +175,20 @@ public class KeywhizAutomationClient extends HttpClient {
     public void createOrUpdateSecret(String name, CreateOrUpdateSecretRequestV2 secret) throws IOException {
         httpPost(baseUrl.resolve("/automation/v2/secrets/" + name), secret);
     }
+
+
+    /**
+     * Updates a subset of the fields of an existing secret.
+     *
+     * @param name   Secret name.
+     * @param secret Secret details,  ${@link PartialUpdateSecretRequestV2}
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public void partialUpdateSecret(String name, PartialUpdateSecretRequestV2 secret) throws IOException {
+        httpPost(baseUrl.resolve("/automation/v2/secrets/" + name + "/partialupdate"), secret);
+    }
+
 
     /**
      * Creates a secret and assigns to given groups
@@ -173,10 +221,40 @@ public class KeywhizAutomationClient extends HttpClient {
      *                     problem or timeout.
      */
     public List<String> getGroupsForSecret(String secret) throws IOException {
-        String httpResponse = httpGet(baseUrl.resolve("/automation/v2/secrets/" + secret + "/groups"));
+        String httpResponse = httpGet(baseUrl.resolve(String.format("/automation/v2/secrets/%s/groups", secret)));
         return mapper.readValue(httpResponse, new TypeReference<List<String>>() {
         });
     }
+
+    /**
+     * Retrieve the given range of versions of this secret, sorted from newest to oldest update time.
+     *
+     * @param secret      Secret name.
+     * @param versionIdx  The index in the list of versions of the first version to retrieve.
+     * @param numVersions The number of versions to retrieve
+     * @return Secret series information retrieved.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public List<SecretDetailResponseV2> getSecretVersions(String secret, int versionIdx, int numVersions) throws IOException {
+        String httpResponse = httpGet(baseUrl.resolve(String.format("/automation/v2/secrets/%s/versions?versionIdx=%d&numVersions=%d", secret, versionIdx, numVersions)));
+        return mapper.readValue(httpResponse, new TypeReference<List<SecretDetailResponseV2>>() {
+        });
+    }
+
+    /**
+     * Reset the current version of the given secret to the given version index.
+     *
+     * @param secret    Secret name.
+     * @param versionId The version id of the secret to set.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public void setSecretVersion(String secret, long versionId) throws IOException {
+        SetSecretVersionRequestV2 secretVerReq = SetSecretVersionRequestV2.fromParts(secret, versionId);
+        httpPost(baseUrl.resolve(String.format("/automation/v2/secrets/%s/setversion", secret)), secretVerReq);
+    }
+
 
     /**
      * Retrieve information on a secret series.
