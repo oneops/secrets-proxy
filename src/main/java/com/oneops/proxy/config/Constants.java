@@ -25,9 +25,24 @@ package com.oneops.proxy.config;
 public interface Constants {
 
     /**
+     * Current Rest API version.
+     */
+    String API_VERSION = "v1";
+
+    /**
+     * {@link com.oneops.proxy.web.AuthController} base path URI.
+     */
+    String AUTH_CTLR_BASE_PATH = "/" + API_VERSION + "/auth";
+
+    /**
      * Authentication token path URI.
      */
-    String AUTH_TOKEN_URI = "/auth/token";
+    String AUTH_TOKEN_URI = AUTH_CTLR_BASE_PATH + "/token";
+
+    /**
+     * {@link com.oneops.proxy.web.GroupController} base path URI.
+     */
+    String GROUP_CTLR_BASE_PATH = "/" + API_VERSION + "/apps";
 
     /**
      * Default mgmt domain for keywhiz requests.
