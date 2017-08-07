@@ -77,7 +77,7 @@ public class KeywhizAutomationClient extends HttpClient {
     /**
      * Retrieve information on a group.
      *
-     * @param group Group name
+     * @param group Keywhiz group name
      * @return Group information ({@link GroupDetailResponseV2}) retrieved
      * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
      *                     problem or timeout.
@@ -91,7 +91,7 @@ public class KeywhizAutomationClient extends HttpClient {
     /**
      * Retrieve metadata for clients in a particular group.
      *
-     * @param group Group name.
+     * @param group Keywhiz Group name.
      * @return List of client information ({@link ClientDetailResponseV2}) retrieved.
      * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
      *                     problem or timeout.
@@ -119,7 +119,7 @@ public class KeywhizAutomationClient extends HttpClient {
     /**
      * Retrieve metadata for secrets in a particular group
      *
-     * @param group Group name.
+     * @param group Keywhiz group name.
      * @return List of secrets information ({@link SecretDetailResponseV2}) retrieved.
      * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
      *                     problem or timeout.
@@ -154,6 +154,17 @@ public class KeywhizAutomationClient extends HttpClient {
     }
 
     /**
+     * Delete a secret series
+     *
+     * @param name Secret series name to be deleted.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public void deleteSecret(String name) throws IOException {
+        httpDelete(baseUrl.resolve("/automation/v2/secrets/" + name));
+    }
+
+    /**
      * Listing of groups a secret is assigned to.
      *
      * @param secret Secret name
@@ -184,7 +195,7 @@ public class KeywhizAutomationClient extends HttpClient {
     /**
      * Retrieve listing of secrets expiring soon in a group.
      *
-     * @param group Group name.
+     * @param group Keywhiz group name.
      * @param time  Timestamp for farthest expiry to include.
      * @return List of secrets expiring soon.
      * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
