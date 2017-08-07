@@ -19,14 +19,17 @@ package com.oneops.proxy.services;
 
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.config.OneOpsConfig;
+import com.oneops.proxy.keywhiz.KeywhizException;
 import com.oneops.proxy.model.SecretRequest;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -75,15 +78,15 @@ public class SecretContentService {
      * @param user OneOps user.
      * @return {@link SecretRequest}
      */
-    public SecretRequest validateAndEnrich(SecretRequest req, String name, OneOpsUser user) {
+    public SecretRequest validateAndEnrich(SecretRequest req, String name, OneOpsUser user) throws IOException {
         String content = req.getContent();
         if (content == null) {
             throw new IllegalArgumentException("Secret content is not provided!");
         }
 
         if (content.length() > maxSecretSize) {
-            throw new IllegalArgumentException(String.format("Secret size (%s) is too large. Max allowed secret size is %s.",
-                    binaryPrefix(content.length()), binaryPrefix(maxSecretSize)));
+            String errMsg = String.format("Secret size (%s) is too large. Max allowed secret size is %s.", binaryPrefix(content.length()), binaryPrefix(maxSecretSize));
+            throw new KeywhizException(PAYLOAD_TOO_LARGE.value(), errMsg);
         }
 
         String base64Content;
