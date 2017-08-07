@@ -20,8 +20,10 @@ package com.oneops.proxy.web;
 import com.google.common.collect.ImmutableMap;
 import com.oneops.proxy.audit.AuditLog;
 import com.oneops.proxy.audit.Event;
+import com.oneops.proxy.audit.EventTag;
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
+import com.oneops.proxy.keywhiz.KeywhizException;
 import com.oneops.proxy.keywhiz.model.v2.*;
 import com.oneops.proxy.model.AppGroup;
 import com.oneops.proxy.model.SecretRequest;
@@ -38,6 +40,7 @@ import java.util.Map;
 
 import static com.oneops.proxy.audit.EventTag.*;
 import static java.util.Collections.singletonList;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
  * Keywhiz application group controller. <code>appGroup</code> is the OneOps environment
@@ -60,7 +63,7 @@ public class GroupController {
     /**
      * Keywhiz automation client.
      */
-    private KeywhizAutomationClient kwClient;
+    private final KeywhizAutomationClient kwClient;
 
     /**
      * For validating secrets content.
@@ -160,20 +163,26 @@ public class GroupController {
      * Creates new secret.
      *
      * @param name          Secret name
+     * @param createGroup   <code>true</code> to create non existing application group. Default is <code>false</code>.
      * @param secretRequest Secret request {@link SecretRequest}
      * @param appGroup      OneOps environment name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
      * @param user          Authorized {@link OneOpsUser}
-     * @throws IOException              Throws if the request could not be executed due to cancellation, a connectivity
-     *                                  problem or timeout.
-     * @throws IllegalArgumentException For bad request.
+     * @throws IOException      Throws if the request could not be executed due to cancellation, a connectivity
+     *                          problem or timeout.
+     * @throws KeywhizException Throws if application group doesn't exist or the secret with the same name already exists.
      */
     @PostMapping(value = "/secrets/{name}")
-    public void createSecret(@PathVariable("name") String name, @RequestBody SecretRequest secretRequest, AppGroup appGroup, @CurrentUser OneOpsUser user) throws IOException {
+    public void createSecret(@PathVariable("name") String name,
+                             @RequestParam(value = "createGroup", required = false, defaultValue = "false") boolean createGroup,
+                             @RequestBody SecretRequest secretRequest,
+                             AppGroup appGroup,
+                             @CurrentUser OneOpsUser user) throws IOException {
+
         String groupName = appGroup.getGroupName();
         log.info(String.format("Creating new secret %s for application group: %s", name, groupName));
 
         SecretRequest secret = secretService.validateAndEnrich(secretRequest, name, user);
-        checkAndCreateGroup(appGroup, user); // Create group if not exists.
+        checkAndCreateGroup(appGroup, createGroup, user); // Check and create group if not exists.
         CreateSecretRequestV2 secretRequestV2 = CreateSecretRequestV2.fromParts(name,
                 secret.getContent(),
                 secret.getDescription(),
@@ -183,7 +192,6 @@ public class GroupController {
                 singletonList(groupName));
 
         kwClient.createSecret(secretRequestV2);
-
         auditLog.log(new Event(SECRET_CREATE, user.getUsername(), appGroup.getName(), name));
         log.info(String.format("Created new secret %s for application group: %s", name, groupName));
     }
@@ -196,22 +204,21 @@ public class GroupController {
      * @param secretRequest Secret request {@link SecretRequest}
      * @param appGroup      OneOps environment name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
      * @param user          Authorized {@link OneOpsUser}
-     * @throws IOException              Throws if the request could not be executed due to cancellation, a connectivity
-     *                                  problem or timeout.
-     * @throws IllegalArgumentException For bad request.
+     * @throws IOException      Throws if the request could not be executed due to cancellation, a connectivity
+     *                          problem or timeout.
+     * @throws KeywhizException Throws if the secret is not part of given application group.
      */
     @PutMapping("/secrets/{name}")
     public void updateSecret(@PathVariable("name") String name, @RequestBody SecretRequest secretRequest, AppGroup appGroup, @CurrentUser OneOpsUser user) throws IOException {
         log.info(String.format("Updating the secret %s for %s", name, appGroup.getGroupName()));
-
         checkSecretInGroup(name, appGroup); // Have to make sure secret exists in the appGroup.
+
         SecretRequest secret = secretService.validateAndEnrich(secretRequest, name, user);
         CreateOrUpdateSecretRequestV2 secretRequestV2 = CreateOrUpdateSecretRequestV2.fromParts(secret.getContent(),
                 secret.getDescription(),
                 secret.getMetadata(),
                 secret.getExpiry(),
                 secret.getType());
-
         kwClient.createOrUpdateSecret(name, secretRequestV2);
 
         auditLog.log(new Event(SECRET_UPDATE, user.getUsername(), appGroup.getName(), name));
@@ -224,14 +231,31 @@ public class GroupController {
      * @param name     Secret name
      * @param appGroup OneOps environment name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
      * @param user     Authorized {@link OneOpsUser}
-     * @throws IOException              Throws if the request could not be executed due to cancellation, a connectivity
-     *                                  problem or timeout.
-     * @throws IllegalArgumentException For bad request.
+     * @throws IOException      Throws if the request could not be executed due to cancellation, a connectivity
+     *                          problem or timeout.
+     * @throws KeywhizException Throws if the secret is not part of given application group.
      */
     @GetMapping("/secrets/{name}")
     public SecretDetailResponseV2 getSecret(@PathVariable("name") String name, AppGroup appGroup, @CurrentUser OneOpsUser user) throws IOException {
         checkSecretInGroup(name, appGroup);
         return kwClient.getSecretDetails(name);
+    }
+
+    /**
+     * Delete a secret series.
+     *
+     * @param name     Secret series name
+     * @param appGroup OneOps environment name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
+     * @param user     Authorized {@link OneOpsUser}
+     * @throws IOException      Throws if the request could not be executed due to cancellation, a connectivity
+     *                          problem or timeout.
+     * @throws KeywhizException Throws if the secret not exists or not part of given application group.
+     */
+    @DeleteMapping("/secrets/{name}")
+    public void deleteSecret(@PathVariable("name") String name, AppGroup appGroup, @CurrentUser OneOpsUser user) throws IOException {
+        checkSecretInGroup(name, appGroup);
+        kwClient.deleteSecret(name);
+        auditLog.log(new Event(EventTag.SECRET_DELETE, user.getUsername(), appGroup.getName(), name));
     }
 
 
@@ -242,80 +266,78 @@ public class GroupController {
      * @param name     Secret name
      * @param appGroup OneOps environment name with <b>{org}_{assembly}_{env}</b> format, for which you are managing the secrets.
      * @param user     Authorized {@link OneOpsUser}
-     * @throws IOException              Throws if the request could not be executed due to cancellation, a connectivity
-     *                                  problem or timeout.
-     * @throws IllegalArgumentException For bad request.
+     * @throws IOException      Throws if the request could not be executed due to cancellation, a connectivity
+     *                          problem or timeout.
+     * @throws KeywhizException Throws if the secret is not part of given application group.
      */
     @PostMapping("/secrets/{name}/contents")
     public Map<String, String> getSecretContent(@PathVariable("name") String name, AppGroup appGroup, @CurrentUser OneOpsUser user) throws IOException {
         checkSecretInGroup(name, appGroup);
-        SecretContentsResponseV2 secretsContent = kwClient.getSecretsContent(name);
 
+        SecretContentsResponseV2 secretsContent = kwClient.getSecretsContent(name);
         auditLog.log(new Event(SECRET_READCONTENT, user.getUsername(), appGroup.getName(), name));
         return secretsContent.successSecrets();
     }
 
     /**
-     * Checks if the client is assigned to given application group.
-     * Else throw {@link IllegalArgumentException}.
+     * Checks if the client is assigned to given application group, else throw {@link IOException}.
      *
      * @param clientName Client name.
      * @param appGroup   Application group.
-     * @throws IOException              Throws if  the client is not part of given application group.
-     * @throws IllegalArgumentException For bad request.
+     * @throws IOException      Throws if the request could not be executed.
+     * @throws KeywhizException Throws if the client is not part of given application group.
      */
     private void checkClientInGroup(String clientName, AppGroup appGroup) throws IOException {
-        String groupName = appGroup.getGroupName();
-        List<ClientDetailResponseV2> clients = kwClient.getClients(groupName);
+        List<ClientDetailResponseV2> clients = kwClient.getClients(appGroup.getKeywhizGroup());
         boolean clientExists = clients.stream().anyMatch(client -> client.name().equalsIgnoreCase(clientName));
         if (!clientExists) {
-            log.error(String.format("Client %s not found for app %s", clientName, groupName));
-            throw new IllegalArgumentException("Client " + clientName + " not found.");
+            log.error(String.format("Client %s not found for app %s", clientName, appGroup.getGroupName()));
+            throw new KeywhizException(NOT_FOUND.value(), "Client " + clientName + " not found.");
         }
     }
 
     /**
-     * Checks if the secret is assigned to given application group.
-     * Else throw {@link IllegalArgumentException}.
+     * Checks if the secret is assigned to given application group, else throw {@link IOException}.
      *
      * @param secretName Secret name.
      * @param appGroup   Application group.
-     * @throws IOException              Throws if  the secret is not part of given application group.
-     * @throws IllegalArgumentException For bad request.
+     * @throws IOException      Throws if the request could not be executed.
+     * @throws KeywhizException Throws if the secret is not part of given application group.
      */
     private void checkSecretInGroup(String secretName, AppGroup appGroup) throws IOException {
         List<String> groups = kwClient.getGroupsForSecret(secretName);
         String groupName = appGroup.getGroupName();
         if (!groups.contains(groupName)) {
             log.error(String.format("Secret %s not found for %s", secretName, groupName));
-            throw new IllegalArgumentException("Secret " + secretName + " not found.");
+            throw new KeywhizException(NOT_FOUND.value(), "Secret " + secretName + " not found.");
         }
     }
 
     /**
      * Creates new group if it's not exists.
      *
-     * @param appGroup Application group info
-     * @param user     OneOps user
-     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
-     *                     problem or timeout.
+     * @param appGroup    Application group info.
+     * @param createGroup <code>true</code> to create non existing application group.
+     * @param user        OneOps user.
+     * @throws IOException      Throws if the request could not be executed.
+     * @throws KeywhizException Throws if the app group doesn't exist.
      */
-    private void checkAndCreateGroup(AppGroup appGroup, OneOpsUser user) throws IOException {
+    private void checkAndCreateGroup(AppGroup appGroup, boolean createGroup, OneOpsUser user) throws IOException {
         String group = appGroup.getGroupName();
-        log.info("Checking the application group: " + group);
+        log.info("Checking the application group: " + group + " with createGroup: " + createGroup);
         try {
             GroupDetailResponseV2 groupDetails = kwClient.getGroupDetails(appGroup.getKeywhizGroup());
             log.info(groupDetails.name() + " exists. Returning.");
-            return;
-        } catch (Exception ex) {
-            log.error(group + " NOT exists, Error: " + ex.getMessage());
+        } catch (IOException ex) {
+            if (createGroup) {
+                log.error(group + " not exists. Error: " + ex.getMessage());
+                log.info("Creating the application group: " + group + ".");
+                kwClient.createGroup(group, "Created by OneOps Proxy.", ImmutableMap.of("userId", user.getUsername(), "domain", appGroup.getDomain()));
+                auditLog.log(new Event(GROUP_CREATE, user.getUsername(), group));
+            } else {
+                throw new KeywhizException(NOT_FOUND.value(), "Application group not exists.", ex);
+            }
         }
-
-        log.info("Creating the application group: " + group + ".");
-        ImmutableMap<String, String> metadata = ImmutableMap.of("userId", user.getUsername());
-        kwClient.createGroup(group, "Created by OneOps Proxy.", metadata);
-
-        auditLog.log(new Event(GROUP_CREATE, user.getUsername(), group));
     }
 }
 
