@@ -80,6 +80,8 @@ TODO
 
  * Proper HTTP status code and error messages.
  * Secrets setversion/versions API call.
+ * Move the automation client to Retrofit.
+ * Add more metadata to Group/Client from component.
  * X509 Authentication ??
  * Update to the latest keysync.
  * Validation for OneOps assembly and env.

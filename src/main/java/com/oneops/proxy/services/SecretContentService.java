@@ -17,9 +17,12 @@
  *******************************************************************************/
 package com.oneops.proxy.services;
 
+import com.google.common.collect.ImmutableMap;
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.keywhiz.KeywhizException;
+import com.oneops.proxy.keywhiz.model.v2.CreateOrUpdateSecretRequestV2;
+import com.oneops.proxy.keywhiz.model.v2.PartialUpdateSecretRequestV2;
 import com.oneops.proxy.model.SecretRequest;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +33,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
-import static org.springframework.util.StringUtils.isEmpty;
 
 /**
  * Service to validate the secret content and other properties..
@@ -39,6 +41,11 @@ import static org.springframework.util.StringUtils.isEmpty;
  */
 @Service
 public class SecretContentService {
+
+    /**
+     * Default secret type.
+     */
+    public static final String DEFAULT_TYPE = "secret";
 
     /**
      * Max secret size in bytes.
@@ -98,8 +105,13 @@ public class SecretContentService {
         }
 
         String desc = req.getDescription();
-        if (isEmpty(desc)) {
-            req.setDescription("Created by " + user.getUsername());
+        if (desc == null) {
+            req.setDescription("");
+        }
+
+        String type = req.getType();
+        if (type == null) {
+            req.setType(DEFAULT_TYPE);
         }
 
         if (req.getMetadata() == null) {
@@ -107,8 +119,38 @@ public class SecretContentService {
         }
         Map<String, String> metadata = req.getMetadata();
         metadata.put("userId", user.getUsername());
+        metadata.put("versionDesc", req.getDescription());
 
         return req;
     }
 
+    /**
+     * Helper method to create Partial update request.
+     *
+     * @param secretRequest Secret request user input.
+     * @return {@link PartialUpdateSecretRequestV2}
+     */
+    public PartialUpdateSecretRequestV2 getPartialUpdateReq(SecretRequest secretRequest) {
+        PartialUpdateSecretRequestV2.Builder builder = PartialUpdateSecretRequestV2.builder();
+        builder.contentPresent(true).content(secretRequest.getContent());
+        builder.descriptionPresent(true).description(secretRequest.getDescription());
+        builder.expiryPresent(true).expiry(secretRequest.getExpiry());
+        builder.typePresent(true).type(secretRequest.getType());
+        builder.metadataPresent(true).metadata(ImmutableMap.copyOf(secretRequest.getMetadata()));
+        return builder.build();
+    }
+
+    /**
+     * Helper method for create/update request.
+     *
+     * @param secret Secret request user input.
+     * @return {@link CreateOrUpdateSecretRequestV2}
+     */
+    public CreateOrUpdateSecretRequestV2 getCreateUpdateReq(SecretRequest secret) {
+        return CreateOrUpdateSecretRequestV2.fromParts(secret.getContent(),
+                secret.getDescription(),
+                secret.getMetadata(),
+                secret.getExpiry(),
+                secret.getType());
+    }
 }

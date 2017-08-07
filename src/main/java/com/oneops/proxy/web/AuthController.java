@@ -24,13 +24,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.oneops.proxy.config.Constants.AUTH_CTLR_BASE_PATH;
+
 /**
  * A rest controller to retrieve authenticated user details.
  *
  * @author Suresh G
  */
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(AUTH_CTLR_BASE_PATH)
 public class AuthController {
 
     /**

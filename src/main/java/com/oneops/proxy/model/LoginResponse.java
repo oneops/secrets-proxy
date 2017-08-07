@@ -29,13 +29,13 @@ import static com.oneops.proxy.config.Constants.DEFAULT_TOKEN_TYPE;
 public class LoginResponse {
 
     @JsonProperty
-    public String accessToken;
+    private String accessToken;
 
     @JsonProperty
-    public String tokenType = DEFAULT_TOKEN_TYPE;
+    private String tokenType = DEFAULT_TOKEN_TYPE;
 
     @JsonProperty
-    public int expiresInSec;
+    private int expiresInSec;
 
     public LoginResponse(String accessToken, String tokenType, int expiresInSec) {
         this.accessToken = accessToken;

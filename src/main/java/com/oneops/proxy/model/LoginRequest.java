@@ -17,9 +17,7 @@
  *******************************************************************************/
 package com.oneops.proxy.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.oneops.proxy.config.Constants;
 
 import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 
@@ -31,13 +29,13 @@ import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 public class LoginRequest {
 
     @JsonProperty
-    public String username;
+    private String username;
 
     @JsonProperty
-    public String password;
+    private String password;
 
     @JsonProperty
-    public String domain = DEFAULT_DOMAIN;
+    private String domain = DEFAULT_DOMAIN;
 
     public LoginRequest() {
     }
