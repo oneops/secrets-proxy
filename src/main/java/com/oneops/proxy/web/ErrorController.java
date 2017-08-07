@@ -33,6 +33,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+
 /**
  * Custom global error handler for rendering {@link ErrorAttributes} for this
  * application. All errors without any specific {@link ExceptionHandler} are
@@ -55,7 +58,7 @@ public class ErrorController extends BasicErrorController {
      * @param res http response.
      * @return error response entity.
      */
-    @RequestMapping(produces = "application/json")
+    @RequestMapping(produces = {APPLICATION_JSON_VALUE, APPLICATION_XML_VALUE})
     public @ResponseBody
     ResponseEntity<ErrorResponse> errorResponse(HttpServletRequest req, HttpServletResponse res) {
         Map<String, Object> body = getErrorAttributes(req, isIncludeStackTrace(req, MediaType.ALL));

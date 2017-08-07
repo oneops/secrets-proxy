@@ -27,14 +27,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
  * A rest controller advice to return {@link ErrorResponse} for a
- * particular controller and/or exception type
+ * particular controller and/or exception type.
  *
  * @author Suresh
  */
@@ -60,7 +59,7 @@ public class ErrorControllerAdvice {
      * An exception handler method for {@link KeywhizException} thrown
      * from all the Rest controllers.
      *
-     * @param req Hhttp request.
+     * @param req Http request.
      * @param res Http Response.
      * @param ex  exception thrown.
      * @return {@link ErrorResponse}
