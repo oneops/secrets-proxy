@@ -141,10 +141,12 @@ management:
   user: xxxx
   password: xxxx
   add-application-context-header: false
+  health:
+    db:
+      enabled: false
 
 banner:
   location: banner.txt
-
 
 # Info Endpoint details
 # =====================
