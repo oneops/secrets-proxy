@@ -70,10 +70,11 @@ $ ./mvnw clean package -P generate
 $ ./mvnw versions:display-dependency-updates
 ```
 
-#### Tools
+#### Misc
  
   * Keywhiz Tools - https://github.com/oneops/keywhiz-proxy/releases/tag/tools
   * JWT Token Verification - https://jwt.io/
+  * [REST API References](https://news.ycombinator.com/item?id=11971491)   
 
 TODO
 #####
@@ -99,4 +100,3 @@ TODO
  * https://twitter.com/fintanr/status/877988573399531520
  * https://www.jetbrains.com/research/devecosystem-2017/java/ (Check the Web framework section)
  
-      

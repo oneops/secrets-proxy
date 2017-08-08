@@ -56,12 +56,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final ObjectMapper mapper;
-    private final JwtTokenService jwtTokenService;
+    private final JwtTokenService tokenService;
     private final AuditLog auditLog;
 
-    public LoginSuccessHandler(ObjectMapper mapper, JwtTokenService jwtTokenService, AuditLog auditLog) {
+    public LoginSuccessHandler(ObjectMapper mapper, JwtTokenService tokenService, AuditLog auditLog) {
         this.mapper = mapper;
-        this.jwtTokenService = jwtTokenService;
+        this.tokenService = tokenService;
         this.auditLog = auditLog;
     }
 
@@ -85,10 +85,10 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
             user = getOneOpsUser(principal);
         }
 
-        String token = jwtTokenService.generateToken(user);
-        auditLog.log(new Event(GENERATE_TOKEN, user.getUsername(), ""));
+        String token = tokenService.generateToken(user);
+        auditLog.log(new Event(GENERATE_TOKEN, user.getUsername(), "N/A", req.getRequestURI()));
 
-        LoginResponse loginResponse = new LoginResponse(token, jwtTokenService.getTokenType(), jwtTokenService.getExpiresInSec());
+        LoginResponse loginResponse = new LoginResponse(token, tokenService.getTokenType(), tokenService.getExpiresInSec());
         res.setStatus(HttpStatus.OK.value());
         res.setContentType(MediaType.APPLICATION_JSON_VALUE);
         mapper.writeValue(res.getWriter(), loginResponse);
