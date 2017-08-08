@@ -2,11 +2,19 @@
 <configuration>
     <springProperty name="LOG_PATH" scope="context" source="logging.path"/>
     <springProperty name="LOG_FILE" scope="context" source="logback.access.file"/>
+    <springProperty name="MGMT_PATH" scope="context" source="management.context-path"/>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/access/${LOG_FILE}.log</file>
+        <!-- Don't want to log health check calls.-->
+        <filter class="com.oneops.proxy.config.AccessLogFilter">
+            <ignorePaths>${MGMT_PATH}/health</ignorePaths>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
         <encoder>
-            <pattern>combined</pattern>
+            <!-- https://logback.qos.ch/manual/layouts.html#AccessPatternLayout -->
+            <pattern>%i{NSC-Client-IP} %h %l %u [%t] "%r" %s %b [%D] "%i{Referer}" "%i{User-Agent}"</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- rollover daily -->
@@ -19,5 +27,4 @@
     </appender>
 
     <appender-ref ref="FILE"/>
-
 </configuration>
