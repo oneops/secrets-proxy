@@ -14,14 +14,14 @@ Type=simple
 # Environment=name=keywhiz-proxy
 # Environment=PATH=/usr/bin:/usr/sbin
 EnvironmentFile=-/etc/sysconfig/keywhiz-proxy
-WorkingDirectory=/opt/oneops
+WorkingDirectory=/opt/oneops/keywhiz-proxy/
 ExecStart=/bin/java -server \
                     -Xms2000m -Xmx6000m \
                     -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:InitiatingHeapOccupancyPercent=70 \
                     -XX:+PrintGC -XX:+PrintGCDateStamps -XX:+PrintGCDetails -Xloggc:/log/gclogs/keywhiz-proxy-gc.log  \
-                    -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M \
-                    -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/heap-dump/keywhiz-proxy-`date`.hprof \
-                    -jar /opt/oneops/$OO_LOCAL{keywhiz-proxy-artifact}-$OO_LOCAL{keywhiz-proxy-version}.jar \
+                    -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=15 -XX:GCLogFileSize=10M \
+                    -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/heap-dump/keywhiz-proxy.hprof \
+                    -jar /opt/oneops/keywhiz-proxy/$OO_LOCAL{keywhiz-proxy-artifact}-$OO_LOCAL{keywhiz-proxy-version}.jar \
                     --spring.config.location=file:/secrets/application.yaml
 ExecReload=/bin/kill -s HUP $MAINPID
 SuccessExitStatus=143
