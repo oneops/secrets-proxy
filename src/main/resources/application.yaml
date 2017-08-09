@@ -10,11 +10,12 @@
 logging:
   level:
     root: INFO
-    com.oneops.proxy: DEBUG
+    com.oneops.proxy: INFO
     org.jooq.tools: INFO
     com.zaxxer.hikari: INFO
     org.springframework.web: INFO
     org.springframework.security: INFO
+    com.oneops.proxy.keywhiz.http: DEBUG
   path: log
   file: keywhiz-proxy
   audit-file: keywhiz-proxy-audit
