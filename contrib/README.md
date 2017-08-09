@@ -1,0 +1,1 @@
+The [contrib](https://goo.gl/DUHNBH) directory contains scripts and other helpful things which are not part of the core application jar. 
