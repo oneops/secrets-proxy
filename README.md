@@ -56,7 +56,32 @@ Java Doc : https://oneops.github.com/keywhiz-proxy/javadocs
       ```
       or you can use tool like [InstallCerts](https://github.com/sureshg/InstallCerts) to auto-generate trust-store
       from the TLS endpoint.   
-      
+
+### Docker 
+
+  * Build the image
+    
+    ```
+     $ ./mvnw clean package
+     $ docker build -t keywhiz-proxy:1.0.0 .
+    ```  
+  * Run 
+  
+    ```
+     $ docker run -it --rm --name keywhiz-proxy -p 8443:8443  -e name=Keywhiz-Proxy -d keywhiz-proxy:1.0.0
+     $ open https://localhost:8443/app/info
+    ``` 
+  * Debugging and Logs
+  
+    ```
+    $ docker exec -it keywhiz-proxy sh
+    # cd log/
+    /log # ls -ltrh
+    total 64
+    drwxr-xr-x    2 root     root        4.0K Aug  9 21:50 audit
+    drwxr-xr-x    2 root     root        4.0K Aug  9 21:50 access
+    -rw-r--r--    1 root     root       54.0K Aug  9 21:51 keywhiz-proxy.log
+    ```       
       
 ### Generate source.
 
