@@ -5,12 +5,12 @@
 # for custom properties added and it's description.                    #
 ########################################################################
 
-# Application and Audit Log Configuration
-# =======================================
+# App, Audit & Access Log Configuration
+# =====================================
 logging:
   level:
     root: INFO
-    com.oneops.proxy: INFO
+    com.oneops.proxy: DEBUG
     org.jooq.tools: INFO
     com.zaxxer.hikari: INFO
     org.springframework.web: INFO
@@ -20,13 +20,9 @@ logging:
   file: keywhiz-proxy
   audit-file: keywhiz-proxy-audit
   config: classpath:logback-spring.xml
-
-# Jetty Access Log Configuration
-# ==============================
 logback:
   access:
     file: keywhiz-proxy-access
-    ignore-paths: ${management.context-path}/health
     config: classpath:logback-access.xml
 
 # Jetty Server & TLS Configuration
