@@ -30,7 +30,8 @@ import static java.util.Collections.emptyList;
 /**
  * A simple access filter to remove the management health calls (<b>/health</b>).
  * We could have used {@link ch.qos.logback.access.boolex.JaninoEventEvaluator},
- * but require additional dependencies and our use case is simple.
+ * but require additional dependencies and our use case is simple. The filter
+ * along with <code>ignorePaths</code> is configured in <b>logback-access.xml</b>.
  *
  * @author Suresh
  * @see <a href="https://logback.qos.ch/manual/filters.html#logbac-access"></a>
@@ -56,7 +57,6 @@ public class AccessLogFilter extends AbstractMatcherFilter<AccessEvent> {
     }
 
     public void setIgnorePaths(String ignorePaths) {
-        System.out.println("Setting " + ignorePaths);
         this.ignorePaths = ignorePaths;
         if (ignorePaths == null) {
             paths = emptyList();
@@ -67,7 +67,6 @@ public class AccessLogFilter extends AbstractMatcherFilter<AccessEvent> {
 
     @Override
     public FilterReply decide(AccessEvent event) {
-        System.out.println("checking  " + event);
         if (!isStarted()) {
             return NEUTRAL;
         }
