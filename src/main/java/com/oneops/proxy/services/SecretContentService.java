@@ -27,11 +27,10 @@ import com.oneops.proxy.model.SecretRequest;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
 
 /**
@@ -87,21 +86,13 @@ public class SecretContentService {
      */
     public SecretRequest validateAndEnrich(SecretRequest req, String name, OneOpsUser user) throws IOException {
         String content = req.getContent();
-        if (content == null) {
+        if (isBlank(content)) {
             throw new IllegalArgumentException("Secret content is not provided!");
         }
 
         if (content.length() > maxSecretSize) {
             String errMsg = String.format("Secret size (%s) is too large. Max allowed secret size is %s.", binaryPrefix(content.length()), binaryPrefix(maxSecretSize));
             throw new KeywhizException(PAYLOAD_TOO_LARGE.value(), errMsg);
-        }
-
-        String base64Content;
-        try {
-            base64Content = Base64.getEncoder().encodeToString(content.getBytes("UTF-8"));
-            req.setContent(base64Content);
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("Invalid secret data. UTF-8 encoding failed.");
         }
 
         String desc = req.getDescription();

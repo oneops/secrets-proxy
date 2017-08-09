@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class SecretVersionRequest {
 
-    @JsonProperty("version")
+    @JsonProperty
     private long version;
 
     public SecretVersionRequest() {

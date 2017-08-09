@@ -22,6 +22,8 @@ import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import java.util.Date;
 import java.util.Map;
 
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
 /**
  * Login failure error response.
  *
@@ -61,7 +63,7 @@ public class ErrorResponse {
         Object ts = errAttrs.get("timestamp");
         timestamp = ts instanceof Date ? ((Date) ts).getTime() : System.currentTimeMillis();
         Object st = errAttrs.get("status");
-        status = st instanceof Integer ? (int) st : 500;
+        status = st instanceof Integer ? (int) st : INTERNAL_SERVER_ERROR.value();
         Object err = errAttrs.get("error");
         error = (err != null) ? err.toString() : "None";
         Object msg = errAttrs.get("message");
