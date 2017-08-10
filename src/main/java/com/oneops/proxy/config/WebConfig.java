@@ -35,11 +35,14 @@ import static org.springframework.http.MediaType.APPLICATION_XML;
 
 /**
  * ContentNegotiation configuration for the application.
+ * <p>
+ * Note: If you add ({@link EnableWebMvc}) annotation, you switch off
+ * everything in spring boot.
  *
  * @author Suresh
  */
 @Configuration
-@EnableWebMvc
+//@EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(WebConfig.class);
@@ -63,6 +66,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
      */
     @Override
     public void configurePathMatch(PathMatchConfigurer matcher) {
+        log.info("Configuring Suffix PathMatching for the application.");
         matcher.setUseRegisteredSuffixPatternMatch(true);
     }
 
@@ -71,6 +75,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argResolvers) {
+        log.info("Configuring AppGroup arg resolver for the application.");
         argResolvers.add(new AppGroupArgResolver());
     }
 }

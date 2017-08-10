@@ -45,6 +45,11 @@ public interface Constants {
     String GROUP_CTLR_BASE_PATH = "/" + API_VERSION + "/apps";
 
     /**
+     * Favicon path, for browser agents.
+     */
+    String FAVICON_PATH = "/favicon.ico";
+
+    /**
      * Default mgmt domain for keywhiz requests.
      */
     String DEFAULT_DOMAIN = "prod";

@@ -48,6 +48,7 @@ import java.util.List;
 
 import static com.oneops.proxy.auth.user.OneOpsUser.Role.MGMT;
 import static com.oneops.proxy.config.Constants.AUTH_TOKEN_URI;
+import static com.oneops.proxy.config.Constants.FAVICON_PATH;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.springframework.http.HttpMethod.GET;
@@ -133,13 +134,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * Builds {@link TokenAuthProcessingFilter} with the current {@link AuthenticationManager}.
-     * The filter won't be apply for <b>management</b> and ROOT request paths.
+     * The filter won't be apply for <b>management</b>, ROOT and Favicon request paths.
      *
      * @return Token authentication filter
      * @throws Exception
      */
     private TokenAuthProcessingFilter buildAuthProcessingFilter() throws Exception {
-        List<String> pathsToSkip = asList(mgmtContext + "/**", "/");
+        List<String> pathsToSkip = asList(mgmtContext + "/**", "/", FAVICON_PATH);
         log.info("Configured to skip " + pathsToSkip + " path from TokenAuthProcessingFilter.");
         SkipPathRequestMatcher requestMatcher = new SkipPathRequestMatcher(pathsToSkip);
         TokenAuthProcessingFilter authFilter = new TokenAuthProcessingFilter(requestMatcher, failureHandler, jwtTokenService);
@@ -166,7 +167,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                   .requiresChannel().anyRequest().requiresSecure()
                 .and()
                     .authorizeRequests()
-                    .mvcMatchers(GET, "/").permitAll()
+                    .mvcMatchers(GET, "/", FAVICON_PATH).permitAll()
                     .mvcMatchers(GET,  mgmtContext + "/info").permitAll()
                     .mvcMatchers(GET, mgmtContext + "/health").permitAll()
                     .mvcMatchers(GET,mgmtContext + "/**").hasAnyRole(MGMT.name())
