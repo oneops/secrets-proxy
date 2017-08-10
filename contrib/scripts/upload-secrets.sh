@@ -13,7 +13,7 @@ fi
 # Secrets files
 secrets_dir=/keywhiz-proxy/secrets/
 secrets=(
-    'application.yaml::Keywhiz Proxy Application Config Yaml.'
+    'keywhiz-proxy-env::Keywhiz Proxy Application Env Config.'
     'keystores/keywhiz_keystore.p12::Keywhiz Automation mTLS Client Certificate.'
     'keystores/keywhiz_proxy_keystore.p12::TLS Server Certificate For Keywhiz-Proxy Application.'
     'keystores/keywhiz_truststore.p12::Keywhiz Server Trust-Store.'

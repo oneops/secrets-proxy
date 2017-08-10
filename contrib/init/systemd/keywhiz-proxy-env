@@ -1,0 +1,44 @@
+# Default Secrets and Log directory
+# ---------------------------------
+SECRETS_DIR=/secrets
+LOGGING_PATH=/log
+
+# Keywhiz Proxy Server config
+# ---------------------------
+SERVER_SSL_KEY-STORE=file:${SECRETS_DIR}/keywhiz_proxy_keystore.p12
+SERVER_SSL_KEY-PASSWORD=xxxxx
+SERVER_SSL_KEY-STORE-PASSWORD=xxxxx
+
+# Keywhiz Server and Automation Client config
+# -------------------------------------------
+ONEOPS_KEYWHIZ_BASE-URL=https://keywhiz.com:4444/
+ONEOPS_KEYWHIZ_TRUST-STORE_PATH=file:${SECRETS_DIR}/keywhiz_truststore.p12
+ONEOPS_KEYWHIZ_TRUST-STORE_STORE-PASSWORD=xxxxx
+ONEOPS_KEYWHIZ_KEY-STORE_PATH=file:${SECRETS_DIR}/keywhiz_keystore.p12
+ONEOPS_KEYWHIZ_KEY-STORE_STORE-PASSWORD=xxxxx
+ONEOPS_KEYWHIZ_KEY-STORE_KEY-PASSWORD=xxxxx
+
+# AD/LDAP Server Config
+# ---------------------
+ONEOPS_LDAP_SERVER=ldap://ldap.com
+ONEOPS_LDAP_USER-BASE-DN=dc=xxxxx,dc=xxxxx,dc=com
+ONEOPS_LDAP_USER-DN=CN=xxxxx,DC=xxxxx,DC=xxxxx,DC=com
+ONEOPS_LDAP_PASSWORD=xxxxx
+ONEOPS_LDAP_TRUST-STORE_PATH=file:${SECRETS_DIR}/ldap_truststore.p12
+ONEOPS_LDAP_TRUST-STORE_STORE-PASSWORD=xxxxx
+
+# Keywhiz Proxy Token Auth Config
+# -------------------------------
+ONEOPS_AUTH_SIGNING-KEY=xxxxx
+ONEOPS_AUTH_EXPIRES-IN-SEC=xxxxx
+
+# OneOps User Datasource config
+# -----------------------------
+SPRING_DATASOURCE_URL=jdbc:postgresql://userdb:5432/xxxxx
+SPRING_DATASOURCE_USERNAME=xxxxx
+SPRING_DATASOURCE_PASSWORD=xxxxx
+
+# Management app config
+# ---------------------
+MANAGEMENT_USER=xxxxx
+MANAGEMENT_PASSWORD=xxxxx
