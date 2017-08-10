@@ -22,7 +22,6 @@ import com.oneops.proxy.model.LoginRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -96,8 +95,8 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
         LoginRequest loginReq;
         try {
             loginReq = mapper.readValue(req.getReader(), LoginRequest.class);
-        } catch (IOException ioe) {
-            String errMsg = "Bad login request json!";
+        } catch (Exception ioe) {
+            String errMsg = "Bad token request.";
             res.sendError(BAD_REQUEST.value(), errMsg);
             throw new AuthenticationServiceException(errMsg, ioe);
         }
