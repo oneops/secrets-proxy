@@ -15,32 +15,36 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.web;
-
-import com.oneops.proxy.model.RootResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+package com.oneops.proxy.model;
 
 /**
- * Application root controller.
+ * Response for application root request.
  *
  * @author Suresh
  */
-@RestController
-public class RootController {
+public class RootResponse {
 
-    /**
-     * Maven artifact version.
-     */
-    @Value("${info.version}")
-    private String version;
+    private final String name;
+    private final String version;
 
-    /**
-     * Root of the application.
-     */
-    @GetMapping(path = "/")
-    public RootResponse root() {
-        return new RootResponse("OneOps Keywhiz Proxy.", version);
+    public RootResponse(String name, String version) {
+        this.name = name;
+        this.version = version;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    @Override
+    public String toString() {
+        return "RootResponse{" +
+                "name='" + name + '\'' +
+                ", version='" + version + '\'' +
+                '}';
     }
 }
