@@ -51,6 +51,7 @@
         <java.version>1.8</java.version>
         <autovalue.version>1.4.1</autovalue.version>
         <ldaptive.version>1.2.2</ldaptive.version>
+        <jjwt.version>0.7.0</jjwt.version>
         <jsr305.version>3.0.2</jsr305.version>
         <guava.version>22.0</guava.version>
         <okhttp.version>3.8.1</okhttp.version>
@@ -58,6 +59,7 @@
         <commonlang.version>3.6</commonlang.version>
         <postgresql.version>9.3-1104-jdbc4</postgresql.version>
         <hikaricp.version>2.6.3</hikaricp.version>
+        <logback.access.starter.version>2.5.0</logback.access.starter.version>
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd hh:mm:ss a z</maven.build.timestamp.format>
     </properties>
@@ -80,7 +82,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
-        <!-- Adding Jetty support -->
+        <!-- Adding Jetty Server, Proxy and JMX support -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -97,6 +99,11 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-proxy</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jmx</artifactId>
             <version>${jetty.version}</version>
         </dependency>
@@ -104,7 +111,7 @@
         <dependency>
             <groupId>net.rakugakibox.spring.boot</groupId>
             <artifactId>logback-access-spring-boot-starter</artifactId>
-            <version>2.5.0</version>
+            <version>${logback.access.starter.version}</version>
         </dependency>
         <!-- For ConfigurationProperties metadata -->
         <dependency>
@@ -128,33 +135,38 @@
             <artifactId>HikariCP</artifactId>
             <version>${hikaricp.version}</version>
         </dependency>
+        <!-- Dropwizard Metrics -->
+        <dependency>
+            <groupId>io.dropwizard.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+        </dependency>
+        <!-- Jolokia JMX -->
+        <dependency>
+            <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-core</artifactId>
+        </dependency>
         <!-- JSON Serialization -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <!-- JSON (de)serialization with java8 features. -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-guava</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <!-- For XML support -->
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <!-- String utils -->
         <dependency>
@@ -196,13 +208,12 @@
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
-            <version>${caffeine.version}</version>
         </dependency>
         <!-- JWT Token Auth -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.7.0</version>
+            <version>${jjwt.version}</version>
         </dependency>
         <!-- Feature flags-->
         <dependency>
@@ -242,6 +253,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <!-- Git Properties plugin-->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
             </plugin>
             <!-- Javadoc plugin-->
             <plugin>
