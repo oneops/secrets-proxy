@@ -83,6 +83,11 @@ Java Doc : https://oneops.github.com/keywhiz-proxy/javadocs
     -rw-r--r--    1 root     root       54.0K Aug  9 21:51 keywhiz-proxy.log
     ```       
       
+    ```
+    set -o allexport
+    source conf-file
+    set +o allexport
+    ```
 ### Generate source.
 
 ```

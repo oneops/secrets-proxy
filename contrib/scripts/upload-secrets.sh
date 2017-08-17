@@ -25,9 +25,11 @@ for index in "${secrets[@]}" ; do
     secret="${index%%::*}"
     desc="${index##*::}"
     name=${secret##*/}
+
     echo -e "\n\xF0\x9F\x8D\xBB Uploading secret \033[36m$secret\033[0m with name: \033[36m$name\033[0m , desc: $desc"
     base64_content=$(base64 -in ${secret})
     payload="{\"description\":\"${desc}\",\"content\":\"${base64_content}\"}"
+
     curl -k -X POST -H "Content-Type: application/json" -H "X-Authorization: Bearer ${SECRETS_TOKEN}" https://localhost:8443/v1/apps/oneops_keywhiz-proxy_prod/secrets/${name} -d"$payload"
     echo -e "\n\xE2\x9C\x94 - Uploaded \033[36m$secret\033[0m."
 done
