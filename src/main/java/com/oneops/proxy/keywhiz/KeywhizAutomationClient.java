@@ -26,6 +26,7 @@ import com.oneops.proxy.security.KeywhizKeyStore;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Client for interacting with the Keywhiz Server using
@@ -46,6 +47,19 @@ public class KeywhizAutomationClient extends HttpClient {
      */
     public KeywhizAutomationClient(String baseUrl, KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
         super(baseUrl, keywhizKeyStore);
+    }
+
+    /**
+     * Returns current status of the keywhiz server.
+     *
+     * @return Keywhiz status response map.
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    public Map<String, Object> getStatus() throws IOException {
+        String httpResponse = httpGet(baseUrl.resolve("/_status"));
+        return mapper.readValue(httpResponse, new TypeReference<Map<String, Object>>() {
+        });
     }
 
     /**
