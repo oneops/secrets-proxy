@@ -61,7 +61,7 @@ public class TokenAuthProcessingFilter extends AbstractAuthenticationProcessingF
         log.debug("Attempting token authentication.");
         JwtAuthToken jwtAuthToken = jwtTokenService.getAccessToken(req);
         if (jwtAuthToken == null) {
-            throw new AuthenticationCredentialsNotFoundException("Authorization header cannot be blank!");
+            throw new AuthenticationCredentialsNotFoundException("Authorization header is missing.");
         }
         return getAuthenticationManager().authenticate(jwtAuthToken);
     }

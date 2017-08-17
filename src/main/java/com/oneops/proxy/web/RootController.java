@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.oneops.proxy.config.Constants.APP_NAME;
+
 /**
  * Application root controller.
  *
@@ -41,6 +43,6 @@ public class RootController {
      */
     @GetMapping(path = "/")
     public RootResponse root() {
-        return new RootResponse("OneOps Keywhiz Proxy.", version);
+        return new RootResponse(APP_NAME, version);
     }
 }

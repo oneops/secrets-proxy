@@ -25,6 +25,11 @@ package com.oneops.proxy.config;
 public interface Constants {
 
     /**
+     * App name used in responses.
+     */
+    String APP_NAME = "OneOps Secrets Management.";
+
+    /**
      * Current Rest API version.
      */
     String API_VERSION = "v1";
