@@ -24,6 +24,7 @@ logback:
   access:
     file: keywhiz-proxy-access
     config: classpath:logback-access.xml
+debug: false
 
 # Jetty Server & TLS Configuration
 # ================================
@@ -96,7 +97,12 @@ oneops:
     signing-key: ${SIGNING_KEY}
     expires-in-sec: 3600
     compression-enabled: false
-
+  proxy:
+    enabled: true
+    prefix: /proxy
+    proxy-to: https://httpbin.org/
+    via-host: OneOps Proxy
+    trust-all: true
 
 # Spring datasource Configuration
 # ===============================
@@ -121,13 +127,6 @@ spring:
   application:
       name: OneOps Keywhiz Proxy
 
-#security:
-#  user:
-#    role: ADMIN
-#    name: xxxx
-#    password: xxxx
-
-
 # Mgmt app Configuration
 # ======================
 management:
@@ -140,7 +139,7 @@ management:
   add-application-context-header: false
   health:
     db:
-      enabled: false
+      enabled: true
 
 banner:
   location: banner.txt
@@ -154,8 +153,22 @@ info:
   build-time: @build.timestamp@
   keywhiz-cli-version: ${oneops.keywhiz.cli.version}
   keywhiz-cli-url: ${oneops.keywhiz.cli.download-url}
+  transparent-proxy: ${oneops.proxy.enabled}
   java: ${java.version}
   java-vendor: ${java.vendor}
   os-name: ${os.name}
   os-arch: ${os.arch}
   os-version: ${os.version}
+
+#security:
+#  user:
+#    role: ADMIN
+#    name: xxxx
+#    password: xxxx
+#
+#endpoints:
+#  env:
+#    keys-to-sanitize:
+#  configprops:
+#    keys-to-sanitize:
+
