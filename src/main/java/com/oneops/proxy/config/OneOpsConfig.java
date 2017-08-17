@@ -17,7 +17,6 @@
  *******************************************************************************/
 package com.oneops.proxy.config;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.http.HttpHeaders;
@@ -44,6 +43,8 @@ public class OneOpsConfig {
     @NotNull
     private Auth auth;
 
+    private Proxy proxy;
+
     public Keywhiz getKeywhiz() {
         return keywhiz;
     }
@@ -68,18 +69,27 @@ public class OneOpsConfig {
         this.auth = auth;
     }
 
+    public Proxy getProxy() {
+        return proxy;
+    }
+
+    public void setProxy(Proxy proxy) {
+        this.proxy = proxy;
+    }
+
     @Override
     public String toString() {
         return "OneOpsConfig{" +
                 "keywhiz=" + keywhiz +
                 ", ldap=" + ldap +
                 ", auth=" + auth +
+                ", proxy=" + proxy +
                 '}';
     }
 
     public static class Keywhiz {
 
-        @NotBlank
+        @NotNull
         private String baseUrl;
 
         private String svcUser;
@@ -206,7 +216,7 @@ public class OneOpsConfig {
     }
 
     public static class LDAP {
-        @NotBlank
+        @NotNull
         private String server;
 
         @Min(1)
@@ -421,13 +431,13 @@ public class OneOpsConfig {
         @NotNull
         private char[] signingKey;
 
-        @NotBlank
+        @NotNull
         private String header = HttpHeaders.AUTHORIZATION;
 
-        @NotBlank
+        @NotNull
         private String issuer = "OneOps-Proxy";
 
-        @NotBlank
+        @NotNull
         private String tokenType = "Bearer";
 
         /**
@@ -497,6 +507,90 @@ public class OneOpsConfig {
                     ", tokenType='" + tokenType + '\'' +
                     ", compressionEnabled=" + compressionEnabled +
                     ", expiresInSec=" + expiresInSec +
+                    '}';
+        }
+    }
+
+    /**
+     * OneOps Http Transparent Proxy configuration.
+     */
+    public static class Proxy {
+
+        /**
+         * A mandatory URI like http://host:80/context to which the request is proxied.
+         */
+        @NotNull
+        private String proxyTo;
+
+        /**
+         * An optional URI prefix that is stripped from the start of the forwarded URI.
+         */
+        @NotNull
+        private String prefix = "/proxy";
+
+        /**
+         * The name to use in the Via header: Via: http/1.1 <viaHost>
+         */
+        private String viaHost = "OneOps Proxy";
+
+        /**
+         * <code>true</code> if it should trust all https connection to {@link #proxyTo} server.
+         */
+        private boolean trustAll = true;
+
+        /**
+         * <code>true</code> if the proxy is enabled.
+         */
+        private boolean enabled = false;
+
+        public String getProxyTo() {
+            return proxyTo;
+        }
+
+        public void setProxyTo(String proxyTo) {
+            this.proxyTo = proxyTo;
+        }
+
+        public String getPrefix() {
+            return prefix;
+        }
+
+        public void setPrefix(String prefix) {
+            this.prefix = prefix;
+        }
+
+        public boolean isTrustAll() {
+            return trustAll;
+        }
+
+        public String getViaHost() {
+            return viaHost;
+        }
+
+        public void setViaHost(String viaHost) {
+            this.viaHost = viaHost;
+        }
+
+        public void setTrustAll(boolean trustAll) {
+            this.trustAll = trustAll;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        @Override
+        public String toString() {
+            return "Proxy{" +
+                    "proxyTo='" + proxyTo + '\'' +
+                    ", prefix='" + prefix + '\'' +
+                    ", viaHost='" + viaHost + '\'' +
+                    ", trustAll=" + trustAll +
+                    ", enabled=" + enabled +
                     '}';
         }
     }
