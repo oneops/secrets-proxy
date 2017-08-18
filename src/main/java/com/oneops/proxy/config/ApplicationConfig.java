@@ -28,8 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringBootVersion;
-import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -49,7 +47,7 @@ import static com.oneops.proxy.security.KeywhizKeyStore.Name.LDAP;
 @Configuration
 public class ApplicationConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(ApplicationConfig.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * A {@link BeanFactoryPostProcessor} to validate the properties.
@@ -70,7 +68,7 @@ public class ApplicationConfig {
     @Bean
     public CommandLineRunner init(OneOpsConfig config) {
         return args -> {
-            log.info("Starting OneOps Keywhiz Proxy...");
+            log.info("Starting OneOps Secret Management Server...");
             log.info("Application config, " + config);
             String cliArgs = String.join(", ", args);
             log.info("Application arguments are, " + ((cliArgs.isEmpty()) ? "N/A" : cliArgs));
@@ -127,16 +125,6 @@ public class ApplicationConfig {
     @Lazy
     public LdapClient ldapClient(OneOpsConfig config, @Qualifier("ldapKeyStore") KeywhizKeyStore keywhizKeyStore) throws GeneralSecurityException {
         return new LdapClient(config.getLdap(), keywhizKeyStore);
-    }
-
-    /**
-     * Contribute SpringBoot version to "/info".
-     *
-     * @return {@link InfoContributor}
-     */
-    @Bean
-    public InfoContributor versionInfo() {
-        return builder -> builder.withDetail("spring-boot.version", SpringBootVersion.getVersion());
     }
 
     /**

@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Configuration;
 @EnableCaching
 public class CacheConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(CacheConfig.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     /**
      * Tunes the auto configured Cache manager.

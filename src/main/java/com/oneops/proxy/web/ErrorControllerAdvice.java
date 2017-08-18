@@ -72,6 +72,7 @@ public class ErrorControllerAdvice {
         return new ResponseEntity<>(errRes, status);
     }
 
+
     /**
      * Returns the http status from request.
      */

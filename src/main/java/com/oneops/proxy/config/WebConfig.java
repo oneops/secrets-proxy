@@ -45,7 +45,7 @@ import static org.springframework.http.MediaType.APPLICATION_XML;
 //@EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-    private static final Logger log = LoggerFactory.getLogger(WebConfig.class);
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
