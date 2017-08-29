@@ -1,6 +1,21 @@
-# Default Secrets and Log directory
+## Keywhiz Proxy Env Vars
+
+   All the external configurations to run **Keywhiz Proxy** server are set in the [keywhiz-proxy-env](keywhiz-proxy-env) 
+   file. 
+   
+   >In OneOps production setup, the actual env configuration file is securely stored in [Keywhiz](https://github.com/square/keywhiz) 
+   >and made available to running servers using Keywhiz client component under `/secrets` directory.
+   
+   The following are environment variables and it's description.
+   
+   ####  Secrets and Logs Config
+   
+   * **SECRETS_DIR** - The directory to look for secrets files. Defaults to `/secrets`.
+   * **LOGGING_PATH** - The directory for application/access/audit and runtime logs. Defaults to `/log`.
+
+# Default 
 # ---------------------------------
-SECRETS_DIR=/secrets
+=/secrets
 LOGGING_PATH=/log
 
 # Keywhiz Proxy Server config
