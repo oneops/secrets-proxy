@@ -51,7 +51,7 @@ server:
 jetty:
   thread-pool:
     min-threads: 8
-    max-threads: 250
+    max-threads: 200
     idle-timeout: 60000
   jmx:
     enabled: true
@@ -59,6 +59,7 @@ jetty:
 # Proxy Configuration
 # ===================
 oneops:
+  base-url: ${ONEOPS_BASE_URL}
   keywhiz:
     base-url: https://keywhiz.com:4444/
     svc-user: ${KEYWHIZ_USER}
@@ -113,12 +114,12 @@ spring:
   jackson.serialization:
       INDENT_OUTPUT: true
   datasource:
-    url: ${ONEOPS_DB_URL:jdbc:postgresql://xxxx:5432/xxxx}
+    url: ${ONEOPS_DB_URL:jdbc:postgresql://xxxxx.${oneops.base-url}:5432/xxxxx}
     username: ${ONEOPS_DB_USER}
     password: ${ONEOPS_DB_PASS}
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
-       maximum-pool-size: 4
+       maximum-pool-size: 5
        pool-name: keywhiz-proxy
   jooq:
     sql-dialect: postgres
