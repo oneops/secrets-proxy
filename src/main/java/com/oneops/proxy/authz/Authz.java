@@ -19,6 +19,7 @@ package com.oneops.proxy.authz;
 
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.model.AppGroup;
+import com.oneops.proxy.model.AppSecret;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -69,6 +70,17 @@ public class Authz {
                     + appGroup.getNsPath());
         }
         return true;
+    }
+
+    /**
+     * Checks if {@link OneOpsUser} is authorized to manage secrets for the group.
+     *
+     * @param appSecret App secret details including the group.
+     * @param user      Authenticated user.
+     * @return <code>true</code> if the user is authorized.
+     */
+    public boolean isAuthorized(@Nonnull AppSecret appSecret, @Nonnull OneOpsUser user) {
+        return isAuthorized(appSecret.getGroup(), user);
     }
 
     /**

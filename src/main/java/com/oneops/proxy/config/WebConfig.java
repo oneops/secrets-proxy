@@ -18,7 +18,8 @@
 package com.oneops.proxy.config;
 
 import com.oneops.proxy.model.AppGroup;
-import com.oneops.proxy.web.AppGroupArgResolver;
+import com.oneops.proxy.web.support.AppGroupArgResolver;
+import com.oneops.proxy.web.support.AppSecretArgResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -77,5 +78,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argResolvers) {
         log.info("Configuring AppGroup arg resolver for the application.");
         argResolvers.add(new AppGroupArgResolver());
+        argResolvers.add(new AppSecretArgResolver());
     }
 }

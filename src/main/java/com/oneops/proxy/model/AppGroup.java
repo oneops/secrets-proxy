@@ -24,21 +24,30 @@ import java.net.URLEncoder;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- * Represents keywhiz application group.
+ * A domain model to represents keywhiz application group in
+ * {@link com.oneops.proxy.web.GroupController}. {@link AppGroup}
+ * object will get automatically injected into controller methods
+ * with necessary information extracted from the request path variables.
  *
  * @author Suresh G
  */
 public class AppGroup {
 
     /**
-     * Parameter name used by default.
+     * Application group path name used by default.
      */
     public static final String APP_GROUP_PARAM = "appGroup";
 
     /**
      * Application group name separator.
      */
-    private static final String GROUP_SEP = "_";
+    public static final String GROUP_SEP = "_";
+
+    /**
+     * Additional metadata used when creating new groups.
+     */
+    public static final String USERID_METADATA = "_userId";
+    public static final String DOMAIN_METADATA = "_domain";
 
     private final String domain;
     private final String name;
@@ -65,7 +74,7 @@ public class AppGroup {
      * @param name   application group name
      * @throws IllegalArgumentException if the app group name format is not valid.
      */
-    private AppGroup(@Nonnull String domain, @Nonnull String name) {
+    public AppGroup(@Nonnull String domain, @Nonnull String name) {
         this.domain = domain;
         this.name = name;
 
@@ -139,7 +148,7 @@ public class AppGroup {
 
     /**
      * Returns the http url encoded {@link #getGroupName()}. Use this method when making
-     * requests to keywhiz servers.
+     * requests to keywhiz servers. The URL encoded group name is used for request con
      */
     public String getKeywhizGroup() throws UnsupportedEncodingException {
         return URLEncoder.encode(getGroupName(), "UTF-8");

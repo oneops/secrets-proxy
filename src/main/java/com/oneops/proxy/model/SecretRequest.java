@@ -39,6 +39,10 @@ public class SecretRequest {
     @JsonProperty
     private Map<String, String> metadata;
 
+    /**
+     * Secret expiry. For keystores, it is recommended to use the expiry of the earliest key.
+     * Format should be 2006-01-02T15:04:05Z or seconds since epoch.
+     */
     @JsonProperty
     private long expiry;
 

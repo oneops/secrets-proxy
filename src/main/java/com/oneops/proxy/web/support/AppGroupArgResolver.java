@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.web;
+package com.oneops.proxy.web.support;
 
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.config.WebConfig;
