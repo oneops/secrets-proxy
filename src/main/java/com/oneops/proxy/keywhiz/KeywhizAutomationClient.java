@@ -289,13 +289,13 @@ public class KeywhizAutomationClient extends HttpClient {
      *
      * @param group Keywhiz group name.
      * @param time  Timestamp for farthest expiry to include.
-     * @return List of secrets expiring soon.
+     * @return List of secrets name expiring soon.
      * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
      *                     problem or timeout.
      */
-    public List<SecretDetailResponseV2> getSecretsExpiring(String group, long time) throws IOException {
+    public List<String> getSecretsExpiring(String group, long time) throws IOException {
         String httpResponse = httpGet(baseUrl.resolve("/automation/v2/secrets/expiring/" + time + "/" + group));
-        return mapper.readValue(httpResponse, new TypeReference<List<SecretDetailResponseV2>>() {
+        return mapper.readValue(httpResponse, new TypeReference<List<String>>() {
         });
     }
 
