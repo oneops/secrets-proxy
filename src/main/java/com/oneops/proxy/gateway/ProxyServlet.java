@@ -52,6 +52,14 @@ public class ProxyServlet extends org.eclipse.jetty.proxy.ProxyServlet.Transpare
      */
     private boolean trustAllCerts;
 
+    @Override
+    public void init(ServletConfig config) throws ServletException {
+        super.init(config);
+        X_AUTH_HEADER = getInitParameter(InitParams.xAuthHeader.name());
+        trustAllCerts = Boolean.parseBoolean(getInitParameter(InitParams.trustAll.name()));
+        log.info("Initializing the Http Proxy with params: " + Collections.list(config.getInitParameterNames()));
+    }
+
     /**
      * Async http client used to connect to <b>proxyTo</b> server.
      * TLS config is usually done here.
@@ -64,15 +72,6 @@ public class ProxyServlet extends org.eclipse.jetty.proxy.ProxyServlet.Transpare
         sslFactory.setTrustAll(trustAllCerts);
         return new HttpClient(sslFactory);
     }
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        X_AUTH_HEADER = getInitParameter(InitParams.xAuthHeader.name());
-        trustAllCerts = Boolean.parseBoolean(getInitParameter(InitParams.trustAll.name()));
-        log.info("Initializing the Http Proxy with params: " + Collections.list(config.getInitParameterNames()));
-    }
-
 
     /**
      * Customize the headers of forwarding proxy requests. Make sure to remove

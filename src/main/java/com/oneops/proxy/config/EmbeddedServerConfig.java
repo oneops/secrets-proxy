@@ -23,13 +23,13 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerWrapper;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -58,7 +58,6 @@ public class EmbeddedServerConfig {
      * @param minThreads  thread pool max thread
      * @param idleTimeout maximum thread idle time
      * @param jmxEnabled  true, if jetty jmx is enabled.
-     * @param config      OneOps config
      * @return {@link JettyEmbeddedServletContainerFactory}
      */
     @Bean
@@ -66,8 +65,7 @@ public class EmbeddedServerConfig {
                                                                                      @Value("${jetty.thread-pool.max-threads:200}") final int maxThreads,
                                                                                      @Value("${jetty.thread-pool.min-threads:8}") final int minThreads,
                                                                                      @Value("${jetty.thread-pool.idle-timeout:60000}") final int idleTimeout,
-                                                                                     @Value("${jetty.jmx.enabled:true}") final boolean jmxEnabled,
-                                                                                     OneOpsConfig config) {
+                                                                                     @Value("${jetty.jmx.enabled:true}") final boolean jmxEnabled) {
         log.info("Configuring Jetty server.");
         final JettyEmbeddedServletContainerFactory factory = new JettyEmbeddedServletContainerFactory(port);
         factory.addServerCustomizers(server -> {
@@ -81,49 +79,36 @@ public class EmbeddedServerConfig {
                 log.info("Exposing Jetty managed beans to the JMX platform server.");
                 server.addBean(new MBeanContainer(ManagementFactory.getPlatformMBeanServer()));
             }
-            // OneOps Http Proxy
-            if (config.getProxy().isEnabled()) {
-                configureHttpProxy(config, server.getHandlers());
-            } else {
-                log.warn("OneOps Http Proxy is disabled!");
-            }
         });
         return factory;
     }
 
     /**
-     * Configures a custom jetty http proxy servlet. The proxy configuration
-     * is done on the <b>application.yaml</b> file.
+     * Configures a custom jetty http proxy servlet based on <b>oneops.proxy.enabled</b>
+     * config property. The proxy configuration is done on the <b>application.yaml</b> file.
      *
-     * @param config   {@link OneOpsConfig}
-     * @param handlers Jetty Server handles to handle incoming http requests.
+     * @param config OneOps config
+     * @return {@link ServletRegistrationBean}
      */
-    private void configureHttpProxy(OneOpsConfig config, Handler... handlers) {
-        for (Handler handler : handlers) {
-            if (handler instanceof WebAppContext) {
+    @Bean
+    @ConditionalOnProperty("oneops.proxy.enabled")
+    public ServletRegistrationBean registerProxyServlet(OneOpsConfig config) {
+        log.info("OneOps Http Proxy is enabled.");
+        OneOpsConfig.Proxy proxyCfg = config.getProxy();
 
-                OneOpsConfig.Proxy proxyCfg = config.getProxy();
-                Map<String, String> initParams = new HashMap<>();
-                initParams.put(proxyTo.name(), proxyCfg.getProxyTo());
-                initParams.put(prefix.name(), proxyCfg.getPrefix());
-                initParams.put(viaHost.name(), proxyCfg.getViaHost());
-                initParams.put(trustAll.name(), String.valueOf(proxyCfg.isTrustAll()));
-                initParams.put(xAuthHeader.name(), config.getAuth().getHeader());
+        Map<String, String> initParams = new HashMap<>();
+        initParams.put(proxyTo.name(), proxyCfg.getProxyTo());
+        initParams.put(prefix.name(), proxyCfg.getPrefix());
+        initParams.put(viaHost.name(), proxyCfg.getViaHost());
+        initParams.put(trustAll.name(), String.valueOf(proxyCfg.isTrustAll()));
+        initParams.put(xAuthHeader.name(), config.getAuth().getHeader());
 
-                ServletHolder proxyServlet = new ServletHolder("OneOps Proxy Servlet", ProxyServlet.class);
-                proxyServlet.setInitParameters(initParams);
-
-                String path = proxyCfg.getPrefix() + "/*";
-                WebAppContext webApp = (WebAppContext) handler;
-                webApp.getServletHandler().addServletWithMapping(proxyServlet, path);
-                log.info("Configured OneOps proxy servlet with mapping: " + path + " for " + webApp.getDisplayName());
-
-            } else if (handler instanceof HandlerWrapper) {
-                configureHttpProxy(config, ((HandlerWrapper) handler).getHandler());
-            } else if (handler instanceof HandlerCollection) {
-                configureHttpProxy(config, ((HandlerCollection) handler).getHandlers());
-            }
-        }
+        ServletRegistrationBean servletBean = new ServletRegistrationBean(new ProxyServlet(), proxyCfg.getPrefix() + "/*");
+        servletBean.setName("OneOps Proxy Servlet");
+        servletBean.setInitParameters(initParams);
+        servletBean.setAsyncSupported(true);
+        log.info("Configured OneOps proxy servlet with mapping: " + proxyCfg.getPrefix());
+        return servletBean;
     }
 
     /**

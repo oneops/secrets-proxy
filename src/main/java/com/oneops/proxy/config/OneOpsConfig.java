@@ -34,6 +34,13 @@ import java.util.List;
 @ConfigurationProperties(value = "oneops")
 public class OneOpsConfig {
 
+    /**
+     * The base url used for different oneops services. The url will change
+     * depending on the domain.
+     */
+    @NotNull
+    private String baseUrl;
+
     @NotNull
     private Keywhiz keywhiz;
 
@@ -44,6 +51,14 @@ public class OneOpsConfig {
     private Auth auth;
 
     private Proxy proxy;
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
 
     public Keywhiz getKeywhiz() {
         return keywhiz;
@@ -80,7 +95,8 @@ public class OneOpsConfig {
     @Override
     public String toString() {
         return "OneOpsConfig{" +
-                "keywhiz=" + keywhiz +
+                "baseUrl='" + baseUrl + '\'' +
+                ", keywhiz=" + keywhiz +
                 ", ldap=" + ldap +
                 ", auth=" + auth +
                 ", proxy=" + proxy +
