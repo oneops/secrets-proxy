@@ -165,7 +165,7 @@ public class JwtTokenService {
      * @param claims JWT claims.
      * @return list of {@link SimpleGrantedAuthority}
      */
-    private @Nullable
+    private @Nonnull
     List<GrantedAuthority> getAuthorities(@Nonnull Claims claims) {
         String rolesStr = claims.getOrDefault(ROLE_CLAIM, "").toString();
         return Arrays.stream(rolesStr.split(","))

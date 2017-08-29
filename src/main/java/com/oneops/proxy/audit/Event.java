@@ -89,6 +89,6 @@ public class Event {
     @Override
     public String toString() {
         String extInfo = extraInfo == null ? "" : extraInfo.toString();
-        return String.format("%-25s | User: %-15s | Group: %-50s | Object: %-20s | ExtraInfo: %s ", type, user, appGroup, objectName, extInfo);
+        return String.format("%-25s | User: %-15s | Group: %-45s | Object: %-30s | ExtraInfo: %s ", type, user, appGroup, objectName, extInfo);
     }
 }

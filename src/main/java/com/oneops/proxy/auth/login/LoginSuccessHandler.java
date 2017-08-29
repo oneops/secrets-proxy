@@ -86,7 +86,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         }
 
         String token = tokenService.generateToken(user);
-        auditLog.log(new Event(GENERATE_TOKEN, user.getUsername(), "N/A", req.getRequestURI()));
+        auditLog.log(new Event(GENERATE_TOKEN, user.getUsername(), user.getDomain(), "N/A"));
 
         LoginResponse loginResponse = new LoginResponse(token, tokenService.getTokenType(), tokenService.getExpiresInSec());
         res.setStatus(HttpStatus.OK.value());
