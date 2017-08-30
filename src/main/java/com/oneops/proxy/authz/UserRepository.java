@@ -24,6 +24,7 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Nonnull;
@@ -35,6 +36,7 @@ import static com.oneops.user.tables.CiProxies.CI_PROXIES;
 import static com.oneops.user.tables.CiProxiesTeams.CI_PROXIES_TEAMS;
 import static com.oneops.user.tables.Teams.TEAMS;
 import static com.oneops.user.tables.Users.USERS;
+import static java.lang.System.currentTimeMillis;
 
 /**
  * User repository class to fetch OneOps user/team/group info. This is mainly used to
@@ -56,8 +58,11 @@ public class UserRepository {
 
     private DSLContext dslContext;
 
-    public UserRepository(DSLContext dslContext) {
+    private DropwizardMetricServices metricService;
+
+    public UserRepository(DSLContext dslContext, DropwizardMetricServices metricService) {
         this.dslContext = dslContext;
+        this.metricService = metricService;
     }
 
     /**
@@ -77,6 +82,8 @@ public class UserRepository {
      */
     public List<OneOpsTeam> getTeams(@Nonnull final String userName, @Nonnull final AppGroup appGroup) {
         log.debug("Retrieving teams having user: " + userName + " for application group: " + appGroup.getNsPath());
+
+        long start = currentTimeMillis();
         Condition teamCondition = USERS.USERNAME.equalIgnoreCase(userName)
                 .and(CI_PROXIES.NS_PATH.equalIgnoreCase(appGroup.getOrgNsPath())
                         .and(CI_PROXIES.CI_NAME.equalIgnoreCase(appGroup.getAssembly())
@@ -88,7 +95,7 @@ public class UserRepository {
                 .innerJoin(TEAMS_USERS).on(TEAMS_USERS.TEAM_ID.eq(TEAMS.ID))
                 .innerJoin(USERS).on(USERS.ID.eq(TEAMS_USERS.USER_ID))
                 .where(teamCondition).fetch();
-
+        metricService.submit("timer.oneops.user.teams", currentTimeMillis() - start);
         return records.stream().map(UserRepository::mapRecord).collect(Collectors.toList());
     }
 
@@ -100,6 +107,8 @@ public class UserRepository {
      */
     public List<OneOpsTeam> getAllTeams(@Nonnull final AppGroup appGroup) {
         log.debug("Retrieving all teams for application group: " + appGroup.getNsPath());
+
+        long start = currentTimeMillis();
         Condition teamCondition = CI_PROXIES.NS_PATH.equalIgnoreCase(appGroup.getOrgNsPath())
                 .and(CI_PROXIES.CI_NAME.equalIgnoreCase(appGroup.getAssembly())
                         .and(CI_PROXIES.CI_CLASS_NAME.eq("account.Assembly")));
@@ -109,8 +118,7 @@ public class UserRepository {
                 innerJoin(CI_PROXIES_TEAMS).on(CI_PROXIES.ID.eq(CI_PROXIES_TEAMS.CI_PROXY_ID)).
                 innerJoin(TEAMS).on(TEAMS.ID.eq(CI_PROXIES_TEAMS.TEAM_ID)).
                 where(teamCondition).fetch();
-
+        metricService.submit("timer.oneops.user.allteams", currentTimeMillis() - start);
         return records.stream().map(UserRepository::mapRecord).collect(Collectors.toList());
     }
-
 }
