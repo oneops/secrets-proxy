@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.health;
+package com.oneops.proxy.endpoint;
 
 import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
 import org.springframework.boot.actuate.endpoint.AbstractEndpoint;

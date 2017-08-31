@@ -15,7 +15,7 @@
  *   limitations under the License.
  *
  *******************************************************************************/
-package com.oneops.proxy.health;
+package com.oneops.proxy.endpoint;
 
 import com.oneops.proxy.config.OneOpsConfig;
 import org.springframework.beans.factory.annotation.Value;

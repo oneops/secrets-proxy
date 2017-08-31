@@ -63,6 +63,7 @@ public class ErrorController extends BasicErrorController {
     ResponseEntity<ErrorResponse> errorResponse(HttpServletRequest req, HttpServletResponse res) {
         Map<String, Object> body = getErrorAttributes(req, isIncludeStackTrace(req, MediaType.ALL));
         HttpStatus status = getStatus(req);
+
         ErrorResponse errRes = new ErrorResponse(body);
         return new ResponseEntity<>(errRes, status);
     }

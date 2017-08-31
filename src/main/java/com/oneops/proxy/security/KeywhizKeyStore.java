@@ -23,7 +23,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ResourceLoader;
 
 import javax.annotation.Nullable;
-import javax.net.ssl.*;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.GeneralSecurityException;

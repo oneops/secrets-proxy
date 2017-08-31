@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.oneops.proxy.metrics.MetricsUtilService.binaryPrefix;
 import static com.oneops.proxy.model.AppSecret.*;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -64,26 +65,6 @@ public class SecretService {
 
     public SecretService(OneOpsConfig config) {
         maxSecretSize = config.getKeywhiz().getSecretMaxSize();
-    }
-
-    /**
-     * Converts a given number to a string preceded by the corresponding
-     * binary International System of Units (SI) prefix.
-     */
-    public String binaryPrefix(long size) {
-        long unit = 1000;
-        String suffix = "B";
-
-        if (size < unit) {
-            return format("%d %s", size, suffix);
-        } else {
-            String prefix = "KMGTPEZY";
-            int exp = (int) (Math.log(size) / Math.log(unit));
-            // Binary Prefix mnemonic that is prepended to the units.
-            String binPrefix = prefix.charAt(exp - 1) + suffix;
-            // Count => (unit^0.x * unit^exp)/unit^exp
-            return format("%.2f %s", size / Math.pow(unit, exp), binPrefix);
-        }
     }
 
     /**
