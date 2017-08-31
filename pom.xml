@@ -59,6 +59,7 @@
         <commonlang.version>3.6</commonlang.version>
         <postgresql.version>9.3-1104-jdbc4</postgresql.version>
         <hikaricp.version>2.6.3</hikaricp.version>
+        <springfox.version>2.7.0</springfox.version>
         <logback.access.starter.version>2.5.0</logback.access.starter.version>
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd hh:mm:ss a z</maven.build.timestamp.format>
@@ -214,6 +215,12 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>${jjwt.version}</version>
+        </dependency>
+        <!-- Swagger2 support -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox.version}</version>
         </dependency>
         <!-- Feature flags-->
         <dependency>
