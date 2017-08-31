@@ -27,7 +27,7 @@ import com.oneops.proxy.keywhiz.model.v2.*;
 import com.oneops.proxy.model.*;
 import com.oneops.proxy.security.annotations.AuthzRestController;
 import com.oneops.proxy.security.annotations.CurrentUser;
-import com.oneops.proxy.services.SecretService;
+import com.oneops.proxy.service.SecretService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
