@@ -18,11 +18,9 @@
 package com.oneops.proxy.auth.user;
 
 import com.oneops.proxy.ldap.LdapClient;
+import com.oneops.proxy.metrics.MetricsUtilService;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.LdapException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import sun.security.x509.X500Name;
@@ -31,7 +29,6 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 
 import static com.oneops.proxy.auth.user.OneOpsUser.Role.USER;
-import static java.lang.System.*;
 import static java.util.Collections.singletonList;
 
 /**
@@ -42,13 +39,11 @@ import static java.util.Collections.singletonList;
 @Service
 public class LdapUserService {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
     private LdapClient ldapClient;
 
-    private DropwizardMetricServices metricService;
+    private MetricsUtilService metricService;
 
-    public LdapUserService(LdapClient ldapClient, DropwizardMetricServices metricService) {
+    public LdapUserService(LdapClient ldapClient, MetricsUtilService metricService) {
         this.ldapClient = ldapClient;
         this.metricService = metricService;
     }
@@ -66,9 +61,7 @@ public class LdapUserService {
      */
     public @Nullable
     OneOpsUser authenticate(String userName, char[] password, String domain) throws LdapException {
-        long start = currentTimeMillis();
-        LdapEntry ldapUser = ldapClient.authenticate(userName, password);
-        metricService.submit("timer.oneops.ldap.auth", currentTimeMillis() - start);
+        LdapEntry ldapUser = metricService.time("oneops.ldap.auth", () -> ldapClient.authenticate(userName, password));
 
         if (ldapUser != null) {
             String cn = getCommonName(ldapUser, userName);
@@ -99,3 +92,4 @@ public class LdapUserService {
         return cn;
     }
 }
+

@@ -18,8 +18,6 @@
 package com.oneops.proxy.auth.login;
 
 import com.oneops.proxy.auth.token.TokenAuthProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
@@ -37,8 +35,6 @@ import java.io.IOException;
  */
 @Component
 public class LoginFailureHandler implements AuthenticationFailureHandler {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest req, HttpServletResponse res, AuthenticationException exception) throws IOException, ServletException {
