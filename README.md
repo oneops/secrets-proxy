@@ -95,10 +95,10 @@
     
 ### Generate JOOQ source.
 
-    ```
-    $ ./mvnw clean package -P generate
-    # $ ./mvnw versions:display-dependency-updates
-    ```
+```bash
+ $ ./mvnw clean package -P generate
+ # $ ./mvnw versions:display-dependency-updates
+```
 
 #### Misc
  
