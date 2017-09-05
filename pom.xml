@@ -4,13 +4,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.oneops</groupId>
-    <artifactId>keywhiz-proxy</artifactId>
+    <artifactId>secrets-proxy</artifactId>
     <version>1.1.0</version>
     <packaging>jar</packaging>
 
-    <name>OneOps Keywhiz Proxy</name>
-    <description>A secure proxy service for Keywhiz CLI.</description>
-    <url>https://github.com/oneops/keywhiz-proxy</url>
+    <name>OneOps Secrets Proxy</name>
+    <description>A secure proxy service for managing OneOps secrets.</description>
+    <url>https://github.com/oneops/secrets-proxy</url>
 
     <licenses>
         <license>
@@ -20,14 +20,14 @@
     </licenses>
 
     <scm>
-        <developerConnection>scm:git:git@github.com:oneops/keywhiz-proxy.git</developerConnection>
-        <url>https://github.com/oneops/keywhiz-proxy</url>
+        <developerConnection>scm:git:git@github.com:oneops/secrets-proxy.git</developerConnection>
+        <url>https://github.com/oneops/secrets-proxy</url>
         <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/oneops/keywhiz-proxy/issues</url>
+        <url>https://github.com/oneops/secrets-proxy/issues</url>
     </issueManagement>
 
     <developers>
