@@ -1,6 +1,6 @@
 <div align="center">
 
-# <img src="docs/images/Secrets-Proxy.png" alt="Kotlin" width=40 height=40> OneOps Secrets Proxy 
+# <img src="docs/images/Secrets-Proxy.png" alt="Kotlin" width=30 height=30> OneOps Secrets Proxy 
 
 [![api-doc][apidoc-svg]][apidoc-url] [![java-doc][javadoc-svg]][javadoc-url] [![changelog][cl-svg]][cl-url] [![license][license-svg]][license-url]  
 
@@ -8,10 +8,8 @@
  
 </div>
 
-
-## Architecture
-
 <img src="docs/images/keywhiz-proxy-arch.svg" alt="Kotlin" width=750 height=500>
+
 
 ## OneOps Secrets-Proxy Keystores
 
@@ -94,16 +92,11 @@
     source conf-file
     set +o allexport
     ```
-### Generate source.
+### Generate source (Database).
 
 ```
 $ ./mvnw clean package -P generate
-```
-
-#### Check for new dependency updates.
-
-```
-$ ./mvnw versions:display-dependency-updates
+# $ ./mvnw versions:display-dependency-updates
 ```
 
 #### Misc
@@ -112,8 +105,7 @@ $ ./mvnw versions:display-dependency-updates
   * JWT Token Verification - https://jwt.io/
   * [REST API References](https://news.ycombinator.com/item?id=11971491)   
 
-TODO
-#####
+#### TODO
 
  * Move the automation client to Retrofit.
  * X509 Authentication ??
