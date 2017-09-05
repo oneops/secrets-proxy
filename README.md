@@ -92,16 +92,17 @@
     source conf-file
     set +o allexport
     ```
-### Generate source (Database).
+    
+### Generate JOOQ source.
 
-    ```bash
+    ```
     $ ./mvnw clean package -P generate
     # $ ./mvnw versions:display-dependency-updates
     ```
 
 #### Misc
  
-  * Keywhiz Tools - https://github.com/oneops/secrets-proxy/releases/tag/tools
+  * Secrets Tools - https://github.com/oneops/secrets-proxy/releases/tag/tools
   * JWT Token Verification - https://jwt.io/
   * [REST API References](https://news.ycombinator.com/item?id=11971491)   
 
