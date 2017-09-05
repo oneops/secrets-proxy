@@ -99,7 +99,7 @@ oneops:
     expires-in-sec: 3600
     compression-enabled: false
   proxy:
-    enabled: true
+    enabled: false
     prefix: /proxy
     proxy-to: https://httpbin.org/
     via-host: OneOps Proxy

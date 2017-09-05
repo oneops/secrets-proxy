@@ -1,10 +1,10 @@
-# OneOps Keywhiz Proxy Service Unit File
-# Created On : 08/Aug/2017
+# OneOps Secrets Proxy Service Unit File
+# Updated On  : 05/Sep/2017
 ########################################
 
 [Unit]
-Description=OneOps Keywhiz Proxy Service
-Documentation=https://oneops.github.com/keywhiz-proxy/apidocs
+Description=OneOps Secrets Proxy Service
+Documentation=https://oneops.github.com/secrets-proxy/apidocs
 After=network.target syslog.target ntpd.service
 Wants=ntpd.service
 
