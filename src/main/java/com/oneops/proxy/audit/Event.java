@@ -20,7 +20,7 @@ package com.oneops.proxy.audit;
 import java.util.Map;
 
 /**
- * An audit event for keywhiz-proxy.
+ * An audit event for secrets-proxy.
  * <p>
  * Eg: <b>SECRET_CREATE | User: suresh | Group: oneops_keywhiz-proxy_prod | Object: prod_db_password.txt | ExtraInfo:</b>
  *

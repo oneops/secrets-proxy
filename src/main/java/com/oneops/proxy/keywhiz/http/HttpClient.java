@@ -18,8 +18,7 @@
 package com.oneops.proxy.keywhiz.http;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -28,17 +27,14 @@ import com.oneops.proxy.security.KeywhizKeyStore;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.net.CookieManager;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
+import java.security.*;
 
-import static com.google.common.net.HttpHeaders.CONTENT_TYPE;
-import static com.google.common.net.HttpHeaders.USER_AGENT;
+import static com.google.common.net.HttpHeaders.*;
 import static com.oneops.proxy.keywhiz.http.HttpStatus.*;
 import static java.net.CookiePolicy.ACCEPT_ALL;
 import static java.util.Collections.singletonList;
@@ -133,7 +129,7 @@ public abstract class HttpClient {
                 .addInterceptor(chain -> {
                     Request req = chain.request().newBuilder()
                             .addHeader(CONTENT_TYPE, JSON.toString())
-                            .addHeader(USER_AGENT, "OneOps-Keywhiz-Proxy")
+                            .addHeader(USER_AGENT, "OneOps-Secrets-Proxy")
                             .build();
                     return chain.proceed(req);
                 })
