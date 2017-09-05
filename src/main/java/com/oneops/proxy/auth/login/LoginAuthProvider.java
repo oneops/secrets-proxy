@@ -17,17 +17,11 @@
  *******************************************************************************/
 package com.oneops.proxy.auth.login;
 
-import com.oneops.proxy.auth.user.LdapUserService;
-import com.oneops.proxy.auth.user.OneOpsUser;
+import com.oneops.proxy.auth.user.*;
 import org.ldaptive.LdapException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
+import org.slf4j.*;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.*;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -64,15 +58,15 @@ public class LoginAuthProvider implements AuthenticationProvider {
         String password = (String) auth.getCredentials();
         String domain = (String) auth.getDetails();
 
-        OneOpsUser user;
+        OneOpsUser user = null;
         try {
             user = ldapUserService.authenticate(userName, password.toCharArray(), domain);
-            if (user == null) {
-                throw new BadCredentialsException("Invalid Username/Password.");
-            }
         } catch (LdapException ex) {
-            log.debug("Ldap Authentication failed for user " + userName, ex);
-            throw new AuthenticationServiceException("Authentication Service Error.", ex);
+            log.debug("Ldap Authentication failed for user: " + userName, ex);
+        }
+
+        if (user == null) {
+            throw new BadCredentialsException("Invalid Username/Password.");
         }
 
         // Check for user privileges.

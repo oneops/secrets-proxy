@@ -38,7 +38,7 @@ public class MetricsUtilService {
     }
 
     /**
-     * A helper method to time LDAP operations or errors.
+     * A helper method to time operations or errors.
      */
     public <T, E extends Exception> T time(String metric, ThrowingSupplier<T, E> lambda) throws E {
         long start = currentTimeMillis();

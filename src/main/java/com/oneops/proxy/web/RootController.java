@@ -18,9 +18,12 @@
 package com.oneops.proxy.web;
 
 import com.oneops.proxy.model.RootResponse;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 import static com.oneops.proxy.config.Constants.APP_NAME;
 
@@ -30,6 +33,7 @@ import static com.oneops.proxy.config.Constants.APP_NAME;
  * @author Suresh
  */
 @RestController
+@Api(value = "Root EndPoint", description = "Secrets Proxy and API doc info.")
 public class RootController {
 
     /**
@@ -39,10 +43,20 @@ public class RootController {
     private String version;
 
     /**
-     * Root of the application.
+     * Application info.
      */
     @GetMapping(path = "/")
-    public RootResponse root() {
+    @ApiOperation(value = "Version Info", notes = "Token header is not required for this request.")
+    public RootResponse info() {
         return new RootResponse(APP_NAME, version);
+    }
+
+    /**
+     * Redirect to Swagger API doc.
+     */
+    @GetMapping(path = "/apidocs")
+    @ApiOperation(value = "Swagger API Doc", notes = "Token header is not required for this request.")
+    public void apiDoc(HttpServletResponse res) throws IOException {
+        res.sendRedirect("/swagger-ui.html");
     }
 }

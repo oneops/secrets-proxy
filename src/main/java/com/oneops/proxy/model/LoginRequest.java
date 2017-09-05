@@ -18,23 +18,28 @@
 package com.oneops.proxy.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
 
 import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 
 /**
- * Login request for user authentication.
+ * Login request for user authentication. {@link ApiModelProperty} is used
+ * only for generating swagger documentation.
  *
  * @author Suresh
  */
 public class LoginRequest {
 
     @JsonProperty
+    @ApiModelProperty(example = "AD Username")
     private String username;
 
     @JsonProperty
+    @ApiModelProperty(example = "AD Password")
     private String password;
 
     @JsonProperty
+    @ApiModelProperty(example = DEFAULT_DOMAIN)
     private String domain = DEFAULT_DOMAIN;
 
     public LoginRequest() {

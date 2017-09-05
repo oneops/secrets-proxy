@@ -18,11 +18,10 @@
 package com.oneops.proxy.web;
 
 import com.oneops.proxy.auth.user.OneOpsUser;
+import com.oneops.proxy.model.*;
 import com.oneops.proxy.security.annotations.CurrentUser;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.*;
+import org.springframework.web.bind.annotation.*;
 
 import static com.oneops.proxy.config.Constants.AUTH_CTLR_BASE_PATH;
 
@@ -33,6 +32,7 @@ import static com.oneops.proxy.config.Constants.AUTH_CTLR_BASE_PATH;
  */
 @RestController
 @RequestMapping(AUTH_CTLR_BASE_PATH)
+@Api(value = "Auth EndPoint", description = "User Authentication.")
 public class AuthController {
 
     /**
@@ -42,18 +42,22 @@ public class AuthController {
      * @return OneOps user details.
      */
     @GetMapping("/user")
+    @ApiOperation(value = "Authenticated User Info", notes = "Token user details.")
     public OneOpsUser user(@CurrentUser OneOpsUser user) {
         return user;
     }
 
     /**
-     * Returns the current CSRF token details.
+     * The token mapping is provided only for generating swagger documentation
+     * and shouldn't be called in any case. The actual token authentication is
+     * done using the {@link com.oneops.proxy.auth.token.TokenAuthProcessingFilter}.
      *
-     * @param token injected csrf token
-     * @return csrf token.
+     * @param loginRequest Login request
+     * @return Login response.
      */
-    @GetMapping("/csrf")
-    public CsrfToken csrf(CsrfToken token) {
-        return token;
+    @PostMapping("/token")
+    @ApiOperation(value = "Generate Access Token", notes = "Use this Bearer token for all other requests.")
+    public LoginResponse token(@RequestBody LoginRequest loginRequest) {
+        throw new IllegalStateException("Token method shouldn't be called. This is just for api doc.");
     }
 }

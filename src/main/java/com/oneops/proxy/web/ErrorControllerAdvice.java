@@ -19,16 +19,12 @@ package com.oneops.proxy.web;
 
 import com.oneops.proxy.keywhiz.KeywhizException;
 import com.oneops.proxy.model.ErrorResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -79,7 +75,7 @@ public class ErrorControllerAdvice {
     private HttpStatus getStatus(HttpServletRequest req) {
         Integer statusCode = (Integer) req.getAttribute("javax.servlet.error.status_code");
         if (statusCode == null) {
-            return HttpStatus.INTERNAL_SERVER_ERROR;
+            return INTERNAL_SERVER_ERROR;
         }
         return HttpStatus.valueOf(statusCode);
     }

@@ -19,19 +19,16 @@ package com.oneops.proxy.web.support;
 
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.config.WebConfig;
-import com.oneops.proxy.model.AppGroup;
-import com.oneops.proxy.model.AppSecret;
+import com.oneops.proxy.model.*;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.web.method.support.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.oneops.proxy.model.AppGroup.APP_GROUP_PARAM;
+import static com.oneops.proxy.model.AppGroup.APP_NAME_PARAM;
 import static com.oneops.proxy.model.AppSecret.APP_SECRET_PARAM;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 import static org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
@@ -61,7 +58,7 @@ public class AppSecretArgResolver implements HandlerMethodArgumentResolver {
         // Get the path variable.
         @SuppressWarnings("unchecked")
         Map<String, String> pathVars = (Map<String, String>) webReq.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, SCOPE_REQUEST);
-        String group = pathVars != null ? pathVars.get(APP_GROUP_PARAM) : "";
+        String group = pathVars != null ? pathVars.get(APP_NAME_PARAM) : "";
         String secret = pathVars != null ? pathVars.get(APP_SECRET_PARAM) : "";
 
         AppGroup appGroup = new AppGroup(user.getDomain(), group);

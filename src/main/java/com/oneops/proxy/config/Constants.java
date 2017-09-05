@@ -17,6 +17,8 @@
  *******************************************************************************/
 package com.oneops.proxy.config;
 
+import static com.oneops.proxy.model.AppGroup.APP_NAME_PARAM;
+
 /**
  * Constants used in the application.
  *
@@ -47,7 +49,7 @@ public interface Constants {
     /**
      * {@link com.oneops.proxy.web.GroupController} base path URI.
      */
-    String GROUP_CTLR_BASE_PATH = "/" + API_VERSION + "/apps";
+    String GROUP_CTLR_BASE_PATH = "/" + API_VERSION + "/apps/" + "{" + APP_NAME_PARAM + "}";
 
     /**
      * Favicon path, for browser agents.
@@ -63,4 +65,10 @@ public interface Constants {
      * Default access token type (Eg: Bearer, JWT etc)
      */
     String DEFAULT_TOKEN_TYPE = "Bearer";
+
+    /**
+     * Default paths to skip from security and authentication.
+     */
+    String[] DEFAULT_SKIP_PATHS = {"/", FAVICON_PATH, "/apidocs", "/swagger-ui.html", "/v2/api-docs", "/webjars/**", "/swagger-resources/**"};
+
 }

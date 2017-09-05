@@ -18,8 +18,7 @@
 package com.oneops.proxy.config;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.config.*;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.core.PriorityOrdered;
 import org.springframework.core.env.Environment;

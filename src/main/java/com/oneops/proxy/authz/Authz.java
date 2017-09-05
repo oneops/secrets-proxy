@@ -19,9 +19,7 @@ package com.oneops.proxy.authz;
 
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.model.AppGroup;
-import com.oneops.proxy.model.AppSecret;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Component;
 
@@ -32,9 +30,7 @@ import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
 
 /**
  * Implements Keywhiz application group authorization logic. The application group
- * name is the <b>env nspath</b>, which is of the format.
- * <p>
- * <b>{org}_{assembly}_{env}</b>
+ * name is the env nspath, which is of the format <b>{org}_{assembly}_{env}</b>
  *
  * @author Suresh
  */
@@ -53,15 +49,16 @@ public class Authz {
      * Checks if {@link OneOpsUser} is authorized to manage secrets for the given application group.
      * Env nspath is used as the application group with the <b>{org}_{assembly}_{env}</b> format.
      *
-     * @param appGroup Application group.
-     * @param user     Authenticated user.
+     * @param appName Application name.
+     * @param user    Authenticated user.
      * @return <code>true</code> if the user is authorized.
      */
-    public boolean isAuthorized(@Nonnull AppGroup appGroup, @Nonnull OneOpsUser user) {
+    public boolean isAuthorized(@Nonnull String appName, @Nonnull OneOpsUser user) {
         if (log.isDebugEnabled()) {
-            log.debug("Checking the authz for user: " + user.getUsername() + " and application group: " + appGroup.getName());
+            log.debug("Checking the authz for user: " + user.getUsername() + " and application: " + appName);
         }
 
+        AppGroup appGroup = new AppGroup(user.getDomain(), appName);
         List<OneOpsTeam> teams = userRepo.getTeams(user.getUsername(), appGroup);
         boolean hasAccess = teams.stream().anyMatch(team -> hasAdminAccess(team, appGroup));
         if (!hasAccess) {
@@ -70,17 +67,6 @@ public class Authz {
                     + appGroup.getNsPath());
         }
         return true;
-    }
-
-    /**
-     * Checks if {@link OneOpsUser} is authorized to manage secrets for the group.
-     *
-     * @param appSecret App secret details including the group.
-     * @param user      Authenticated user.
-     * @return <code>true</code> if the user is authorized.
-     */
-    public boolean isAuthorized(@Nonnull AppSecret appSecret, @Nonnull OneOpsUser user) {
-        return isAuthorized(appSecret.getGroup(), user);
     }
 
     /**

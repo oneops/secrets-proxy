@@ -19,12 +19,10 @@ package com.oneops.proxy.endpoint;
 
 import com.oneops.proxy.config.OneOpsConfig;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
-import org.springframework.boot.actuate.endpoint.Endpoint;
+import org.springframework.boot.actuate.endpoint.*;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**

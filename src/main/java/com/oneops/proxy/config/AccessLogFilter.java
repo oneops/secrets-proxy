@@ -71,7 +71,7 @@ public class AccessLogFilter extends AbstractMatcherFilter<AccessEvent> {
             return NEUTRAL;
         }
 
-        if (paths.contains(event.getRequestURI())) {
+        if (paths.stream().anyMatch(path -> event.getRequestURI().matches(path))) {
             return onMatch;
         } else {
             return onMismatch;

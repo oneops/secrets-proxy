@@ -18,21 +18,15 @@
 package com.oneops.proxy.config;
 
 import com.oneops.proxy.model.AppGroup;
-import com.oneops.proxy.web.support.AppGroupArgResolver;
-import com.oneops.proxy.web.support.AppSecretArgResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.oneops.proxy.web.support.*;
+import org.slf4j.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
-import static org.springframework.http.MediaType.APPLICATION_XML;
+import static org.springframework.http.MediaType.*;
 
 /**
  * ContentNegotiation configuration for the application.
@@ -45,6 +39,7 @@ import static org.springframework.http.MediaType.APPLICATION_XML;
 @Configuration
 //@EnableWebMvc
 public class WebConfig extends WebMvcConfigurerAdapter {
+
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 

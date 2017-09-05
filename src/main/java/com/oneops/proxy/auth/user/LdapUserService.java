@@ -19,8 +19,7 @@ package com.oneops.proxy.auth.user;
 
 import com.oneops.proxy.ldap.LdapClient;
 import com.oneops.proxy.metrics.MetricsUtilService;
-import org.ldaptive.LdapEntry;
-import org.ldaptive.LdapException;
+import org.ldaptive.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import sun.security.x509.X500Name;

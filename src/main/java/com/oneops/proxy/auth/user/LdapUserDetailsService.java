@@ -19,13 +19,10 @@ package com.oneops.proxy.auth.user;
 
 import com.oneops.proxy.ldap.LdapClient;
 import org.ldaptive.LdapException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.*;
 import sun.security.x509.X500Name;
 
 import java.io.IOException;

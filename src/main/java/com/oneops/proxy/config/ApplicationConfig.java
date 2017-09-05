@@ -19,25 +19,20 @@ package com.oneops.proxy.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
-import com.oneops.proxy.keywhiz.KeywhizClient;
+import com.oneops.proxy.keywhiz.*;
 import com.oneops.proxy.ldap.LdapClient;
 import com.oneops.proxy.security.KeywhizKeyStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.*;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import java.security.GeneralSecurityException;
 
-import static com.oneops.proxy.security.KeywhizKeyStore.Name.Keywhiz;
-import static com.oneops.proxy.security.KeywhizKeyStore.Name.LDAP;
+import static com.oneops.proxy.security.KeywhizKeyStore.Name.*;
 
 /**
  * Keywhiz proxy application java config.

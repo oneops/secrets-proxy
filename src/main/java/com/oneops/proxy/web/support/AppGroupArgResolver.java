@@ -24,13 +24,11 @@ import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.method.support.ModelAndViewContainer;
+import org.springframework.web.method.support.*;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.oneops.proxy.model.AppGroup.APP_GROUP_PARAM;
+import static com.oneops.proxy.model.AppGroup.APP_NAME_PARAM;
 import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
 import static org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
 
@@ -59,7 +57,7 @@ public class AppGroupArgResolver implements HandlerMethodArgumentResolver {
         // Get the path variable.
         @SuppressWarnings("unchecked")
         Map<String, String> pathVars = (Map<String, String>) webReq.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE, SCOPE_REQUEST);
-        String group = pathVars != null ? pathVars.get(APP_GROUP_PARAM) : "";
+        String group = pathVars != null ? pathVars.get(APP_NAME_PARAM) : "";
         return AppGroup.from(user.getDomain(), group);
     }
 }

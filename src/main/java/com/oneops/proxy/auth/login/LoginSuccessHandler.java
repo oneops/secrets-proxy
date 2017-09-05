@@ -18,15 +18,12 @@
 package com.oneops.proxy.auth.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oneops.proxy.audit.AuditLog;
-import com.oneops.proxy.audit.Event;
+import com.oneops.proxy.audit.*;
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.model.LoginResponse;
 import com.oneops.proxy.security.JwtTokenService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
@@ -35,13 +32,12 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.IOException;
 
 import static com.oneops.proxy.audit.EventTag.GENERATE_TOKEN;
 import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * A login success handle, invoked by {@link LoginAuthProvider} when
@@ -89,8 +85,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         auditLog.log(new Event(GENERATE_TOKEN, user.getUsername(), user.getDomain(), "N/A"));
 
         LoginResponse loginResponse = new LoginResponse(token, tokenService.getTokenType(), tokenService.getExpiresInSec());
-        res.setStatus(HttpStatus.OK.value());
-        res.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        res.setStatus(HttpStatus.CREATED.value());
+        res.setContentType(APPLICATION_JSON_VALUE);
         mapper.writeValue(res.getWriter(), loginResponse);
 
         clearAuthenticationAttributes(req);

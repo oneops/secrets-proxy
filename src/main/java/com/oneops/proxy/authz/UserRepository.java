@@ -18,12 +18,8 @@
 package com.oneops.proxy.authz;
 
 import com.oneops.proxy.model.AppGroup;
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jooq.*;
+import org.slf4j.*;
 import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
 import org.springframework.stereotype.Repository;
 

@@ -17,17 +17,16 @@
  *******************************************************************************/
 package com.oneops.proxy.model;
 
+import com.oneops.proxy.web.GroupController;
+
 import javax.annotation.Nonnull;
 
 import static com.oneops.proxy.model.AppGroup.GROUP_SEP;
 
 /**
- * A domain model to represents keywhiz application group secret in
- * {@link com.oneops.proxy.web.GroupController}. It basically contains
- * information about application group and secret name extracted from
- * user request. {@link AppSecret} object will get automatically injected
- * into controller methods with necessary information extracted from the
- * request path variables.
+ * A domain model to represents keywhiz application group secret in {@link GroupController}.
+ * It basically contain information about application group and secret name extracted from
+ * user request.
  *
  * @author Suresh
  */
@@ -52,6 +51,18 @@ public class AppSecret {
 
     private final String secretName;
     private final AppGroup group;
+
+    /**
+     * Constructor for app secret.
+     *
+     * @param secretName secret name.
+     * @param domain     Application domain
+     * @param appName    Application name.
+     */
+    public AppSecret(@Nonnull String secretName, @Nonnull String domain, @Nonnull String appName) {
+        this.secretName = secretName;
+        this.group = AppGroup.from(domain, appName);
+    }
 
     /**
      * Constructor for app secret.

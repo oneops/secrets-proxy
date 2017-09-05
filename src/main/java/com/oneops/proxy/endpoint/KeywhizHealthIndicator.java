@@ -18,8 +18,7 @@
 package com.oneops.proxy.endpoint;
 
 import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
-import org.springframework.boot.actuate.health.AbstractHealthIndicator;
-import org.springframework.boot.actuate.health.Health;
+import org.springframework.boot.actuate.health.*;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

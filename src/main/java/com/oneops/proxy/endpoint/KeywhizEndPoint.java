@@ -22,8 +22,7 @@ import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Custom actuator endpoint (<b>/keywhiz</b>) to display keywhiz status.

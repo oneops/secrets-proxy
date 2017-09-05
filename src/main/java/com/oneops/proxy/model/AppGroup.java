@@ -17,6 +17,8 @@
  *******************************************************************************/
 package com.oneops.proxy.model;
 
+import com.oneops.proxy.web.GroupController;
+
 import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -24,10 +26,7 @@ import java.net.URLEncoder;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- * A domain model to represents keywhiz application group in
- * {@link com.oneops.proxy.web.GroupController}. {@link AppGroup}
- * object will get automatically injected into controller methods
- * with necessary information extracted from the request path variables.
+ * A domain model to represents keywhiz application group in {@link GroupController}.
  *
  * @author Suresh G
  */
@@ -36,7 +35,7 @@ public class AppGroup {
     /**
      * Application group path name used by default.
      */
-    public static final String APP_GROUP_PARAM = "appGroup";
+    public static final String APP_NAME_PARAM = "appName";
 
     /**
      * Application group name separator.

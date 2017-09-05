@@ -18,37 +18,26 @@
 package com.oneops.proxy.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oneops.proxy.auth.login.LoginAuthProvider;
-import com.oneops.proxy.auth.login.LoginProcessingFilter;
-import com.oneops.proxy.auth.token.SkipPathRequestMatcher;
-import com.oneops.proxy.auth.token.TokenAuthProcessingFilter;
-import com.oneops.proxy.auth.token.TokenAuthProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.oneops.proxy.auth.login.*;
+import com.oneops.proxy.auth.token.*;
+import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.*;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.*;
+import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.web.authentication.*;
+import org.springframework.web.cors.*;
 
-import java.util.List;
+import java.util.*;
 
 import static com.oneops.proxy.auth.user.OneOpsUser.Role.MGMT;
-import static com.oneops.proxy.config.Constants.AUTH_TOKEN_URI;
-import static com.oneops.proxy.config.Constants.FAVICON_PATH;
+import static com.oneops.proxy.config.Constants.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.springframework.http.HttpMethod.GET;
@@ -65,14 +54,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Value("${management.context-path}")
+    /**
+     * Application management context & credentials.
+     */
     private String mgmtContext;
 
-    @Value("${management.user}")
     private String mgmtUser;
 
-    @Value("${management.password}")
     private String mgmtPasswd;
+
+    /**
+     * Paths to be skipped from token authentication.
+     */
+    private List<String> tokenAuthSkipPaths;
+
+    /**
+     * Permit all these paths without any authentication.
+     */
+    private String[] permitAllPaths;
 
     private final LoginAuthProvider loginAuthProvider;
     private final TokenAuthProvider tokenAuthProvider;
@@ -88,7 +87,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                              AuthenticationFailureHandler failureHandler,
                              RestAuthEntryPoint authEntryPoint,
                              JwtTokenService jwtTokenService,
-                             ObjectMapper objectMapper) {
+                             ObjectMapper objectMapper,
+                             @Value("${management.context-path}") String mgmtContext,
+                             @Value("${management.user}") String mgmtUser,
+                             @Value("${management.password}") String mgmtPasswd) {
+
+        this.mgmtContext = mgmtContext;
+        this.mgmtUser = mgmtUser;
+        this.mgmtPasswd = mgmtPasswd;
         this.loginAuthProvider = loginAuthProvider;
         this.tokenAuthProvider = tokenAuthProvider;
         this.authEntryPoint = authEntryPoint;
@@ -96,6 +102,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.objectMapper = objectMapper;
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
+        this.permitAllPaths = ArrayUtils.addAll(DEFAULT_SKIP_PATHS, mgmtContext + "/health");
+        this.tokenAuthSkipPaths = Arrays.asList(ArrayUtils.addAll(DEFAULT_SKIP_PATHS, mgmtContext + "/**"));
     }
 
     @Bean
@@ -134,15 +142,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * Builds {@link TokenAuthProcessingFilter} with the current {@link AuthenticationManager}.
-     * The filter won't be apply for <b>management</b>, ROOT and Favicon request paths.
+     * The filter won't be apply for {@link #tokenAuthSkipPaths} request paths.
      *
      * @return Token authentication filter
      * @throws Exception
      */
     private TokenAuthProcessingFilter buildAuthProcessingFilter() throws Exception {
-        List<String> pathsToSkip = asList(mgmtContext + "/**", "/", FAVICON_PATH);
-        log.info("Configured to skip " + pathsToSkip + " path from TokenAuthProcessingFilter.");
-        SkipPathRequestMatcher requestMatcher = new SkipPathRequestMatcher(pathsToSkip);
+        log.info("Configured to skip " + tokenAuthSkipPaths + " path from TokenAuthProcessingFilter.");
+        SkipPathRequestMatcher requestMatcher = new SkipPathRequestMatcher(tokenAuthSkipPaths);
         TokenAuthProcessingFilter authFilter = new TokenAuthProcessingFilter(requestMatcher, failureHandler, jwtTokenService);
         authFilter.setAuthenticationManager(authenticationManager());
         return authFilter;
@@ -167,9 +174,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                   .requiresChannel().anyRequest().requiresSecure()
                 .and()
                     .authorizeRequests()
-                    .mvcMatchers(GET, "/", FAVICON_PATH).permitAll()
-                    .mvcMatchers(GET,  mgmtContext + "/info").permitAll()
-                    .mvcMatchers(GET, mgmtContext + "/health").permitAll()
+                    .mvcMatchers(GET, permitAllPaths).permitAll()
                     .mvcMatchers(GET,mgmtContext + "/**").hasAnyRole(MGMT.name())
                     //.mvcMatchers("/auth/{userId}").access("@authz.isAuthorized(#userId,principal)")
                     .anyRequest().fullyAuthenticated()

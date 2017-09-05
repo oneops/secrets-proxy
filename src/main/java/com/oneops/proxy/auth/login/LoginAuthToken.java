@@ -18,8 +18,7 @@
 package com.oneops.proxy.auth.login;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.*;
 
 import java.util.Collection;
 

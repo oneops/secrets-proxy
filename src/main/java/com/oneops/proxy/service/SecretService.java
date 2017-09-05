@@ -20,18 +20,12 @@ package com.oneops.proxy.service;
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.keywhiz.KeywhizException;
-import com.oneops.proxy.keywhiz.model.v2.CreateOrUpdateSecretRequestV2;
-import com.oneops.proxy.keywhiz.model.v2.GroupDetailResponseV2;
-import com.oneops.proxy.keywhiz.model.v2.SecretDetailResponseV2;
-import com.oneops.proxy.model.AppSecret;
-import com.oneops.proxy.model.SecretRequest;
+import com.oneops.proxy.keywhiz.model.v2.*;
+import com.oneops.proxy.model.*;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.oneops.proxy.metrics.MetricsUtilService.binaryPrefix;
@@ -77,7 +71,7 @@ public class SecretService {
      * @return {@link SecretRequest}
      * @see <a href="https://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits">File name limit</a>
      */
-    public SecretRequest validateAndEnrich(SecretRequest req, AppSecret appSecret, OneOpsUser user) throws IOException {
+    public SecretRequest validateAndEnrichReq(SecretRequest req, AppSecret appSecret, OneOpsUser user) throws IOException {
         String content = req.getContent();
         if (isBlank(content)) {
             throw new IllegalArgumentException("Secret content is not provided!");

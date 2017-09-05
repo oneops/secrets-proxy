@@ -18,19 +18,13 @@
 package com.oneops.proxy.security;
 
 import com.oneops.proxy.config.OneOpsConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 import org.springframework.core.io.ResourceLoader;
 
 import javax.annotation.Nullable;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
+import javax.net.ssl.*;
+import java.io.*;
+import java.security.*;
 
 
 /**

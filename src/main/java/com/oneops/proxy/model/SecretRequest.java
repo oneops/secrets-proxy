@@ -17,8 +17,8 @@
  *******************************************************************************/
 package com.oneops.proxy.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Map;
 
@@ -31,9 +31,11 @@ import java.util.Map;
 public class SecretRequest {
 
     @JsonProperty
+    @ApiModelProperty(example = "[BASE64 encoded secret data]")
     private String content;
 
     @JsonProperty
+    @ApiModelProperty(example = "Uploaded by OneOps")
     private String description;
 
     @JsonProperty
@@ -44,9 +46,11 @@ public class SecretRequest {
      * Format should be 2006-01-02T15:04:05Z or seconds since epoch.
      */
     @JsonProperty
+    @ApiModelProperty(example = "0")
     private long expiry;
 
     @JsonProperty
+    @ApiModelProperty(example = "secret")
     private String type;
 
     public SecretRequest() {
