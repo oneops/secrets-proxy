@@ -61,7 +61,7 @@ public class SwaggerConfig {
                 .description("Authorization token header")
                 .modelRef(new ModelRef("string"))
                 .parameterType("header")
-                .defaultValue("Bearer &ltAuth Token&gt")
+                .defaultValue("Bearer [Auth Token]")
                 .required(true)
                 .build());
 
@@ -80,7 +80,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("OneOps Secrets API")
                 .description("OneOps Secrets API Documentation.")
-                .contact(new Contact("OneOps", "https://oneops.github.com/secrets-proxy", "oneops@oneops.com"))
+                .contact(new Contact("OneOps", "https://github.com/oneops/secrets-proxy", "oneops@oneops.com"))
                 .license("Apache License 2.0")
                 .licenseUrl("https://github.com/oneops/secrets-proxy/blob/master/LICENSE")
                 .termsOfServiceUrl("https://github.com/oneops/secrets-proxy/blob/master/.github/CONTRIBUTING.md")

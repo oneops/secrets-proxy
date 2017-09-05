@@ -21,7 +21,11 @@ import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.model.*;
 import com.oneops.proxy.security.annotations.CurrentUser;
 import io.swagger.annotations.*;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.oneops.proxy.config.Constants.AUTH_CTLR_BASE_PATH;
 
@@ -43,9 +47,11 @@ public class AuthController {
      */
     @GetMapping("/user")
     @ApiOperation(value = "Authenticated User Info", notes = "Token user details.")
-    public OneOpsUser user(@CurrentUser OneOpsUser user) {
-        return user;
+    public UserResponse user(@CurrentUser OneOpsUser user) {
+        List<String> roles = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
+        return new UserResponse(user.getUsername(), user.getCn(), user.getDomain(), roles);
     }
+
 
     /**
      * The token mapping is provided only for generating swagger documentation
