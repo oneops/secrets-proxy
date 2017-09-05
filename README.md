@@ -2,13 +2,13 @@
 
 # <img src="docs/images/Secrets-Proxy.png" alt="Kotlin" width=30 height=30> OneOps Secrets Proxy 
 
-[![api-doc][apidoc-svg]][apidoc-url] [![java-doc][javadoc-svg]][javadoc-url] [![changelog][cl-svg]][cl-url] [![license][license-svg]][license-url]  
+[![api-doc][apidoc-svg]][apidoc-url] [![java-doc][javadoc-svg]][javadoc-url] [![changelog][cl-svg]][cl-url] 
 
  A secure proxy service for managing [OneOps][oneops-url] secrets.
  
 </div>
 
-<img src="docs/images/keywhiz-proxy-arch.svg" alt="Kotlin" width=750 height=500>
+<img src="docs/images/keywhiz-proxy-arch.png" width=750 height=500>
 
 
 ## OneOps Secrets-Proxy Keystores
@@ -94,10 +94,10 @@
     ```
 ### Generate source (Database).
 
-```
-$ ./mvnw clean package -P generate
-# $ ./mvnw versions:display-dependency-updates
-```
+    ```bash
+    $ ./mvnw clean package -P generate
+    # $ ./mvnw versions:display-dependency-updates
+    ```
 
 #### Misc
  
@@ -135,9 +135,6 @@ $ ./mvnw clean package -P generate
  
  [cl-url]: https://github.com/oneops/secrets-proxy/blob/master/CHANGELOG.md
  [cl-svg]: https://img.shields.io/badge/change--log-latest-blue.svg?style=flat-square
- 
- [license-url]: https://github.com/oneops/secrets-proxy/blob/master/LICENSE
- [license-svg]: https://img.shields.io/github/license/oneops/secrets-proxy.svg?style=flat-square
  
  [oneops-url]: http://oneops.com/developer/index.html
  [java-download]: http://www.oracle.com/technetwork/java/javase/downloads/index.html
