@@ -5,7 +5,7 @@
 
     <groupId>com.oneops</groupId>
     <artifactId>keywhiz-proxy</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>OneOps Keywhiz Proxy</name>
@@ -221,6 +221,13 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>${springfox.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox.version}</version>
+            <scope>compile</scope>
         </dependency>
         <!-- Feature flags-->
         <dependency>
