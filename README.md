@@ -1,6 +1,6 @@
 <div align="center">
 
-# <img src="docs/images/Secrets-Proxy.png" alt="Kotlin" width=25 height=25> OneOps Secrets Proxy 
+# <img src="docs/images/Secrets-Proxy.png" alt="Kotlin" width=40 height=40> OneOps Secrets Proxy 
 
 [![api-doc][apidoc-svg]][apidoc-url] [![java-doc][javadoc-svg]][javadoc-url] [![changelog][cl-svg]][cl-url] [![license][license-svg]][license-url]  
 
@@ -9,14 +9,13 @@
 </div>
 
 
-
 ## Architecture
 
-<img src="docs/images/keywhiz-proxy-arch.svg" alt="Kotlin" width=100 height=100>
+<img src="docs/images/keywhiz-proxy-arch.svg" alt="Kotlin" width=750 height=500>
 
-## OneOps Keywhiz-Proxy Keystores
+## OneOps Secrets-Proxy Keystores
 
-  The following Trust-stores/Keystores are used in Keywhiz-proxy application.
+  The following Trust-stores/Keystores are used in Secrets-proxy application.
   
   - [keywhiz_proxy_keystore.p12](src/main/resources/keystores/keywhiz_proxy_keystore.p12) 
   
@@ -70,18 +69,18 @@
     
     ```
      $ ./mvnw clean package
-     $ docker build -t keywhiz-proxy:1.0.0 .
+     $ docker build -t secrets-proxy:1.1.0 .
     ```  
   * Run 
   
     ```
-     $ docker run -it --rm --name keywhiz-proxy -p 8443:8443  -e name=Keywhiz-Proxy -d keywhiz-proxy:1.0.0
-     $ open https://localhost:8443/app/info
+     $ docker run -it --rm --name secrets-proxy -p 8443:8443  -e name=Secrets-Proxy -d secrets-proxy:1.1.0
+     $ open https://localhost:8443/
     ``` 
   * Debugging and Logs
   
     ```
-    $ docker exec -it keywhiz-proxy sh
+    $ docker exec -it secrets-proxy sh
     # cd log/
     /log # ls -ltrh
     total 64
@@ -109,7 +108,7 @@ $ ./mvnw versions:display-dependency-updates
 
 #### Misc
  
-  * Keywhiz Tools - https://github.com/oneops/keywhiz-proxy/releases/tag/tools
+  * Keywhiz Tools - https://github.com/oneops/secrets-proxy/releases/tag/tools
   * JWT Token Verification - https://jwt.io/
   * [REST API References](https://news.ycombinator.com/item?id=11971491)   
 
@@ -137,13 +136,13 @@ TODO
  <!-- Badges -->
  
  [apidoc-url]: https://oneops.github.com/secrets-proxy/apidocs
- [apidoc-svg]: https://img.shields.io/badge/api--doc-latest-ff69b4.svg?style=flat-square
+ [apidoc-svg]: https://img.shields.io/badge/api--doc-latest-green.svg?style=flat-square
  
  [javadoc-url]: https://oneops.github.com/secrets-proxy/javadocs
  [javadoc-svg]: https://img.shields.io/badge/java--doc-latest-ff69b4.svg?style=flat-square
  
  [cl-url]: https://github.com/oneops/secrets-proxy/blob/master/CHANGELOG.md
- [cl-svg]: https://img.shields.io/badge/change--log-blue.svg?style=flat-square
+ [cl-svg]: https://img.shields.io/badge/change--log-latest-blue.svg?style=flat-square
  
  [license-url]: https://github.com/oneops/secrets-proxy/blob/master/LICENSE
  [license-svg]: https://img.shields.io/github/license/oneops/secrets-proxy.svg?style=flat-square
