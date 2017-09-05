@@ -75,7 +75,7 @@ oneops:
       store-password: changeit
       key-password: changeit
     cli:
-      version: ${KEYWHIZ_CLI_VERSION:1.0.1}
+      version: ${KEYWHIZ_CLI_VERSION:1.1.0}
       download-url: https://github.com/oneops/keywhiz-cli/releases/download/${oneops.keywhiz.cli.version}/keywhiz-cli
   ldap:
     server: ldap://ldap.com

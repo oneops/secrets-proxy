@@ -8,7 +8,7 @@
         <file>${LOG_PATH}/access/${LOG_FILE}.log</file>
         <!-- Don't want to log health check calls.-->
         <filter class="com.oneops.proxy.config.AccessLogFilter">
-            <ignorePaths>${MGMT_PATH}/health</ignorePaths>
+            <ignorePaths>/webjars/.*,/swagger-resources.*</ignorePaths>
             <onMatch>DENY</onMatch>
             <onMismatch>ACCEPT</onMismatch>
         </filter>
