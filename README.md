@@ -1,7 +1,6 @@
-## Keywhiz Proxy (WIP)
--------------
-Keywhiz proxy service for the CLI app. **The service is not production ready and is in active development.**
-
+## OneOps Secrets Proxy
+-----------------------
+Keywhiz proxy service for the CLI app. 
 
 Api Doc  : https://oneops.github.com/keywhiz-proxy/apidocs
 
@@ -108,18 +107,11 @@ $ ./mvnw versions:display-dependency-updates
 
 TODO
 #####
-
- * Proper HTTP status code and error messages.
- * Secrets setversion/versions API call.
  * Move the automation client to Retrofit.
- * Add more metadata to Group/Client from component.
  * X509 Authentication ??
  * Update to the latest keysync.
- * Validation for OneOps assembly and env.
  * Feature toggles implementation.
- * Add support for different mgmt domains.
  * Http2/Grpc (May be with JDK 9)
- * Add application metrics (Actuator/Dropwizard) 
  * JTI claim to maintain list of blacklisted or revoked tokens.
  * Springboot admin integration.
 
