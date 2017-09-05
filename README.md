@@ -1,10 +1,18 @@
-## OneOps Secrets Proxy
------------------------
-Keywhiz proxy service for the CLI app. 
+<div align="center">
 
-Api Doc  : https://oneops.github.com/keywhiz-proxy/apidocs
+# <img src="docs/images/Secrets-Proxy.png" alt="Kotlin" width=25 height=25> OneOps Secrets Proxy 
 
-Java Doc : https://oneops.github.com/keywhiz-proxy/javadocs
+[![api-doc][apidoc-svg]][apidoc-url] [![java-doc][javadoc-svg]][javadoc-url] [![changelog][cl-svg]][cl-url] [![license][license-svg]][license-url]  
+
+ A secure proxy service for managing [OneOps][oneops-url] secrets.
+ 
+</div>
+
+
+
+## Architecture
+
+<img src="docs/images/keywhiz-proxy-arch.svg" alt="Kotlin" width=100 height=100>
 
 ## OneOps Keywhiz-Proxy Keystores
 
@@ -107,6 +115,7 @@ $ ./mvnw versions:display-dependency-updates
 
 TODO
 #####
+
  * Move the automation client to Retrofit.
  * X509 Authentication ??
  * Update to the latest keysync.
@@ -121,4 +130,24 @@ TODO
  * https://twitter.com/springcentral/status/878264199729860608
  * https://twitter.com/fintanr/status/877988573399531520
  * https://www.jetbrains.com/research/devecosystem-2017/java/ (Check the Web framework section)
+ 
+ -----------------
+ <sup><b>**</b></sup>Require [Java 8 or later][java-download]
+ 
+ <!-- Badges -->
+ 
+ [apidoc-url]: https://oneops.github.com/secrets-proxy/apidocs
+ [apidoc-svg]: https://img.shields.io/badge/api--doc-latest-ff69b4.svg?style=flat-square
+ 
+ [javadoc-url]: https://oneops.github.com/secrets-proxy/javadocs
+ [javadoc-svg]: https://img.shields.io/badge/java--doc-latest-ff69b4.svg?style=flat-square
+ 
+ [cl-url]: https://github.com/oneops/secrets-proxy/blob/master/CHANGELOG.md
+ [cl-svg]: https://img.shields.io/badge/change--log-blue.svg?style=flat-square
+ 
+ [license-url]: https://github.com/oneops/secrets-proxy/blob/master/LICENSE
+ [license-svg]: https://img.shields.io/github/license/oneops/secrets-proxy.svg?style=flat-square
+ 
+ [oneops-url]: http://oneops.com/developer/index.html
+ [java-download]: http://www.oracle.com/technetwork/java/javase/downloads/index.html
  

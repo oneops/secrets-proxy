@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file. The format 
 
 - 
 
-[Unreleased]: https://github.com/oneops/keywhiz-proxy/compare/0.0.1...HEAD
+[Unreleased]: https://github.com/oneops/secrets-proxy/compare/0.0.1...HEAD
 
 
 
