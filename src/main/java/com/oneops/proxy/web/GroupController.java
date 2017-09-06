@@ -35,6 +35,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.oneops.proxy.audit.EventTag.*;
+import static com.oneops.proxy.auth.user.OneOpsUser.Role.ADMIN;
 import static com.oneops.proxy.config.Constants.GROUP_CTLR_BASE_PATH;
 import static com.oneops.proxy.model.AppGroup.*;
 import static com.oneops.proxy.model.AppSecret.APP_SECRET_PARAM;
@@ -135,6 +136,31 @@ public class GroupController {
     public ClientDetailResponseV2 getClientDetails(@PathVariable(APP_NAME_PARAM) String appName, @PathVariable("clientName") String name, @CurrentUser OneOpsUser user) throws IOException {
         checkClientInGroup(name, AppGroup.from(user.getDomain(), appName));
         return kwClient.getClientDetails(name);
+    }
+
+    /**
+     * Deletes a client. It's exposed only for admin users..
+     *
+     * @param appName OneOps application name.
+     * @param name    Client name to be deleted.
+     * @param user    Authorized {@link OneOpsUser}
+     * @throws IOException Throws if the request could not be executed due to cancellation, a connectivity
+     *                     problem or timeout.
+     */
+    @DeleteMapping("/clients/{clientName}")
+    @ResponseStatus(NO_CONTENT)
+    @ApiOperation(value = "Delete a given client in an application", notes = "For Admin users only!")
+    public void deleteClient(@PathVariable(APP_NAME_PARAM) String appName, @PathVariable("clientName") String name, @CurrentUser OneOpsUser user) throws IOException {
+        AppGroup appGroup = new AppGroup(user.getDomain(), appName);
+        checkClientInGroup(name, appGroup);
+
+        if (user.hasRole(ADMIN)) {
+            kwClient.deleteClient(name);
+            auditLog.log(new Event(CLIENT_DELETE, user.getUsername(), appGroup.getGroupName(), name));
+        } else {
+            log.error(String.format("User: %s don't have %s permission to delete client: %s for %s", user.getUsername(), ADMIN, name, appGroup.getGroupName()));
+            throw new KeywhizException(FORBIDDEN.value(), format("User %s don't have permission to delete the client.", user.getUsername()));
+        }
     }
 
 

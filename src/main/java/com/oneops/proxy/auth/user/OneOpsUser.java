@@ -68,6 +68,16 @@ public class OneOpsUser extends User {
     }
 
     /**
+     * Checks whether the user has given role.
+     *
+     * @param role {@link Role}
+     * @return <code>true</code> if the user has given authority.
+     */
+    public boolean hasRole(Role role) {
+        return getAuthorities().stream().anyMatch(a -> a.getAuthority().equalsIgnoreCase(role.authority()));
+    }
+
+    /**
      * OneOps user roles.
      */
     public enum Role {
