@@ -13,9 +13,9 @@ fi
 # Secrets files
 secrets_dir=/keywhiz-proxy/secrets/
 secrets=(
-    'keywhiz-proxy-env::Keywhiz Proxy Application Env Config.'
+    'keywhiz-proxy-env::Secrets Proxy Application Env Config.'
     'keystores/keywhiz_keystore.p12::Keywhiz Automation mTLS Client Certificate.'
-    'keystores/keywhiz_proxy_keystore.p12::TLS Server Certificate For Keywhiz-Proxy Application.'
+    'keystores/keywhiz_proxy_keystore.p12::TLS Server Certificate For Secrets Proxy Application.'
     'keystores/keywhiz_truststore.p12::Keywhiz Server Trust-Store.'
     'keystores/ldap_truststore.p12::LDAP/AD Server Trust-Store.'
 )
