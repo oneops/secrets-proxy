@@ -1,6 +1,6 @@
 <div align="center">
 
-# <img src="docs/images/Secrets-Proxy.png" alt="Kotlin" width=30 height=30> OneOps Secrets Proxy 
+# :key: OneOps Secrets Proxy 
 
 [![api-doc][apidoc-svg]][apidoc-url] [![java-doc][javadoc-svg]][javadoc-url] [![changelog][cl-svg]][cl-url] 
 
