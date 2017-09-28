@@ -54,7 +54,7 @@ public class CacheConfig {
      */
     @Bean
     public CaffeineSpec caffeineSpec() {
-        CaffeineSpec spec = CaffeineSpec.parse("maximumSize=200,expireAfterWrite=60s");
+        CaffeineSpec spec = CaffeineSpec.parse("maximumSize=200,expireAfterWrite=300s");
         log.info("Using CaffeineSpec " + spec.toParsableString());
         return spec;
     }
