@@ -75,8 +75,8 @@ oneops:
       store-password: changeit
       key-password: changeit
     cli:
-      version: ${KEYWHIZ_CLI_VERSION:1.1.0}
-      download-url: https://github.com/oneops/keywhiz-cli/releases/download/${oneops.keywhiz.cli.version}/keywhiz-cli
+      version: ${SECRETS_CLI_VERSION:0.0.0}
+      download-path: ${SECRETS_CLI_PATH:/opt/oneops/secrets-cli/secrets}
   ldap:
     server: ldap://ldap.com
     port: 3269
@@ -152,8 +152,8 @@ info:
   description: @project.description@
   version: @project.version@
   build-time: @build.timestamp@
-  keywhiz-cli-version: ${oneops.keywhiz.cli.version}
-  keywhiz-cli-url: ${oneops.keywhiz.cli.download-url}
+  secrets-cli-version: ${oneops.keywhiz.cli.version}
+  secrets-cli-path: ${oneops.keywhiz.cli.download-path}
   transparent-proxy: ${oneops.proxy.enabled}
   java: ${java.version}
   java-vendor: ${java.vendor}

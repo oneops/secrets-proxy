@@ -42,6 +42,11 @@ public interface Constants {
     String AUTH_CTLR_BASE_PATH = "/" + API_VERSION + "/auth";
 
     /**
+     * {@link com.oneops.proxy.web.CliController} base path URI.
+     */
+    String CLI_CTLR_BASE_PATH = "/cli";
+
+    /**
      * Authentication token path URI.
      */
     String AUTH_TOKEN_URI = AUTH_CTLR_BASE_PATH + "/token";
@@ -69,6 +74,6 @@ public interface Constants {
     /**
      * Default paths to skip from security and authentication.
      */
-    String[] DEFAULT_SKIP_PATHS = {"/", FAVICON_PATH, "/apidocs", "/swagger-ui.html", "/v2/api-docs", "/webjars/**", "/swagger-resources/**"};
+    String[] DEFAULT_SKIP_PATHS = {"/", FAVICON_PATH, "/apidocs", "/swagger-ui.html", "/v2/api-docs", "/webjars/**", "/swagger-resources/**", "/cli/**"};
 
 }

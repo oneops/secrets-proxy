@@ -66,6 +66,7 @@ public class Secret {
     private final ImmutableMap<String, String> metadata;
 
     private final String type;
+
     private final ImmutableMap<String, String> generationOptions;
 
     private final long expiry;

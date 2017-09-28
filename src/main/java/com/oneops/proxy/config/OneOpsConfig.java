@@ -201,7 +201,7 @@ public class OneOpsConfig {
         private String version;
 
         @NotNull
-        private String downloadUrl;
+        private String downloadPath;
 
         public String getVersion() {
             return version;
@@ -211,19 +211,19 @@ public class OneOpsConfig {
             this.version = version;
         }
 
-        public String getDownloadUrl() {
-            return downloadUrl;
+        public String getDownloadPath() {
+            return downloadPath;
         }
 
-        public void setDownloadUrl(String downloadUrl) {
-            this.downloadUrl = downloadUrl;
+        public void setDownloadPath(String downloadPath) {
+            this.downloadPath = downloadPath;
         }
 
         @Override
         public String toString() {
             return "Cli{" +
                     "version='" + version + '\'' +
-                    ", downloadUrl='" + downloadUrl + '\'' +
+                    ", downloadPath='" + downloadPath + '\'' +
                     '}';
         }
     }
