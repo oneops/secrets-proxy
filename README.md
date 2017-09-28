@@ -111,8 +111,8 @@
    $ export GOPATH=$HOME/tmp
    $ go get -u github.com/square/keysync
    $ cd $GOPATH/src/github.com/square/keysync
-   $go build -o keysync ./cmd/keysync/
-   $ ./keysync
+   $ go build -o keysync ./cmd/keysync/
+   $ ./keysync --help
    ```
    
 #### Misc

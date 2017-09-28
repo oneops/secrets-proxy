@@ -1,5 +1,5 @@
 # OneOps Secrets Proxy Service Unit File
-# Updated On  : 05/Sep/2017
+# Updated On  : 28/Sep/2017
 ########################################
 
 [Unit]
@@ -11,8 +11,8 @@ Wants=ntpd.service
 [Service]
 Type=simple
 # PIDFile=/var/run/keywhiz-proxy.pid
-# Environment=name=keywhiz-proxy
-# Environment=PATH=/usr/bin:/usr/sbin
+Environment=SECRETS_CLI_VERSION=$OO_LOCAL{secrets-cli-version}
+Environment=SECRETS_CLI_PATH=$OO_LOCAL{secrets-cli-path}
 EnvironmentFile=-/secrets/keywhiz-proxy-env
 WorkingDirectory=/opt/oneops/keywhiz-proxy/
 ExecStart=/bin/java -server \
