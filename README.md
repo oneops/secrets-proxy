@@ -100,6 +100,21 @@
  # $ ./mvnw versions:display-dependency-updates
 ```
 
+### Keysync
+
+   [Keysync](https://github.com/square/keysync) is the keywhiz client used on computes to sync secrets. Inorder to build keysync,
+   
+   ```
+   # Make sure to install go (https://golang.org/dl/)
+   # export GOOS=linux
+   $ mkdir ~/tmp
+   $ export GOPATH=$HOME/tmp
+   $ go get -u github.com/square/keysync
+   $ cd $GOPATH/src/github.com/square/keysync
+   $go build -o keysync ./cmd/keysync/
+   $ ./keysync
+   ```
+   
 #### Misc
  
   * Secrets Tools - https://github.com/oneops/secrets-proxy/releases/tag/tools
