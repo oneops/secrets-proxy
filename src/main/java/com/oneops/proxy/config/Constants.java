@@ -74,6 +74,6 @@ public interface Constants {
     /**
      * Default paths to skip from security and authentication.
      */
-    String[] DEFAULT_SKIP_PATHS = {"/", FAVICON_PATH, "/apidocs", "/swagger-ui.html", "/v2/api-docs", "/webjars/**", "/swagger-resources/**", "/cli/**"};
+    String[] DEFAULT_SKIP_PATHS = {"/", FAVICON_PATH, "/apidocs", "/swagger-ui.html**", "/v2/api-docs", "/webjars/**", "/swagger-resources/**", "/cli/**"};
 
 }
