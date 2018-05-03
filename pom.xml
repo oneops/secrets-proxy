@@ -2,10 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.oneops</groupId>
+        <artifactId>buildsupport</artifactId>
+        <version>3</version>
+    </parent>
 
-    <groupId>com.oneops</groupId>
     <artifactId>secrets-proxy</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>OneOps Secrets Proxy</name>
@@ -38,32 +42,40 @@
         </developer>
     </developers>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.7.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <autovalue.version>1.5.1</autovalue.version>
-        <ldaptive.version>1.2.2</ldaptive.version>
-        <jjwt.version>0.8.0</jjwt.version>
+        <spring.boot.version>1.5.12.RELEASE</spring.boot.version>
+        <autovalue.version>1.6</autovalue.version>
+        <ldaptive.version>1.2.3</ldaptive.version>
+        <jjwt.version>0.9.0</jjwt.version>
         <jsr305.version>3.0.2</jsr305.version>
         <guava.version>22.0</guava.version>
-        <okhttp.version>3.9.0</okhttp.version>
-        <togglz.version>2.4.1.Final</togglz.version>
-        <commonlang.version>3.6</commonlang.version>
+        <okhttp.version>3.10.0</okhttp.version>
+        <togglz.version>2.5.0.Final</togglz.version>
+        <commonlang.version>3.7</commonlang.version>
         <postgresql.version>9.3-1104-jdbc4</postgresql.version>
-        <hikaricp.version>2.6.3</hikaricp.version>
-        <springfox.version>2.7.0</springfox.version>
+        <hikaricp.version>3.1.0</hikaricp.version>
+        <springfox.version>2.8.0</springfox.version>
         <logback.access.starter.version>2.6.0</logback.access.starter.version>
+        <gitcommit.plugin.version>2.2.4</gitcommit.plugin.version>
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd hh:mm:ss a z</maven.build.timestamp.format>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- SpringBoot-->
@@ -83,6 +95,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
+
         <!-- Adding Jetty Server, Proxy and JMX support -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -101,12 +114,10 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-proxy</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-jmx</artifactId>
-            <version>${jetty.version}</version>
         </dependency>
         <!--  Logback access starter -->
         <dependency>
@@ -175,7 +186,12 @@
             <artifactId>commons-lang3</artifactId>
             <version>${commonlang.version}</version>
         </dependency>
-        <!-- Value Objects -->
+        <!-- Auto Value -->
+        <dependency>
+            <groupId>com.google.auto.value</groupId>
+            <artifactId>auto-value-annotations</artifactId>
+            <version>${autovalue.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.google.auto.value</groupId>
             <artifactId>auto-value</artifactId>
@@ -262,27 +278,116 @@
     </dependencies>
 
     <build>
+        <!-- Resource filtering -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
+            <!-- Maven compile plugin with Google error prone -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerId>javac-with-errorprone</compilerId>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <showWarnings>true</showWarnings>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-javac-errorprone</artifactId>
+                        <version>2.8.4</version>
+                    </dependency>
+                    <!-- override plexus-compiler-javac-errorprone's dependency on
+                         Error Prone with the latest version -->
+                    <dependency>
+                        <groupId>com.google.errorprone</groupId>
+                        <artifactId>error_prone_core</artifactId>
+                        <version>2.3.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
             <!-- SpringBoot plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
+
             <!-- Git Properties plugin-->
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
+                <version>${gitcommit.plugin.version}</version>
             </plugin>
+
+            <!-- Enforce the maven version -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>display-info</goal>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <message>Maven 3.5.2 or higher required.</message>
+                                    <version>[3.5.2,)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>${java.version}</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
             <!-- Javadoc plugin-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.4</version>
+                <version>3.0.0</version>
                 <configuration>
                     <reportOutputDirectory>${project.basedir}/docs</reportOutputDirectory>
                     <destDir>javadocs</destDir>
                 </configuration>
             </plugin>
+
+            <!-- Google code format -->
+            <plugin>
+                <groupId>com.coveo</groupId>
+                <artifactId>fmt-maven-plugin</artifactId>
+                <version>2.4.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
             <!-- Add JOOQ generated files to src-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -313,7 +418,6 @@
                     <plugin>
                         <groupId>org.jooq</groupId>
                         <artifactId>jooq-codegen-maven</artifactId>
-                        <version>${jooq.version}</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -339,7 +443,7 @@
                                 <database>
                                     <name>org.jooq.util.postgres.PostgresDatabase</name>
                                     <includes>.*</includes>
-                                    <excludes></excludes>
+                                    <excludes/>
                                     <inputSchema>public</inputSchema>
                                 </database>
                                 <target>
