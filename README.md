@@ -99,12 +99,6 @@
       ```
       or you can use tool like [InstallCerts](https://github.com/sureshg/InstallCerts) to auto-generate trust-store
       from the TLS endpoint.  
-               
-### Generate JOOQ source.
-
-```bash
- $ ./mvnw clean package -P generate
-```
 
 ### Keysync
 
@@ -119,7 +113,12 @@
    $ cd $GOPATH/src/github.com/square/keysync
    $ go build -o keysync ./cmd/keysync/
    $ ./keysync --help
-   ```
+   ```               
+### Generate JOOQ source.
+
+```bash
+ $ ./mvnw clean package -P generate
+```
    
 #### Misc
  
@@ -138,7 +137,7 @@
  
 
 
-### Why we chose Spring Boot
+#### Why we chose Spring Boot
 
  * https://twitter.com/springcentral/status/878264199729860608
  * https://twitter.com/fintanr/status/877988573399531520
