@@ -8,21 +8,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 
 ## [1.2.0] - 2018-05-04
-### Added
+### Fixed
+- AD authentication issue.
+- `.json` and `.xml` secrets upload issue.
+- Can't delete secrets with space in it.
 
 ### Changed
+- New docker image.
+- Applied Google code formatting
+- Updated to latest dependencies
+- Updated to latest swagger doc
 - Updated java doc.
+- Changed pom.xml to upload artifacts to Maven central
 
-### Removed
 
+## [1.1.0] - 2017-09-05
 ### Fixed
+- Misc bug fixes.
 
-## [1.1.0] - 2017-08-30
+## [1.0.0] - 2017-08-10
 ### Added
 - Initial release.
 
 <!-- Releases -->
 
 [Unreleased]: https://github.com/oneops/secrets-proxy/compare/release-1.2.0...HEAD
-[1.2.0]: https://github.com/oneops/secrets-proxy/compare/d7aeb5a625cfcfb1d56dbfc26de787952953d712...release-1.2.0
-[1.1.0]: https://github.com/oneops/secrets-proxy/compare/dfc4210fc65a25cd4a48cc05c61b511ffb6b4f7a...d7aeb5a625cfcfb1d56dbfc26de787952953d712
+[1.2.0]: https://github.com/oneops/secrets-proxy/compare/1.1.0...release-1.2.0
+[1.1.0]: https://github.com/oneops/secrets-proxy/compare/1.0.0...1.1.0
+[1.0.0]: https://github.com/oneops/secrets-proxy/compare/f6900edc7077c6052d6417ebf69c8481329cef77...1.0.0
