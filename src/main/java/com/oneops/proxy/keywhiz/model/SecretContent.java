@@ -32,61 +32,66 @@ import static com.google.common.base.Strings.nullToEmpty;
 @AutoValue
 public abstract class SecretContent {
 
-    public static SecretContent of(long id,
-                                   long secretSeriesId,
-                                   String encryptedContent,
-                                   String hmac,
-                                   ApiDate createdAt,
-                                   @Nullable String createdBy,
-                                   ApiDate updatedAt,
-                                   @Nullable String updatedBy,
-                                   ImmutableMap<String, String> metadata, long expiry) {
+  public static SecretContent of(
+      long id,
+      long secretSeriesId,
+      String encryptedContent,
+      String hmac,
+      ApiDate createdAt,
+      @Nullable String createdBy,
+      ApiDate updatedAt,
+      @Nullable String updatedBy,
+      ImmutableMap<String, String> metadata,
+      long expiry) {
 
-        return new AutoValue_SecretContent(id,
-                secretSeriesId,
-                encryptedContent,
-                hmac,
-                createdAt,
-                nullToEmpty(createdBy),
-                updatedAt,
-                nullToEmpty(updatedBy),
-                metadata, expiry);
-    }
+    return new AutoValue_SecretContent(
+        id,
+        secretSeriesId,
+        encryptedContent,
+        hmac,
+        createdAt,
+        nullToEmpty(createdBy),
+        updatedAt,
+        nullToEmpty(updatedBy),
+        metadata,
+        expiry);
+  }
 
-    public abstract long id();
+  public abstract long id();
 
-    public abstract long secretSeriesId();
+  public abstract long secretSeriesId();
 
-    public abstract String encryptedContent();
+  public abstract String encryptedContent();
 
-    public abstract String hmac();
+  public abstract String hmac();
 
-    public abstract ApiDate createdAt();
+  public abstract ApiDate createdAt();
 
-    public abstract String createdBy();
+  public abstract String createdBy();
 
-    public abstract ApiDate updatedAt();
+  public abstract ApiDate updatedAt();
 
-    public abstract String updatedBy();
+  public abstract String updatedBy();
 
-    @JsonAnyGetter
-    public abstract ImmutableMap<String, String> metadata();
+  @JsonAnyGetter
+  public abstract ImmutableMap<String, String> metadata();
 
-    public abstract long expiry();
+  public abstract long expiry();
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id())
-                .add("secretSeriesId", secretSeriesId())
-                .add("encryptedContent", "[REDACTED]")
-                .add("checksum", hmac())
-                .add("createdAt", createdAt())
-                .add("createdBy", createdBy())
-                .add("updatedAt", updatedAt())
-                .add("updatedBy", updatedBy())
-                .add("metadata", metadata())
-                .add("expiry", expiry())
-                .omitNullValues().toString();
-    }
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("id", id())
+        .add("secretSeriesId", secretSeriesId())
+        .add("encryptedContent", "[REDACTED]")
+        .add("checksum", hmac())
+        .add("createdAt", createdAt())
+        .add("createdBy", createdBy())
+        .add("updatedAt", updatedAt())
+        .add("updatedBy", updatedBy())
+        .add("metadata", metadata())
+        .add("expiry", expiry())
+        .omitNullValues()
+        .toString();
+  }
 }

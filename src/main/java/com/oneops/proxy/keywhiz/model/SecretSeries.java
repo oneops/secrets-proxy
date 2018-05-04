@@ -20,8 +20,7 @@ import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.google.common.base.Strings.nullToEmpty;
 
@@ -35,48 +34,51 @@ import static com.google.common.base.Strings.nullToEmpty;
 @AutoValue
 public abstract class SecretSeries {
 
-    public static SecretSeries of(
-            long id,
-            String name,
-            @Nullable String description,
-            ApiDate createdAt,
-            @Nullable String createdBy,
-            ApiDate updatedAt,
-            @Nullable String updatedBy,
-            @Nullable String type,
-            @Nullable Map<String, String> generationOptions,
-            @Nullable Long currentVersion) {
+  public static SecretSeries of(
+      long id,
+      String name,
+      @Nullable String description,
+      ApiDate createdAt,
+      @Nullable String createdBy,
+      ApiDate updatedAt,
+      @Nullable String updatedBy,
+      @Nullable String type,
+      @Nullable Map<String, String> generationOptions,
+      @Nullable Long currentVersion) {
 
-        ImmutableMap<String, String> options = (generationOptions == null) ? ImmutableMap.of() : ImmutableMap.copyOf(generationOptions);
+    ImmutableMap<String, String> options =
+        (generationOptions == null) ? ImmutableMap.of() : ImmutableMap.copyOf(generationOptions);
 
-        return new AutoValue_SecretSeries(id,
-                name,
-                nullToEmpty(description),
-                createdAt,
-                nullToEmpty(createdBy),
-                updatedAt,
-                nullToEmpty(updatedBy),
-                Optional.ofNullable(type), options,
-                Optional.ofNullable(currentVersion));
-    }
+    return new AutoValue_SecretSeries(
+        id,
+        name,
+        nullToEmpty(description),
+        createdAt,
+        nullToEmpty(createdBy),
+        updatedAt,
+        nullToEmpty(updatedBy),
+        Optional.ofNullable(type),
+        options,
+        Optional.ofNullable(currentVersion));
+  }
 
-    public abstract long id();
+  public abstract long id();
 
-    public abstract String name();
+  public abstract String name();
 
-    public abstract String description();
+  public abstract String description();
 
-    public abstract ApiDate createdAt();
+  public abstract ApiDate createdAt();
 
-    public abstract String createdBy();
+  public abstract String createdBy();
 
-    public abstract ApiDate updatedAt();
+  public abstract ApiDate updatedAt();
 
-    public abstract String updatedBy();
+  public abstract String updatedBy();
 
-    public abstract Optional<String> type();
+  public abstract Optional<String> type();
 
-    public abstract ImmutableMap<String, String> generationOptions();
+  public abstract ImmutableMap<String, String> generationOptions();
 
-    public abstract Optional<Long> currentVersion();
+  public abstract Optional<Long> currentVersion();
 }

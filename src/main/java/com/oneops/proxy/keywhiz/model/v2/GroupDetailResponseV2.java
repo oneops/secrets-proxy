@@ -1,10 +1,8 @@
 package com.oneops.proxy.keywhiz.model.v2;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.*;
 import com.oneops.proxy.keywhiz.model.Group;
 
 import javax.annotation.Nullable;
@@ -12,108 +10,104 @@ import java.util.Map;
 
 @AutoValue
 public abstract class GroupDetailResponseV2 {
-    GroupDetailResponseV2() {
-    } // prevent sub-classing
+  GroupDetailResponseV2() {} // prevent sub-classing
 
-    public static Builder builder() {
-        return new AutoValue_GroupDetailResponseV2.Builder();
+  public static Builder builder() {
+    return new AutoValue_GroupDetailResponseV2.Builder();
+  }
+
+  @AutoValue.Builder
+  public abstract static class Builder {
+    // intended to be package-private
+    abstract Builder name(String name);
+
+    abstract Builder description(String description);
+
+    abstract Builder createdAtSeconds(long createdAtSeconds);
+
+    abstract Builder updatedAtSeconds(long updatedAtSeconds);
+
+    abstract Builder createdBy(String person);
+
+    abstract Builder updatedBy(String person);
+
+    abstract Builder secrets(ImmutableSet<String> secrets);
+
+    abstract Builder clients(ImmutableSet<String> clients);
+
+    abstract Builder metadata(ImmutableMap<String, String> metadata);
+
+    public Builder group(Group group) {
+      return this.name(group.getName())
+          .description(group.getDescription())
+          .createdAtSeconds(group.getCreatedAt().toEpochSecond())
+          .updatedAtSeconds(group.getUpdatedAt().toEpochSecond())
+          .createdBy(group.getCreatedBy())
+          .updatedBy(group.getUpdatedBy())
+          .metadata(group.getMetadata());
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        // intended to be package-private
-        abstract Builder name(String name);
-
-        abstract Builder description(String description);
-
-        abstract Builder createdAtSeconds(long createdAtSeconds);
-
-        abstract Builder updatedAtSeconds(long updatedAtSeconds);
-
-        abstract Builder createdBy(String person);
-
-        abstract Builder updatedBy(String person);
-
-        abstract Builder secrets(ImmutableSet<String> secrets);
-
-        abstract Builder clients(ImmutableSet<String> clients);
-
-        abstract Builder metadata(ImmutableMap<String, String> metadata);
-
-        public Builder group(Group group) {
-            return this
-                    .name(group.getName())
-                    .description(group.getDescription())
-                    .createdAtSeconds(group.getCreatedAt().toEpochSecond())
-                    .updatedAtSeconds(group.getUpdatedAt().toEpochSecond())
-                    .createdBy(group.getCreatedBy())
-                    .updatedBy(group.getUpdatedBy())
-                    .metadata(group.getMetadata());
-        }
-
-        public Builder secrets(Iterable<String> secrets) {
-            return secrets(ImmutableSet.copyOf(secrets));
-        }
-
-        public Builder clients(Iterable<String> clients) {
-            return clients(ImmutableSet.copyOf(clients));
-        }
-
-        public abstract GroupDetailResponseV2 build();
+    public Builder secrets(Iterable<String> secrets) {
+      return secrets(ImmutableSet.copyOf(secrets));
     }
 
-    /**
-     * Static factory method used by Jackson for deserialization
-     */
-    @SuppressWarnings("unused")
-    @JsonCreator
-    public static GroupDetailResponseV2 fromParts(
-            @JsonProperty("name") String name,
-            @JsonProperty("description") String description,
-            @JsonProperty("createdAtSeconds") long createdAtSeconds,
-            @JsonProperty("updatedAtSeconds") long updatedAtSeconds,
-            @JsonProperty("createdBy") String createdBy,
-            @JsonProperty("updatedBy") String updatedBy,
-            @JsonProperty("secrets") Iterable<String> secrets,
-            @JsonProperty("clients") Iterable<String> clients,
-            @JsonProperty("metadata") @Nullable Map<String, String> metadata) {
-        return builder()
-                .name(name)
-                .description(description)
-                .createdAtSeconds(createdAtSeconds)
-                .updatedAtSeconds(updatedAtSeconds)
-                .createdBy(createdBy)
-                .updatedBy(updatedBy)
-                .secrets(secrets)
-                .clients(clients)
-                .metadata(ImmutableMap.copyOf(metadata == null ? ImmutableMap.of() : metadata))
-                .build();
+    public Builder clients(Iterable<String> clients) {
+      return clients(ImmutableSet.copyOf(clients));
     }
 
-    @JsonProperty("name")
-    public abstract String name();
+    public abstract GroupDetailResponseV2 build();
+  }
 
-    @JsonProperty("description")
-    public abstract String description();
+  /** Static factory method used by Jackson for deserialization */
+  @SuppressWarnings("unused")
+  @JsonCreator
+  public static GroupDetailResponseV2 fromParts(
+      @JsonProperty("name") String name,
+      @JsonProperty("description") String description,
+      @JsonProperty("createdAtSeconds") long createdAtSeconds,
+      @JsonProperty("updatedAtSeconds") long updatedAtSeconds,
+      @JsonProperty("createdBy") String createdBy,
+      @JsonProperty("updatedBy") String updatedBy,
+      @JsonProperty("secrets") Iterable<String> secrets,
+      @JsonProperty("clients") Iterable<String> clients,
+      @JsonProperty("metadata") @Nullable Map<String, String> metadata) {
+    return builder()
+        .name(name)
+        .description(description)
+        .createdAtSeconds(createdAtSeconds)
+        .updatedAtSeconds(updatedAtSeconds)
+        .createdBy(createdBy)
+        .updatedBy(updatedBy)
+        .secrets(secrets)
+        .clients(clients)
+        .metadata(ImmutableMap.copyOf(metadata == null ? ImmutableMap.of() : metadata))
+        .build();
+  }
 
-    @JsonProperty("createdAtSeconds")
-    public abstract long createdAtSeconds();
+  @JsonProperty("name")
+  public abstract String name();
 
-    @JsonProperty("updatedAtSeconds")
-    public abstract long updatedAtSeconds();
+  @JsonProperty("description")
+  public abstract String description();
 
-    @JsonProperty("createdBy")
-    public abstract String createdBy();
+  @JsonProperty("createdAtSeconds")
+  public abstract long createdAtSeconds();
 
-    @JsonProperty("updatedBy")
-    public abstract String updatedBy();
+  @JsonProperty("updatedAtSeconds")
+  public abstract long updatedAtSeconds();
 
-    @JsonProperty("secrets")
-    public abstract ImmutableSet<String> secrets();
+  @JsonProperty("createdBy")
+  public abstract String createdBy();
 
-    @JsonProperty("clients")
-    public abstract ImmutableSet<String> clients();
+  @JsonProperty("updatedBy")
+  public abstract String updatedBy();
 
-    @JsonProperty("metadata")
-    public abstract ImmutableMap<String, String> metadata();
+  @JsonProperty("secrets")
+  public abstract ImmutableSet<String> secrets();
+
+  @JsonProperty("clients")
+  public abstract ImmutableSet<String> clients();
+
+  @JsonProperty("metadata")
+  public abstract ImmutableMap<String, String> metadata();
 }

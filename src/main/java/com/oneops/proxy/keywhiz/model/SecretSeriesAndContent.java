@@ -18,17 +18,15 @@ package com.oneops.proxy.keywhiz.model;
 
 import com.google.auto.value.AutoValue;
 
-/**
- * Value type containing a secret content and associated series.
- */
+/** Value type containing a secret content and associated series. */
 @AutoValue
 public abstract class SecretSeriesAndContent {
 
-    public static SecretSeriesAndContent of(SecretSeries series, SecretContent content) {
-        return new AutoValue_SecretSeriesAndContent(series, content);
-    }
+  public static SecretSeriesAndContent of(SecretSeries series, SecretContent content) {
+    return new AutoValue_SecretSeriesAndContent(series, content);
+  }
 
-    public abstract SecretSeries series();
+  public abstract SecretSeries series();
 
-    public abstract SecretContent content();
+  public abstract SecretContent content();
 }

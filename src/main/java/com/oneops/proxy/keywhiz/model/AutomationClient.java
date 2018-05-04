@@ -19,36 +19,33 @@ import com.google.common.base.MoreObjects;
 
 import javax.annotation.Nullable;
 
-/**
- * Special type of {@link Client} with elevated, automation privileges.
- */
+/** Special type of {@link Client} with elevated, automation privileges. */
 public class AutomationClient extends Client {
-    private AutomationClient(Client client) {
-        super(client.getId(),
-                client.getName(),
-                client.getDescription(),
-                client.getCreatedAt(),
-                client.getCreatedBy(),
-                client.getUpdatedAt(),
-                client.getUpdatedBy(),
-                client.getLastSeen(),
-                client.isEnabled(), true
-        );
+  private AutomationClient(Client client) {
+    super(
+        client.getId(),
+        client.getName(),
+        client.getDescription(),
+        client.getCreatedAt(),
+        client.getCreatedBy(),
+        client.getUpdatedAt(),
+        client.getUpdatedBy(),
+        client.getLastSeen(),
+        client.isEnabled(),
+        true);
+  }
+
+  @Nullable
+  public static AutomationClient of(Client client) {
+    if (client.isAutomationAllowed()) {
+      return new AutomationClient(client);
     }
 
-    @Nullable
-    public static AutomationClient of(Client client) {
-        if (client.isAutomationAllowed()) {
-            return new AutomationClient(client);
-        }
+    return null;
+  }
 
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("name", getName())
-                .toString();
-    }
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("name", getName()).toString();
+  }
 }

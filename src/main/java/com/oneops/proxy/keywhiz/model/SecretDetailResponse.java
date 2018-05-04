@@ -17,138 +17,121 @@
 package com.oneops.proxy.keywhiz.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.base.*;
+import com.google.common.collect.*;
 
 public class SecretDetailResponse {
 
-    @JsonProperty
-    public final long id;
+  @JsonProperty public final long id;
 
-    @JsonProperty
-    public final String name;
+  @JsonProperty public final String name;
 
-    @JsonProperty
-    public final String description;
+  @JsonProperty public final String description;
 
-    @JsonProperty
-    public final ApiDate createdAt;
+  @JsonProperty public final ApiDate createdAt;
 
-    /**
-     * User who created the record.
-     */
-    @JsonProperty
-    public final String createdBy;
+  /** User who created the record. */
+  @JsonProperty public final String createdBy;
 
-    /**
-     * Should equal createdAt, but added for consistency in the API.
-     */
-    @JsonProperty
-    public final ApiDate updatedAt;
+  /** Should equal createdAt, but added for consistency in the API. */
+  @JsonProperty public final ApiDate updatedAt;
 
-    /**
-     * User who updated the record.
-     */
-    @JsonProperty
-    public final String updatedBy;
+  /** User who updated the record. */
+  @JsonProperty public final String updatedBy;
 
-    /**
-     * Arbitrary key-value data associated with the secret.
-     */
-    @JsonProperty
-    public final ImmutableMap<String, String> metadata;
+  /** Arbitrary key-value data associated with the secret. */
+  @JsonProperty public final ImmutableMap<String, String> metadata;
 
-    @JsonProperty
-    public final ImmutableList<Group> groups;
+  @JsonProperty public final ImmutableList<Group> groups;
 
-    @JsonProperty
-    public final ImmutableList<Client> clients;
+  @JsonProperty public final ImmutableList<Client> clients;
 
-    public SecretDetailResponse(@JsonProperty("id") long id,
-                                @JsonProperty("name") String name,
-                                @JsonProperty("description") String description,
-                                @JsonProperty("createdAt") ApiDate createdAt,
-                                @JsonProperty("createdBy") String createdBy,
-                                @JsonProperty("updatedAt") ApiDate updatedAt,
-                                @JsonProperty("updatedBy") String updatedBy,
-                                @JsonProperty("metadata") ImmutableMap<String, String> metadata,
-                                @JsonProperty("groups") ImmutableList<Group> groups,
-                                @JsonProperty("clients") ImmutableList<Client> clients) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.createdAt = createdAt;
-        this.createdBy = createdBy;
-        this.updatedAt = updatedAt;
-        this.updatedBy = updatedBy;
-        this.metadata = metadata;
-        this.groups = groups;
-        this.clients = clients;
+  public SecretDetailResponse(
+      @JsonProperty("id") long id,
+      @JsonProperty("name") String name,
+      @JsonProperty("description") String description,
+      @JsonProperty("createdAt") ApiDate createdAt,
+      @JsonProperty("createdBy") String createdBy,
+      @JsonProperty("updatedAt") ApiDate updatedAt,
+      @JsonProperty("updatedBy") String updatedBy,
+      @JsonProperty("metadata") ImmutableMap<String, String> metadata,
+      @JsonProperty("groups") ImmutableList<Group> groups,
+      @JsonProperty("clients") ImmutableList<Client> clients) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.createdAt = createdAt;
+    this.createdBy = createdBy;
+    this.updatedAt = updatedAt;
+    this.updatedBy = updatedBy;
+    this.metadata = metadata;
+    this.groups = groups;
+    this.clients = clients;
+  }
+
+  public static SecretDetailResponse fromSecret(
+      Secret secret, ImmutableList<Group> groups, ImmutableList<Client> clients) {
+    return new SecretDetailResponse(
+        secret.getId(),
+        secret.getName(),
+        secret.getDescription(),
+        secret.getCreatedAt(),
+        secret.getCreatedBy(),
+        secret.getUpdatedAt(),
+        secret.getUpdatedBy(),
+        secret.getMetadata(),
+        groups,
+        clients);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(
+        id,
+        name,
+        description,
+        createdAt,
+        createdBy,
+        updatedAt,
+        updatedBy,
+        metadata,
+        groups,
+        clients);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof SecretDetailResponse) {
+      SecretDetailResponse that = (SecretDetailResponse) o;
+      if (this.id == that.id
+          && Objects.equal(this.name, that.name)
+          && Objects.equal(this.description, that.description)
+          && Objects.equal(this.createdAt, that.createdAt)
+          && Objects.equal(this.createdBy, that.createdBy)
+          && Objects.equal(this.updatedAt, that.updatedAt)
+          && Objects.equal(this.updatedBy, that.updatedBy)
+          && Objects.equal(this.metadata, that.metadata)
+          && Objects.equal(this.groups, that.groups)
+          && Objects.equal(this.clients, that.clients)) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    public static SecretDetailResponse fromSecret(Secret secret, ImmutableList<Group> groups,
-                                                  ImmutableList<Client> clients) {
-        return new SecretDetailResponse(secret.getId(),
-                secret.getName(),
-                secret.getDescription(),
-                secret.getCreatedAt(),
-                secret.getCreatedBy(),
-                secret.getUpdatedAt(),
-                secret.getUpdatedBy(),
-                secret.getMetadata(),
-                groups,
-                clients);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id,
-                name,
-                description,
-                createdAt,
-                createdBy,
-                updatedAt,
-                updatedBy,
-                metadata,
-                groups,
-                clients);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof SecretDetailResponse) {
-            SecretDetailResponse that = (SecretDetailResponse) o;
-            if (this.id == that.id &&
-                    Objects.equal(this.name, that.name) &&
-                    Objects.equal(this.description, that.description) &&
-                    Objects.equal(this.createdAt, that.createdAt) &&
-                    Objects.equal(this.createdBy, that.createdBy) &&
-                    Objects.equal(this.updatedAt, that.updatedAt) &&
-                    Objects.equal(this.updatedBy, that.updatedBy) &&
-                    Objects.equal(this.metadata, that.metadata) &&
-                    Objects.equal(this.groups, that.groups) &&
-                    Objects.equal(this.clients, that.clients)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("name", name)
-                .add("description", description)
-                .add("createdAt", createdAt)
-                .add("createdBy", createdBy)
-                .add("updatedAt", updatedAt)
-                .add("updatedBy", updatedBy)
-                .add("metadata", metadata)
-                .add("groups", "[OMIT]")
-                .add("clients", "[OMIT]")
-                .toString();
-    }
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("id", id)
+        .add("name", name)
+        .add("description", description)
+        .add("createdAt", createdAt)
+        .add("createdBy", createdBy)
+        .add("updatedAt", updatedAt)
+        .add("updatedBy", updatedBy)
+        .add("metadata", metadata)
+        .add("groups", "[OMIT]")
+        .add("clients", "[OMIT]")
+        .toString();
+  }
 }

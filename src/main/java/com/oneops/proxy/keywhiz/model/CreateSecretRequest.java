@@ -22,63 +22,51 @@ import com.google.common.collect.ImmutableMap;
 
 import javax.annotation.Nullable;
 
-/**
- * Request message to create secrets.
- */
+/** Request message to create secrets. */
 public class CreateSecretRequest {
-    @JsonProperty
-    public final String name;
+  @JsonProperty public final String name;
 
-    @Nullable
-    @JsonProperty
-    public final String description;
+  @Nullable @JsonProperty public final String description;
 
-    /**
-     * Base64 representation of the secret to be added.
-     */
-    @JsonProperty
-    public final String content;
+  /** Base64 representation of the secret to be added. */
+  @JsonProperty public final String content;
 
-    @Nullable
-    @JsonProperty
-    public final ImmutableMap<String, String> metadata;
+  @Nullable @JsonProperty public final ImmutableMap<String, String> metadata;
 
-    /**
-     * In seconds since epoch
-     */
-    @JsonProperty
-    public final long expiry;
+  /** In seconds since epoch */
+  @JsonProperty public final long expiry;
 
-    public CreateSecretRequest(@JsonProperty("name") String name,
-                               @JsonProperty("description") @Nullable String description,
-                               @JsonProperty("content") String content,
-                               @JsonProperty("metadata") @Nullable ImmutableMap<String, String> metadata,
-                               @JsonProperty("expiry") long expiry) {
-        this.name = name;
-        this.description = description;
-        this.content = content;
-        this.metadata = metadata;
-        this.expiry = expiry;
+  public CreateSecretRequest(
+      @JsonProperty("name") String name,
+      @JsonProperty("description") @Nullable String description,
+      @JsonProperty("content") String content,
+      @JsonProperty("metadata") @Nullable ImmutableMap<String, String> metadata,
+      @JsonProperty("expiry") long expiry) {
+    this.name = name;
+    this.description = description;
+    this.content = content;
+    this.metadata = metadata;
+    this.expiry = expiry;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(name, description, content, metadata, expiry);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o instanceof CreateSecretRequest) {
+      CreateSecretRequest that = (CreateSecretRequest) o;
+      if (Objects.equal(this.name, that.name)
+          && Objects.equal(this.description, that.description)
+          && Objects.equal(this.content, that.content)
+          && Objects.equal(this.metadata, that.metadata)
+          && this.expiry == that.expiry) {
+        return true;
+      }
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(name, description, content, metadata, expiry);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o instanceof CreateSecretRequest) {
-            CreateSecretRequest that = (CreateSecretRequest) o;
-            if (Objects.equal(this.name, that.name) &&
-                    Objects.equal(this.description, that.description) &&
-                    Objects.equal(this.content, that.content) &&
-                    Objects.equal(this.metadata, that.metadata) &&
-                    this.expiry == that.expiry) {
-                return true;
-            }
-        }
-        return false;
-    }
+    return false;
+  }
 }

@@ -16,85 +16,79 @@
 
 package com.oneops.proxy.keywhiz.model;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.annotation.*;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 import static java.lang.String.format;
 
 /**
- * This is a wrapper for the date class used in API responses
- * so we can have a custom JSON serializer and deserializer.
+ * This is a wrapper for the date class used in API responses so we can have a custom JSON
+ * serializer and deserializer.
  */
 @JsonSerialize(using = ApiDate.ApiDateSerializer.class)
 @JsonDeserialize(using = ApiDate.ApiDateDeserializer.class)
 public class ApiDate {
 
-    private long epochSecond;
+  private long epochSecond;
 
-    public long toEpochSecond() {
-        return epochSecond;
-    }
+  public long toEpochSecond() {
+    return epochSecond;
+  }
 
-    public ApiDate(long epochSecond) {
-        this.epochSecond = epochSecond;
-    }
+  public ApiDate(long epochSecond) {
+    this.epochSecond = epochSecond;
+  }
 
-    public static ApiDate parse(String s) {
-        OffsetDateTime odt = OffsetDateTime.parse(s);
-        return new ApiDate(odt.toEpochSecond());
-    }
+  public static ApiDate parse(String s) {
+    OffsetDateTime odt = OffsetDateTime.parse(s);
+    return new ApiDate(odt.toEpochSecond());
+  }
 
-    public static ApiDate now() {
-        return new ApiDate(OffsetDateTime.now().toEpochSecond());
+  public static ApiDate now() {
+    return new ApiDate(OffsetDateTime.now().toEpochSecond());
+  }
+
+  @Override
+  public String toString() {
+    return format("ApiDate[%d]", epochSecond);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof ApiDate) {
+      ApiDate that = (ApiDate) obj;
+      return this.epochSecond == that.epochSecond;
     }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return Long.hashCode(this.epochSecond);
+  }
+
+  static class ApiDateSerializer extends JsonSerializer<ApiDate> {
+    private static DateTimeFormatter formatter =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     @Override
-    public String toString() {
-        return format("ApiDate[%d]", epochSecond);
+    public void serialize(ApiDate value, JsonGenerator gen, SerializerProvider serializers)
+        throws IOException {
+      Instant i = Instant.ofEpochSecond(value.epochSecond);
+      gen.writeString(formatter.format(i.atOffset(ZoneOffset.UTC)));
     }
+  }
 
+  static class ApiDateDeserializer extends JsonDeserializer<ApiDate> {
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof ApiDate) {
-            ApiDate that = (ApiDate) obj;
-            return this.epochSecond == that.epochSecond;
-        }
-        return false;
+    public ApiDate deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
+      OffsetDateTime odt = parser.readValueAs(OffsetDateTime.class);
+      return new ApiDate(odt.toEpochSecond());
     }
-
-    @Override
-    public int hashCode() {
-        return Long.hashCode(this.epochSecond);
-    }
-
-    static class ApiDateSerializer extends JsonSerializer<ApiDate> {
-        private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-
-        @Override
-        public void serialize(ApiDate value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-            Instant i = Instant.ofEpochSecond(value.epochSecond);
-            gen.writeString(formatter.format(i.atOffset(ZoneOffset.UTC)));
-        }
-    }
-
-    static class ApiDateDeserializer extends JsonDeserializer<ApiDate> {
-        @Override
-        public ApiDate deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
-            OffsetDateTime odt = parser.readValueAs(OffsetDateTime.class);
-            return new ApiDate(odt.toEpochSecond());
-        }
-    }
+  }
 }
-

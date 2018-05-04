@@ -16,73 +16,70 @@
 
 package com.oneops.proxy.keywhiz.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
 
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-/**
- * {@link Secret} object, but without the secret content and with group metadata.
- */
+/** {@link Secret} object, but without the secret content and with group metadata. */
 @AutoValue
 public abstract class SanitizedSecretWithGroups {
 
-    @JsonCreator
-    public static SanitizedSecretWithGroups of(
-            @JsonProperty("secret") SanitizedSecret secret,
-            @JsonProperty("groups") List<Group> groups) {
-        return new AutoValue_SanitizedSecretWithGroups(secret, groups);
-    }
+  @JsonCreator
+  public static SanitizedSecretWithGroups of(
+      @JsonProperty("secret") SanitizedSecret secret, @JsonProperty("groups") List<Group> groups) {
+    return new AutoValue_SanitizedSecretWithGroups(secret, groups);
+  }
 
-    public static SanitizedSecretWithGroups of(long id, String name, List<Group> groups) {
-        SanitizedSecret sanitizedSecret = SanitizedSecret.of(id,
-                name,
-                null,
-                "",
-                new ApiDate(0),
-                null,
-                new ApiDate(0),
-                null,
-                null,
-                null,
-                null,
-                0,
-                null);
-        return SanitizedSecretWithGroups.of(sanitizedSecret, groups);
-    }
+  public static SanitizedSecretWithGroups of(long id, String name, List<Group> groups) {
+    SanitizedSecret sanitizedSecret =
+        SanitizedSecret.of(
+            id,
+            name,
+            null,
+            "",
+            new ApiDate(0),
+            null,
+            new ApiDate(0),
+            null,
+            null,
+            null,
+            null,
+            0,
+            null);
+    return SanitizedSecretWithGroups.of(sanitizedSecret, groups);
+  }
 
-    public static SanitizedSecretWithGroups fromSecretSeriesAndContentAndGroups(SecretSeriesAndContent seriesAndContent, List<Group> groups) {
-        SanitizedSecret sanitizedSecret = SanitizedSecret.fromSecretSeriesAndContent(seriesAndContent);
-        return SanitizedSecretWithGroups.of(sanitizedSecret, groups);
-    }
+  public static SanitizedSecretWithGroups fromSecretSeriesAndContentAndGroups(
+      SecretSeriesAndContent seriesAndContent, List<Group> groups) {
+    SanitizedSecret sanitizedSecret = SanitizedSecret.fromSecretSeriesAndContent(seriesAndContent);
+    return SanitizedSecretWithGroups.of(sanitizedSecret, groups);
+  }
 
-    /**
-     * Build a matching representation of a secret, but without sensitive content.
-     *
-     * @param secret secret model to build from
-     * @param groups the list of groups
-     * @return content of secret model, but without sensitive content
-     */
-    public static SanitizedSecretWithGroups fromSecret(Secret secret, List<Group> groups) {
-        checkNotNull(secret);
-        SanitizedSecret sanitizedSecret = SanitizedSecret.fromSecret(secret);
-        return SanitizedSecretWithGroups.of(sanitizedSecret, groups);
-    }
+  /**
+   * Build a matching representation of a secret, but without sensitive content.
+   *
+   * @param secret secret model to build from
+   * @param groups the list of groups
+   * @return content of secret model, but without sensitive content
+   */
+  public static SanitizedSecretWithGroups fromSecret(Secret secret, List<Group> groups) {
+    checkNotNull(secret);
+    SanitizedSecret sanitizedSecret = SanitizedSecret.fromSecret(secret);
+    return SanitizedSecretWithGroups.of(sanitizedSecret, groups);
+  }
 
-    @JsonProperty
-    public abstract SanitizedSecret secret();
+  @JsonProperty
+  public abstract SanitizedSecret secret();
 
-    @JsonProperty
-    public abstract List<Group> groups();
+  @JsonProperty
+  public abstract List<Group> groups();
 
-    /**
-     * @return Name to serialize for clients.
-     */
-    public static String displayName(SanitizedSecretWithGroups sanitizedSecretWithGroups) {
-        String name = sanitizedSecretWithGroups.secret().name();
-        return name;
-    }
+  /** @return Name to serialize for clients. */
+  public static String displayName(SanitizedSecretWithGroups sanitizedSecretWithGroups) {
+    String name = sanitizedSecretWithGroups.secret().name();
+    return name;
+  }
 }

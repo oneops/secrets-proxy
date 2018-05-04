@@ -16,8 +16,7 @@
 
 package com.oneops.proxy.keywhiz.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.MoreObjects;
 
@@ -25,25 +24,24 @@ import static com.google.common.base.Strings.repeat;
 
 @AutoValue
 public abstract class LoginRequest {
-    @JsonCreator
-    public static LoginRequest from(
-            @JsonProperty("username") String username,
-            @JsonProperty("password") char[] password) {
-        return new AutoValue_LoginRequest(username, password);
-    }
+  @JsonCreator
+  public static LoginRequest from(
+      @JsonProperty("username") String username, @JsonProperty("password") char[] password) {
+    return new AutoValue_LoginRequest(username, password);
+  }
 
-    @JsonProperty
-    public abstract String username();
+  @JsonProperty
+  public abstract String username();
 
-    @SuppressWarnings("mutable")
-    @JsonProperty
-    public abstract char[] password();
+  @SuppressWarnings("mutable")
+  @JsonProperty
+  public abstract char[] password();
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("username", username())
-                .add("password", repeat("*", password().length))
-                .toString();
-    }
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this)
+        .add("username", username())
+        .add("password", repeat("*", password().length))
+        .toString();
+  }
 }

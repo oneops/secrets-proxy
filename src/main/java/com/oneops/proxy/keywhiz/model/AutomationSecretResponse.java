@@ -16,11 +16,9 @@
 
 package com.oneops.proxy.keywhiz.model;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.*;
 
 import java.util.Map;
 
@@ -29,58 +27,58 @@ import static com.oneops.proxy.keywhiz.model.Secret.decodedLength;
 
 /**
  * JSON Serialization class for a REST response {@link Secret}.
- * <p>
- * Automation View, does not include secret contents.
+ *
+ * <p>Automation View, does not include secret contents.
  */
 @AutoValue
 public abstract class AutomationSecretResponse {
 
-    public static AutomationSecretResponse create(long id, String name,
-                                                  String secret,
-                                                  ApiDate creationDate,
-                                                  ImmutableMap<String, String> metadata,
-                                                  ImmutableList<Group> groups, long expiry) {
-        return new AutoValue_AutomationSecretResponse(id, name,
-                secret,
-                decodedLength(secret),
-                creationDate, groups,
-                metadata, expiry);
-    }
+  public static AutomationSecretResponse create(
+      long id,
+      String name,
+      String secret,
+      ApiDate creationDate,
+      ImmutableMap<String, String> metadata,
+      ImmutableList<Group> groups,
+      long expiry) {
+    return new AutoValue_AutomationSecretResponse(
+        id, name, secret, decodedLength(secret), creationDate, groups, metadata, expiry);
+  }
 
-    public static AutomationSecretResponse fromSecret(Secret secret, ImmutableList<Group> groups) {
-        checkNotNull(secret);
-        return AutomationSecretResponse.create(
-                secret.getId(),
-                secret.getDisplayName(),
-                secret.getSecret(),
-                secret.getCreatedAt(),
-                secret.getMetadata(),
-                groups,
-                secret.getExpiry());
-    }
+  public static AutomationSecretResponse fromSecret(Secret secret, ImmutableList<Group> groups) {
+    checkNotNull(secret);
+    return AutomationSecretResponse.create(
+        secret.getId(),
+        secret.getDisplayName(),
+        secret.getSecret(),
+        secret.getCreatedAt(),
+        secret.getMetadata(),
+        groups,
+        secret.getExpiry());
+  }
 
-    @JsonProperty("id")
-    public abstract long id();
+  @JsonProperty("id")
+  public abstract long id();
 
-    @JsonProperty("name")
-    public abstract String name();
+  @JsonProperty("name")
+  public abstract String name();
 
-    @JsonProperty("secret")
-    public abstract String secret();
+  @JsonProperty("secret")
+  public abstract String secret();
 
-    @JsonProperty("secretLength")
-    public abstract long secretLength();
+  @JsonProperty("secretLength")
+  public abstract long secretLength();
 
-    @JsonProperty("creationDate")
-    public abstract ApiDate creationDate();
+  @JsonProperty("creationDate")
+  public abstract ApiDate creationDate();
 
-    @JsonProperty("groups")
-    public abstract ImmutableList<Group> groups();
+  @JsonProperty("groups")
+  public abstract ImmutableList<Group> groups();
 
-    @JsonAnyGetter
-    @JsonProperty("metadata")
-    public abstract Map<String, String> metadata();
+  @JsonAnyGetter
+  @JsonProperty("metadata")
+  public abstract Map<String, String> metadata();
 
-    @JsonProperty("expiry")
-    public abstract long expiry();
+  @JsonProperty("expiry")
+  public abstract long expiry();
 }

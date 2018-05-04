@@ -1,20 +1,20 @@
-/*******************************************************************************
+/**
+ * *****************************************************************************
  *
- *   Copyright 2017 Walmart, Inc.
+ * <p>Copyright 2017 Walmart, Inc.
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
  *
- *******************************************************************************/
+ * <p>*****************************************************************************
+ */
 package com.oneops.proxy.auth.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,88 +40,90 @@ import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
- * A login success handle, invoked by {@link LoginAuthProvider} when
- * the user is successfully authenticated. This class is responsible
- * for returning {@link LoginResponse} with <b>access_token</b> on
- * successful login.
+ * A login success handle, invoked by {@link LoginAuthProvider} when the user is successfully
+ * authenticated. This class is responsible for returning {@link LoginResponse} with
+ * <b>access_token</b> on successful login.
  *
  * @author Suresh G
  */
 @Component
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
-    private final ObjectMapper mapper;
-    private final JwtTokenService tokenService;
-    private final AuditLog auditLog;
+  private final Logger log = LoggerFactory.getLogger(getClass());
+  private final ObjectMapper mapper;
+  private final JwtTokenService tokenService;
+  private final AuditLog auditLog;
 
-    public LoginSuccessHandler(ObjectMapper mapper, JwtTokenService tokenService, AuditLog auditLog) {
-        this.mapper = mapper;
-        this.tokenService = tokenService;
-        this.auditLog = auditLog;
+  public LoginSuccessHandler(ObjectMapper mapper, JwtTokenService tokenService, AuditLog auditLog) {
+    this.mapper = mapper;
+    this.tokenService = tokenService;
+    this.auditLog = auditLog;
+  }
+
+  /**
+   * Since we are using multiple {@link AuthenticationProvider}s, make sure to convert the
+   * authentication principal to proper {@link OneOpsUser} type.
+   *
+   * @param req http request.
+   * @param res http response.
+   * @param authentication authentication object
+   * @throws IOException
+   * @throws ServletException
+   */
+  @Override
+  public void onAuthenticationSuccess(
+      HttpServletRequest req, HttpServletResponse res, Authentication authentication)
+      throws IOException, ServletException {
+    User principal = (User) authentication.getPrincipal();
+    OneOpsUser user;
+    if (principal instanceof OneOpsUser) {
+      user = (OneOpsUser) principal;
+    } else {
+      user = getOneOpsUser(principal);
     }
 
-    /**
-     * Since we are using multiple {@link AuthenticationProvider}s, make sure to
-     * convert the authentication principal to proper {@link OneOpsUser} type.
-     *
-     * @param req            http request.
-     * @param res            http response.
-     * @param authentication authentication object
-     * @throws IOException
-     * @throws ServletException
-     */
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse res, Authentication authentication) throws IOException, ServletException {
-        User principal = (User) authentication.getPrincipal();
-        OneOpsUser user;
-        if (principal instanceof OneOpsUser) {
-            user = (OneOpsUser) principal;
-        } else {
-            user = getOneOpsUser(principal);
-        }
+    String token = tokenService.generateToken(user);
+    auditLog.log(new Event(GENERATE_TOKEN, user.getUsername(), user.getDomain(), "N/A"));
 
-        String token = tokenService.generateToken(user);
-        auditLog.log(new Event(GENERATE_TOKEN, user.getUsername(), user.getDomain(), "N/A"));
+    LoginResponse loginResponse =
+        new LoginResponse(token, tokenService.getTokenType(), tokenService.getExpiresInSec());
+    res.setStatus(HttpStatus.CREATED.value());
+    res.setContentType(APPLICATION_JSON_VALUE);
+    mapper.writeValue(res.getWriter(), loginResponse);
 
-        LoginResponse loginResponse = new LoginResponse(token, tokenService.getTokenType(), tokenService.getExpiresInSec());
-        res.setStatus(HttpStatus.CREATED.value());
-        res.setContentType(APPLICATION_JSON_VALUE);
-        mapper.writeValue(res.getWriter(), loginResponse);
+    clearAuthenticationAttributes(req);
+  }
 
-        clearAuthenticationAttributes(req);
+  /**
+   * Helper method to create {@link OneOpsUser} for authentication principal.
+   *
+   * @param principal authentication principal
+   * @return oneops user.
+   */
+  private OneOpsUser getOneOpsUser(User principal) {
+    log.debug("Found user details in authentication. Creating OneOps User.");
+    String userName = principal.getUsername();
+    String password = principal.getPassword();
+
+    if (password == null) {
+      log.debug(userName + " credentials are already erased.");
+      password = "";
     }
+    return new OneOpsUser(userName, password, principal.getAuthorities(), userName, DEFAULT_DOMAIN);
+  }
 
-    /**
-     * Helper method to create {@link OneOpsUser} for authentication principal.
-     *
-     * @param principal authentication principal
-     * @return oneops user.
-     */
-    private OneOpsUser getOneOpsUser(User principal) {
-        log.debug("Found user details in authentication. Creating OneOps User.");
-        String userName = principal.getUsername();
-        String password = principal.getPassword();
-
-        if (password == null) {
-            log.debug(userName + " credentials are already erased.");
-            password = "";
-        }
-        return new OneOpsUser(userName, password, principal.getAuthorities(), userName, DEFAULT_DOMAIN);
+  /**
+   * Removes any temporary authentication-related data which may have been stored in the session
+   * during the authentication process.
+   *
+   * @param request http request.
+   */
+  private void clearAuthenticationAttributes(HttpServletRequest request) {
+    // Don't create new session.
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return;
     }
-
-    /**
-     * Removes any temporary authentication-related data which may have been
-     * stored in the session during the authentication process.
-     *
-     * @param request http request.
-     */
-    private void clearAuthenticationAttributes(HttpServletRequest request) {
-        // Don't create new session.
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            return;
-        }
-        session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-    }
+    session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+  }
 }

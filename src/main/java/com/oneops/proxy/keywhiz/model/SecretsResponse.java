@@ -16,43 +16,36 @@
 
 package com.oneops.proxy.keywhiz.model;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
+import com.google.common.base.*;
 import com.google.common.collect.ImmutableList;
 
-/**
- * Response to a listing of existing secrets
- */
+/** Response to a listing of existing secrets */
 public class SecretsResponse {
-    /**
-     * Listing of secrets with related information but without secret content.
-     */
-    public final ImmutableList<SanitizedSecret> secrets;
+  /** Listing of secrets with related information but without secret content. */
+  public final ImmutableList<SanitizedSecret> secrets;
 
-    public SecretsResponse(ImmutableList<SanitizedSecret> secrets) {
-        this.secrets = secrets;
-    }
+  public SecretsResponse(ImmutableList<SanitizedSecret> secrets) {
+    this.secrets = secrets;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(secrets);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(secrets);
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof SecretsResponse) {
-            SecretsResponse that = (SecretsResponse) o;
-            if (Objects.equal(this.secrets, that.secrets)) {
-                return true;
-            }
-        }
-        return false;
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof SecretsResponse) {
+      SecretsResponse that = (SecretsResponse) o;
+      if (Objects.equal(this.secrets, that.secrets)) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("secrets", secrets)
-                .toString();
-    }
+  @Override
+  public String toString() {
+    return MoreObjects.toStringHelper(this).add("secrets", secrets).toString();
+  }
 }
