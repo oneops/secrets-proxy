@@ -31,7 +31,7 @@
   * Run `secrets-proxy` image
   
     > Before running make sure you have the proper [secrets-proxy env](contrib/init/systemd/keywhiz-proxy-env) file and 
-    all the [keystores](##oneops-secrets-proxy-keystores) under `/path/to/secrets`
+    all the [keystores](#oneops-secrets-proxy-keystores) under `/path/to/secrets`
     
     ```
      $ docker run -it --rm --name secrets-proxy -p 8443:8443  --env-file=/path/to/secrets/keywhiz-proxy-env  -v /path/to/secrets:/secrets -d secrets-proxy:1.2.0
