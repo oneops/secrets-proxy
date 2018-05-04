@@ -17,15 +17,14 @@
  */
 package com.oneops.proxy.web;
 
-import com.oneops.proxy.keywhiz.KeywhizException;
-import com.oneops.proxy.model.ErrorResponse;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.*;
-
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.util.StringUtils.isEmpty;
+
+import com.oneops.proxy.keywhiz.KeywhizException;
+import com.oneops.proxy.model.ErrorResponse;
+import javax.servlet.http.*;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * A rest controller advice to return {@link ErrorResponse} for a particular controller and/or

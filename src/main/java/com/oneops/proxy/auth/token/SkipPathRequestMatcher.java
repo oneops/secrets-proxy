@@ -17,13 +17,12 @@
  */
 package com.oneops.proxy.auth.token;
 
-import org.slf4j.*;
-import org.springframework.security.web.util.matcher.*;
-
-import javax.annotation.Nonnull;
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import javax.servlet.http.HttpServletRequest;
+import org.slf4j.*;
+import org.springframework.security.web.util.matcher.*;
 
 /**
  * Request paths matcher configured to skip endpoints for {@link TokenAuthProcessingFilter} By

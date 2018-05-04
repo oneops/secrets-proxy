@@ -17,10 +17,9 @@
  */
 package com.oneops.proxy.auth.token;
 
+import java.util.Collection;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
 
 /**
  * A token for identifying JWT auth token in {@link TokenAuthProcessingFilter}.

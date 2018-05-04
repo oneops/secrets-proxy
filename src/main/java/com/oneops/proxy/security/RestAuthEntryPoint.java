@@ -17,18 +17,17 @@
  */
 package com.oneops.proxy.security;
 
+import static com.oneops.proxy.config.Constants.APP_NAME;
+import static org.springframework.http.HttpHeaders.WWW_AUTHENTICATE;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
-import java.io.IOException;
-
-import static com.oneops.proxy.config.Constants.APP_NAME;
-import static org.springframework.http.HttpHeaders.WWW_AUTHENTICATE;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 /**
  * Authentication entry point bean to commences an authentication scheme on {@link

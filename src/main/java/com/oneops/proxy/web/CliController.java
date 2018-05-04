@@ -17,22 +17,21 @@
  */
 package com.oneops.proxy.web;
 
+import static com.oneops.proxy.config.Constants.CLI_CTLR_BASE_PATH;
+import static java.lang.String.format;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
 import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.keywhiz.KeywhizException;
 import io.swagger.annotations.*;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 import org.slf4j.*;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
-
-import static com.oneops.proxy.config.Constants.CLI_CTLR_BASE_PATH;
-import static java.lang.String.format;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
  * A rest controller to download secrets cli.

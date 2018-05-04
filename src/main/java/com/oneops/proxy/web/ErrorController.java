@@ -17,16 +17,15 @@
  */
 package com.oneops.proxy.web;
 
+import static org.springframework.http.MediaType.*;
+
 import com.oneops.proxy.model.ErrorResponse;
+import java.util.Map;
+import javax.servlet.http.*;
 import org.springframework.boot.autoconfigure.web.*;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.*;
-import java.util.Map;
-
-import static org.springframework.http.MediaType.*;
 
 /**
  * Custom global error handler for rendering {@link ErrorAttributes} for this application. All

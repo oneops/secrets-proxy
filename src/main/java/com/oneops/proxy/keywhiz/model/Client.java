@@ -16,13 +16,12 @@
 
 package com.oneops.proxy.keywhiz.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.*;
-
-import javax.annotation.Nullable;
-
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.nullToEmpty;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.*;
+import javax.annotation.Nullable;
 
 /** Clients table entry for a client-cert authenticated client. */
 public class Client {

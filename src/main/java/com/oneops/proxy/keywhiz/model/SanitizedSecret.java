@@ -16,15 +16,14 @@
 
 package com.oneops.proxy.keywhiz.model;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.nullToEmpty;
+
 import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
-
-import javax.annotation.Nullable;
 import java.util.*;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Strings.nullToEmpty;
+import javax.annotation.Nullable;
 
 /** {@link Secret} object, but without the secret content. */
 @AutoValue

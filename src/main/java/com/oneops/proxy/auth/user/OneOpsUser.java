@@ -17,13 +17,12 @@
  */
 package com.oneops.proxy.auth.user;
 
+import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.*;
-
-import java.util.Collection;
-
-import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 
 /**
  * OneOps user details. The user credential (<b>password</b>) is ignored from JSON serialization in

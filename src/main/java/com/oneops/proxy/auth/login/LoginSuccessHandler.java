@@ -17,11 +17,18 @@
  */
 package com.oneops.proxy.auth.login;
 
+import static com.oneops.proxy.audit.EventTag.GENERATE_TOKEN;
+import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oneops.proxy.audit.*;
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.model.LoginResponse;
 import com.oneops.proxy.security.JwtTokenService;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.*;
 import org.slf4j.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -30,14 +37,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
-import java.io.IOException;
-
-import static com.oneops.proxy.audit.EventTag.GENERATE_TOKEN;
-import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
  * A login success handle, invoked by {@link LoginAuthProvider} when the user is successfully

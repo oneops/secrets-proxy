@@ -16,12 +16,11 @@
 
 package com.oneops.proxy.keywhiz.model;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
-
 import java.util.List;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /** {@link Secret} object, but without the secret content and with group metadata. */
 @AutoValue

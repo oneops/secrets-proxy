@@ -17,13 +17,12 @@
  */
 package com.oneops.proxy.keywhiz.http;
 
+import static com.oneops.proxy.keywhiz.http.CookieCutter.decodeCookies;
+
 import com.google.common.net.HttpHeaders;
+import java.io.IOException;
 import okhttp3.*;
 import org.slf4j.*;
-
-import java.io.IOException;
-
-import static com.oneops.proxy.keywhiz.http.CookieCutter.decodeCookies;
 
 /**
  * Http request interceptor to handle server-side XSRF protection. If the server set a cookie with a

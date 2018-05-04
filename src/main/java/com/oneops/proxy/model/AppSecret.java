@@ -17,11 +17,10 @@
  */
 package com.oneops.proxy.model;
 
-import com.oneops.proxy.web.GroupController;
-
-import javax.annotation.Nonnull;
-
 import static com.oneops.proxy.model.AppGroup.GROUP_SEP;
+
+import com.oneops.proxy.web.GroupController;
+import javax.annotation.Nonnull;
 
 /**
  * A domain model to represents keywhiz application group secret in {@link GroupController}. It

@@ -19,7 +19,6 @@ package com.oneops.proxy.model;
 
 import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Map;
 
 /**

@@ -18,11 +18,10 @@
 package com.oneops.proxy.endpoint;
 
 import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
-import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
-import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.util.*;
+import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
+import org.springframework.stereotype.Component;
 
 /**
  * Custom actuator endpoint (<b>/keywhiz</b>) to display keywhiz status.

@@ -17,24 +17,23 @@
  */
 package com.oneops.proxy.security;
 
+import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
+import static org.springframework.util.StringUtils.isEmpty;
+
 import com.oneops.proxy.auth.token.JwtAuthToken;
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.config.OneOpsConfig;
 import io.jsonwebtoken.*;
+import java.time.Instant;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.annotation.*;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.*;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.*;
-import javax.servlet.http.HttpServletRequest;
-import java.time.Instant;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
-import static org.springframework.util.StringUtils.isEmpty;
 
 /**
  * Token (JWT) generation and validation services.

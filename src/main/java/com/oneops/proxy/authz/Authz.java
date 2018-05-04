@@ -17,16 +17,15 @@
  */
 package com.oneops.proxy.authz;
 
+import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
+
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.model.AppGroup;
+import java.util.List;
+import javax.annotation.Nonnull;
 import org.slf4j.*;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Nonnull;
-import java.util.List;
-
-import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
 
 /**
  * Implements Keywhiz application group authorization logic. The application group name is the env

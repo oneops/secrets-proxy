@@ -17,11 +17,10 @@
  */
 package com.oneops.proxy.model;
 
-import org.springframework.boot.autoconfigure.web.ErrorAttributes;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import java.util.*;
-
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 
 /**
  * Login failure error response.

@@ -17,14 +17,13 @@
  */
 package com.oneops.proxy.gateway;
 
+import java.util.Collections;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.*;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 
 /**
  * A transparent proxy servlet, which just forward http requests to the configured <b>proxyTo</b>

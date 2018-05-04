@@ -16,7 +16,6 @@
 package com.oneops.proxy.keywhiz.model;
 
 import com.google.common.base.MoreObjects;
-
 import javax.annotation.Nullable;
 
 /** Special type of {@link Client} with elevated, automation privileges. */

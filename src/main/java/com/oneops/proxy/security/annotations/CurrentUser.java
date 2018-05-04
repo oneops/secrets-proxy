@@ -17,10 +17,9 @@
  */
 package com.oneops.proxy.security.annotations;
 
+import java.lang.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.lang.annotation.*;
 
 /**
  * A meta annotation, annotates spring MVC method args with this annotation to indicate you wish to

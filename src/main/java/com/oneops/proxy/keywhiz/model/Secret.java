@@ -15,17 +15,16 @@
  */
 package com.oneops.proxy.keywhiz.model;
 
-import com.google.common.base.*;
-import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableMap;
-
-import javax.annotation.Nullable;
-import java.util.*;
-import java.util.Optional;
-
 import static com.google.common.base.Preconditions.*;
 import static com.google.common.base.Strings.nullToEmpty;
 import static org.apache.commons.lang3.StringUtils.*;
+
+import com.google.common.base.*;
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableMap;
+import java.util.*;
+import java.util.Optional;
+import javax.annotation.Nullable;
 
 /**
  * Immutable Secret data model.

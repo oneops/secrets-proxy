@@ -17,10 +17,10 @@
  */
 package com.oneops.proxy.model;
 
+import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
-
-import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 
 /**
  * Login request for user authentication. {@link ApiModelProperty} is used only for generating

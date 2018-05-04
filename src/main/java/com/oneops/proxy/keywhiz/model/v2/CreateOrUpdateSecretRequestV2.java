@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.*;
 import com.google.common.collect.ImmutableMap;
-
-import javax.annotation.Nullable;
 import java.util.*;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class CreateOrUpdateSecretRequestV2 {

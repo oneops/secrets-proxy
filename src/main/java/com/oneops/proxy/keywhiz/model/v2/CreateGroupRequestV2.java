@@ -1,12 +1,11 @@
 package com.oneops.proxy.keywhiz.model.v2;
 
+import static com.google.common.base.Strings.nullToEmpty;
+
 import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableMap;
-
 import javax.annotation.Nullable;
-
-import static com.google.common.base.Strings.nullToEmpty;
 
 @AutoValue
 public abstract class CreateGroupRequestV2 {

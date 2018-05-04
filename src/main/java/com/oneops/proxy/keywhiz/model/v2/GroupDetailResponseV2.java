@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.*;
 import com.oneops.proxy.keywhiz.model.Group;
-
-import javax.annotation.Nullable;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class GroupDetailResponseV2 {

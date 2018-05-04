@@ -15,14 +15,13 @@
  */
 package com.oneops.proxy.keywhiz.model;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.nullToEmpty;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.*;
 import com.google.common.collect.ImmutableMap;
-
 import javax.annotation.Nullable;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Strings.nullToEmpty;
 
 /**
  * Groups entry for collecting a set of {@link Client}s, via membership, and/or {@link Secret}s, via

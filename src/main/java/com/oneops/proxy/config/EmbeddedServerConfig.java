@@ -17,7 +17,11 @@
  */
 package com.oneops.proxy.config;
 
+import static com.oneops.proxy.gateway.ProxyServlet.InitParams.*;
+
 import com.oneops.proxy.gateway.ProxyServlet;
+import java.lang.management.ManagementFactory;
+import java.util.*;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.*;
@@ -28,11 +32,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.*;
-
-import java.lang.management.ManagementFactory;
-import java.util.*;
-
-import static com.oneops.proxy.gateway.ProxyServlet.InitParams.*;
 
 /**
  * Embedded jetty server configuration.

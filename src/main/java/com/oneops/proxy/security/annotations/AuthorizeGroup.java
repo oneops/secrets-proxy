@@ -17,14 +17,13 @@
  */
 package com.oneops.proxy.security.annotations;
 
-import com.oneops.proxy.auth.user.OneOpsUser;
-import com.oneops.proxy.authz.Authz;
-import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.lang.annotation.*;
-
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import com.oneops.proxy.auth.user.OneOpsUser;
+import com.oneops.proxy.authz.Authz;
+import java.lang.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * A meta annotation to enable Spring security's Pre-Authorization check for all the secure resource

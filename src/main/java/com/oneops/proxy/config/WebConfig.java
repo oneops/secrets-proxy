@@ -17,16 +17,15 @@
  */
 package com.oneops.proxy.config;
 
+import static org.springframework.http.MediaType.*;
+
 import com.oneops.proxy.model.AppGroup;
 import com.oneops.proxy.web.support.*;
+import java.util.List;
 import org.slf4j.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.*;
-
-import java.util.List;
-
-import static org.springframework.http.MediaType.*;
 
 /**
  * ContentNegotiation configuration for the application.

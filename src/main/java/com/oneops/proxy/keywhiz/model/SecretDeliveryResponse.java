@@ -16,14 +16,13 @@
 
 package com.oneops.proxy.keywhiz.model;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.oneops.proxy.keywhiz.model.Secret.decodedLength;
+
 import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.*;
 import com.google.common.collect.ImmutableMap;
-
 import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.oneops.proxy.keywhiz.model.Secret.decodedLength;
 
 /** JSON Serialization class for a REST response {@link Secret}. API View. */
 public class SecretDeliveryResponse {

@@ -17,15 +17,14 @@
  */
 package com.oneops.proxy.config;
 
-import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.core.filter.AbstractMatcherFilter;
-import ch.qos.logback.core.spi.FilterReply;
-
-import java.util.List;
-
 import static ch.qos.logback.core.spi.FilterReply.NEUTRAL;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+
+import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.core.filter.AbstractMatcherFilter;
+import ch.qos.logback.core.spi.FilterReply;
+import java.util.List;
 
 /**
  * A simple access filter to remove the management health calls (<b>/health</b>). We could have used

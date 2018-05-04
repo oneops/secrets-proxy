@@ -17,15 +17,14 @@
  */
 package com.oneops.proxy.web;
 
+import static com.oneops.proxy.config.Constants.APP_NAME;
+
 import com.oneops.proxy.model.RootResponse;
 import io.swagger.annotations.*;
+import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-import static com.oneops.proxy.config.Constants.APP_NAME;
 
 /**
  * Application root controller.

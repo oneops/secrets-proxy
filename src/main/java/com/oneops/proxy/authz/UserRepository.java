@@ -17,22 +17,21 @@
  */
 package com.oneops.proxy.authz;
 
-import com.oneops.proxy.model.AppGroup;
-import org.jooq.*;
-import org.slf4j.*;
-import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
-import org.springframework.stereotype.Repository;
-
-import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static com.oneops.user.Tables.TEAMS_USERS;
 import static com.oneops.user.tables.CiProxies.CI_PROXIES;
 import static com.oneops.user.tables.CiProxiesTeams.CI_PROXIES_TEAMS;
 import static com.oneops.user.tables.Teams.TEAMS;
 import static com.oneops.user.tables.Users.USERS;
 import static java.lang.System.currentTimeMillis;
+
+import com.oneops.proxy.model.AppGroup;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import org.jooq.*;
+import org.slf4j.*;
+import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
+import org.springframework.stereotype.Repository;
 
 /**
  * User repository class to fetch OneOps user/team/group info. This is mainly used to enforce the

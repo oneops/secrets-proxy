@@ -19,9 +19,8 @@ package com.oneops.proxy.security.annotations;
 
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.authz.Authz;
-import org.springframework.web.bind.annotation.RestController;
-
 import java.lang.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * A meta annotation for {@link RestController} with a pre authorization for Keywhiz application

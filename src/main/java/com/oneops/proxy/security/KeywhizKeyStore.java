@@ -18,13 +18,12 @@
 package com.oneops.proxy.security;
 
 import com.oneops.proxy.config.OneOpsConfig;
-import org.slf4j.*;
-import org.springframework.core.io.ResourceLoader;
-
-import javax.annotation.Nullable;
-import javax.net.ssl.*;
 import java.io.*;
 import java.security.*;
+import javax.annotation.Nullable;
+import javax.net.ssl.*;
+import org.slf4j.*;
+import org.springframework.core.io.ResourceLoader;
 
 /**
  * Holds PKCS12 trust-store/keystore to communicate with Keywhiz server. The keystore is optional

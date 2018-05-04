@@ -1,12 +1,11 @@
 package com.oneops.proxy.keywhiz.model.v2;
 
+import static com.google.common.base.Strings.nullToEmpty;
+
 import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableSet;
-
 import javax.annotation.Nullable;
-
-import static com.google.common.base.Strings.nullToEmpty;
 
 /**
  * Model for request to create a new keywhiz client.

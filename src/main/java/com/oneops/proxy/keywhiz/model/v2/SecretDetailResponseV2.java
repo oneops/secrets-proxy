@@ -1,15 +1,14 @@
 package com.oneops.proxy.keywhiz.model.v2;
 
+import static com.google.common.base.Strings.nullToEmpty;
+
 import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.oneops.proxy.keywhiz.model.*;
-
-import javax.annotation.Nullable;
 import java.util.Map;
-
-import static com.google.common.base.Strings.nullToEmpty;
+import javax.annotation.Nullable;
 
 @AutoValue
 public abstract class SecretDetailResponseV2 {

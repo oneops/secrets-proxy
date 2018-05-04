@@ -19,7 +19,6 @@ package com.oneops.proxy.keywhiz.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
-
 import javax.annotation.Nullable;
 
 public class CreateGroupRequest {

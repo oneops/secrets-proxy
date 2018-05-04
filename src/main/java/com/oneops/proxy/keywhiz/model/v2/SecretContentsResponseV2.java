@@ -3,7 +3,6 @@ package com.oneops.proxy.keywhiz.model.v2;
 import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.*;
-
 import java.util.*;
 
 @AutoValue

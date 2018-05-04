@@ -17,18 +17,17 @@
  */
 package com.oneops.proxy.auth.user;
 
+import static com.oneops.proxy.auth.user.OneOpsUser.Role.USER;
+import static java.util.Collections.singletonList;
+
 import com.oneops.proxy.ldap.LdapClient;
 import com.oneops.proxy.metrics.MetricsUtilService;
+import java.io.IOException;
+import javax.annotation.Nullable;
 import org.ldaptive.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import sun.security.x509.X500Name;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
-
-import static com.oneops.proxy.auth.user.OneOpsUser.Role.USER;
-import static java.util.Collections.singletonList;
 
 /**
  * A service to authenticate users using the {@link LdapClient}

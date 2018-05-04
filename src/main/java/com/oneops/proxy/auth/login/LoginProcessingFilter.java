@@ -17,23 +17,22 @@
  */
 package com.oneops.proxy.auth.login;
 
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.util.StringUtils.isEmpty;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oneops.proxy.model.LoginRequest;
+import java.io.IOException;
+import java.util.Collections;
+import javax.servlet.*;
+import javax.servlet.http.*;
 import org.slf4j.*;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.*;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.IOException;
-import java.util.Collections;
-
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpStatus.*;
-import static org.springframework.util.StringUtils.isEmpty;
 
 /**
  * Login processing filter. De-serialization and basic validation of the incoming JSON {@link

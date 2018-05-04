@@ -17,11 +17,10 @@
  */
 package com.oneops.proxy.config;
 
+import java.util.List;
+import javax.validation.constraints.*;
 import org.springframework.boot.context.properties.*;
 import org.springframework.http.HttpHeaders;
-
-import javax.validation.constraints.*;
-import java.util.List;
 
 /**
  * OneOps proxy configuration properties,for communicating to the Keywhiz and LDAP.

@@ -17,9 +17,8 @@
  */
 package com.oneops.proxy.keywhiz.http;
 
-import okhttp3.Cookie;
-
 import java.util.*;
+import okhttp3.Cookie;
 
 /**
  * Cookie utility functions.

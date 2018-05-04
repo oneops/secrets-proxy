@@ -17,9 +17,17 @@
  */
 package com.oneops.proxy.security;
 
+import static com.oneops.proxy.auth.user.OneOpsUser.Role.MGMT;
+import static com.oneops.proxy.config.Constants.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oneops.proxy.auth.login.*;
 import com.oneops.proxy.auth.token.*;
+import java.util.*;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,15 +41,6 @@ import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.*;
 import org.springframework.web.cors.*;
-
-import java.util.*;
-
-import static com.oneops.proxy.auth.user.OneOpsUser.Role.MGMT;
-import static com.oneops.proxy.config.Constants.*;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 /**
  * Web security configurer for the application.

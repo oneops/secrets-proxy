@@ -17,6 +17,15 @@
  */
 package com.oneops.proxy.web;
 
+import static com.oneops.proxy.audit.EventTag.*;
+import static com.oneops.proxy.auth.user.OneOpsUser.Role.ADMIN;
+import static com.oneops.proxy.config.Constants.GROUP_CTLR_BASE_PATH;
+import static com.oneops.proxy.model.AppGroup.*;
+import static com.oneops.proxy.model.AppSecret.APP_SECRET_PARAM;
+import static java.lang.String.format;
+import static java.util.Collections.singletonList;
+import static org.springframework.http.HttpStatus.*;
+
 import com.google.common.collect.ImmutableMap;
 import com.oneops.proxy.audit.*;
 import com.oneops.proxy.auth.user.OneOpsUser;
@@ -26,21 +35,11 @@ import com.oneops.proxy.model.*;
 import com.oneops.proxy.security.annotations.*;
 import com.oneops.proxy.service.SecretService;
 import io.swagger.annotations.*;
-import org.slf4j.*;
-import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.oneops.proxy.audit.EventTag.*;
-import static com.oneops.proxy.auth.user.OneOpsUser.Role.ADMIN;
-import static com.oneops.proxy.config.Constants.GROUP_CTLR_BASE_PATH;
-import static com.oneops.proxy.model.AppGroup.*;
-import static com.oneops.proxy.model.AppSecret.APP_SECRET_PARAM;
-import static java.lang.String.format;
-import static java.util.Collections.singletonList;
-import static org.springframework.http.HttpStatus.*;
+import org.slf4j.*;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * An authenticated REST controller to manage Keywhiz application group and associated secrets. The

@@ -16,19 +16,18 @@
 
 package com.oneops.proxy.keywhiz;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static java.lang.String.format;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
 import com.oneops.proxy.keywhiz.http.*;
 import com.oneops.proxy.keywhiz.model.*;
 import com.oneops.proxy.security.KeywhizKeyStore;
-import okhttp3.*;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static java.lang.String.format;
+import okhttp3.*;
 
 /**
  * Client for interacting with the Keywhiz Server.

@@ -16,15 +16,14 @@
 
 package com.oneops.proxy.keywhiz.model;
 
+import static java.lang.String.format;
+
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.annotation.*;
-
 import java.io.IOException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-
-import static java.lang.String.format;
 
 /**
  * This is a wrapper for the date class used in API responses so we can have a custom JSON

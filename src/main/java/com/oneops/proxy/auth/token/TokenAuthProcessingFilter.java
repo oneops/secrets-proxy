@@ -18,16 +18,15 @@
 package com.oneops.proxy.auth.token;
 
 import com.oneops.proxy.security.JwtTokenService;
+import java.io.IOException;
+import javax.servlet.*;
+import javax.servlet.http.*;
 import org.slf4j.*;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.*;
 import org.springframework.security.core.context.*;
 import org.springframework.security.web.authentication.*;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.IOException;
 
 /**
  * JWT token authentication processing filter. The filter will check for 'X-Authorization' header.

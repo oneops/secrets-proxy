@@ -17,9 +17,9 @@
  */
 package com.oneops.proxy.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import static com.oneops.proxy.config.Constants.DEFAULT_TOKEN_TYPE;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Login response.

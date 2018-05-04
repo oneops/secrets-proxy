@@ -16,14 +16,13 @@
 
 package com.oneops.proxy.keywhiz.model;
 
+import static com.google.common.base.Strings.nullToEmpty;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
-
 import javax.annotation.Nullable;
-
-import static com.google.common.base.Strings.nullToEmpty;
 
 /**
  * Maps to entity from secrets_content table. Contains content and related information on a specific

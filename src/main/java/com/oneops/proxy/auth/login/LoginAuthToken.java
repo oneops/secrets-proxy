@@ -17,10 +17,9 @@
  */
 package com.oneops.proxy.auth.login;
 
+import java.util.Collection;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.*;
-
-import java.util.Collection;
 
 /**
  * An {@link Authentication} object for identifying login token in {@link LoginProcessingFilter}.

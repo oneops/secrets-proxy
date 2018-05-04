@@ -17,22 +17,21 @@
  */
 package com.oneops.proxy.service;
 
-import com.oneops.proxy.auth.user.OneOpsUser;
-import com.oneops.proxy.config.OneOpsConfig;
-import com.oneops.proxy.keywhiz.KeywhizException;
-import com.oneops.proxy.keywhiz.model.v2.*;
-import com.oneops.proxy.model.*;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import static com.oneops.proxy.metrics.MetricsUtilService.binaryPrefix;
 import static com.oneops.proxy.model.AppSecret.*;
 import static java.lang.String.format;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.springframework.http.HttpStatus.PAYLOAD_TOO_LARGE;
+
+import com.oneops.proxy.auth.user.OneOpsUser;
+import com.oneops.proxy.config.OneOpsConfig;
+import com.oneops.proxy.keywhiz.KeywhizException;
+import com.oneops.proxy.keywhiz.model.v2.*;
+import com.oneops.proxy.model.*;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
 /**
  * Service to validate and transform the secret request and responses.

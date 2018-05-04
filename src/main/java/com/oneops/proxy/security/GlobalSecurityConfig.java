@@ -17,14 +17,14 @@
  */
 package com.oneops.proxy.security;
 
+import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+
 import org.slf4j.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-
-import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
 
 /**
  * A Global authentication manager(AM) config for the application. This configuration also enables

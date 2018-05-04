@@ -18,7 +18,6 @@ package com.oneops.proxy.keywhiz.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableList;
-
 import javax.annotation.Nullable;
 
 public class ClientDetailResponse {

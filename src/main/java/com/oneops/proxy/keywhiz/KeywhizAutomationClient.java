@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableMap;
 import com.oneops.proxy.keywhiz.http.HttpClient;
 import com.oneops.proxy.keywhiz.model.v2.*;
 import com.oneops.proxy.security.KeywhizKeyStore;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.*;

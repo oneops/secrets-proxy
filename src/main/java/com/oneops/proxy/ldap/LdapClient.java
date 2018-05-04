@@ -19,6 +19,12 @@ package com.oneops.proxy.ldap;
 
 import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.security.KeywhizKeyStore;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.time.Duration;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.annotation.*;
 import org.ldaptive.*;
 import org.ldaptive.auth.*;
 import org.ldaptive.cache.*;
@@ -26,13 +32,6 @@ import org.ldaptive.pool.*;
 import org.ldaptive.ssl.SslConfig;
 import org.slf4j.*;
 import sun.security.x509.X500Name;
-
-import javax.annotation.*;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.time.Duration;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Ldap client for authenticating/searching AD accounts.

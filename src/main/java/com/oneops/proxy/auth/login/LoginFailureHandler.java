@@ -18,13 +18,12 @@
 package com.oneops.proxy.auth.login;
 
 import com.oneops.proxy.auth.token.TokenAuthProvider;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.http.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.*;
-import java.io.IOException;
 
 /**
  * Invoked by {@link LoginAuthProvider} or {@link TokenAuthProvider} in case of authentication

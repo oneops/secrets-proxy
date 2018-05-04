@@ -17,20 +17,19 @@
  */
 package com.oneops.proxy.web.support;
 
+import static com.oneops.proxy.model.AppGroup.APP_NAME_PARAM;
+import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
+import static org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
+
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.config.WebConfig;
 import com.oneops.proxy.model.AppGroup;
+import java.util.*;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.*;
-
-import java.util.*;
-
-import static com.oneops.proxy.model.AppGroup.APP_NAME_PARAM;
-import static org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST;
-import static org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE;
 
 /**
  * {@link AppGroup} method argument resolver for rest controllers. It's configured in {@link

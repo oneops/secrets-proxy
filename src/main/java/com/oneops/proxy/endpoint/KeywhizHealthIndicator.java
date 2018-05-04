@@ -18,11 +18,10 @@
 package com.oneops.proxy.endpoint;
 
 import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
-import org.springframework.boot.actuate.health.*;
-import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.util.Map;
+import org.springframework.boot.actuate.health.*;
+import org.springframework.stereotype.Component;
 
 /**
  * Add Keywhiz Server status to health (<b>/health</b>).

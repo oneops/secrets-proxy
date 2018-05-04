@@ -16,11 +16,11 @@
 
 package com.oneops.proxy.keywhiz.model;
 
+import static com.google.common.base.Strings.repeat;
+
 import com.fasterxml.jackson.annotation.*;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.MoreObjects;
-
-import static com.google.common.base.Strings.repeat;
 
 @AutoValue
 public abstract class LoginRequest {

@@ -17,13 +17,12 @@
  */
 package com.oneops.proxy.model;
 
-import com.oneops.proxy.web.GroupController;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
-import javax.annotation.Nonnull;
+import com.oneops.proxy.web.GroupController;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import javax.annotation.Nonnull;
 
 /**
  * A domain model to represents keywhiz application group in {@link GroupController}.

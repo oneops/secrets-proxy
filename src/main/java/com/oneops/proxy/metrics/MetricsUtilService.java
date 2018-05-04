@@ -17,11 +17,11 @@
  */
 package com.oneops.proxy.metrics;
 
-import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
-import org.springframework.stereotype.Service;
-
 import static java.lang.String.format;
 import static java.lang.System.currentTimeMillis;
+
+import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
+import org.springframework.stereotype.Service;
 
 /**
  * Some utility functions for timer and size.

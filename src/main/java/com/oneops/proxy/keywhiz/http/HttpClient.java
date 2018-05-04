@@ -17,6 +17,12 @@
  */
 package com.oneops.proxy.keywhiz.http;
 
+import static com.google.common.net.HttpHeaders.*;
+import static com.oneops.proxy.keywhiz.http.HttpStatus.*;
+import static java.net.CookiePolicy.ACCEPT_ALL;
+import static java.util.Collections.singletonList;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
@@ -24,21 +30,14 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.oneops.proxy.keywhiz.KeywhizException;
 import com.oneops.proxy.security.KeywhizKeyStore;
+import java.io.IOException;
+import java.net.CookieManager;
+import java.security.*;
+import javax.net.ssl.*;
 import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.logging.HttpLoggingInterceptor.Level;
 import org.slf4j.*;
-
-import javax.net.ssl.*;
-import java.io.IOException;
-import java.net.CookieManager;
-import java.security.*;
-
-import static com.google.common.net.HttpHeaders.*;
-import static com.oneops.proxy.keywhiz.http.HttpStatus.*;
-import static java.net.CookiePolicy.ACCEPT_ALL;
-import static java.util.Collections.singletonList;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * An abstract http client for both Keywhiz automation and admin clients.

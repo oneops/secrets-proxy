@@ -17,20 +17,19 @@
  */
 package com.oneops.proxy.auth.user;
 
+import static com.oneops.proxy.auth.user.OneOpsUser.Role.USER;
+import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
+import static java.util.Collections.singletonList;
+
 import com.oneops.proxy.ldap.LdapClient;
+import java.io.IOException;
+import java.util.List;
 import org.ldaptive.LdapException;
 import org.slf4j.*;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.*;
 import sun.security.x509.X500Name;
-
-import java.io.IOException;
-import java.util.List;
-
-import static com.oneops.proxy.auth.user.OneOpsUser.Role.USER;
-import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
-import static java.util.Collections.singletonList;
 
 /**
  * For loading OneOps user-specific data from database or LDAP. This is used by the default {@link

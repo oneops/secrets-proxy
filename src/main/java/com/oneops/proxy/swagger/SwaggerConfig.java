@@ -17,9 +17,16 @@
  */
 package com.oneops.proxy.swagger;
 
+import static com.oneops.proxy.config.Constants.API_VERSION;
+import static java.util.Collections.singletonList;
+import static springfox.documentation.builders.PathSelectors.regex;
+import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
+import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
+
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.web.RootController;
+import java.util.List;
 import org.slf4j.*;
 import org.springframework.context.annotation.*;
 import springfox.documentation.builders.*;
@@ -28,14 +35,6 @@ import springfox.documentation.service.*;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.web.UiConfiguration;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
-import java.util.List;
-
-import static com.oneops.proxy.config.Constants.API_VERSION;
-import static java.util.Collections.singletonList;
-import static springfox.documentation.builders.PathSelectors.regex;
-import static springfox.documentation.builders.RequestHandlerSelectors.basePackage;
-import static springfox.documentation.spi.DocumentationType.SWAGGER_2;
 
 /**
  * Swagger2 configuration for the application.

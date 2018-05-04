@@ -1,10 +1,9 @@
 package com.oneops.proxy.model;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.util.*;
-
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 /**
  * Test app secrets.
