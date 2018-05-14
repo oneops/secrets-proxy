@@ -1,14 +1,13 @@
 package com.oneops.proxy.security;
 
 import com.oneops.proxy.config.OneOpsConfig;
+import java.io.IOException;
+import java.util.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 import org.slf4j.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * A security filter to validate compatible secrets cli version.

@@ -32,7 +32,6 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.core.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.*;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 
 /**
  * Login processing filter. De-serialization and basic validation of the incoming JSON {@link
@@ -62,7 +61,7 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
 
   @Override
   public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
-      throws AuthenticationException, IOException, ServletException {
+      throws AuthenticationException, IOException {
     log.debug("Attempting login authentication.");
     LoginRequest loginReq = getLoginRequest(req, res);
 
@@ -79,10 +78,9 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
    * @param res http response
    * @return {@link LoginRequest}
    * @throws IOException
-   * @throws HttpRequestMethodNotSupportedException
    */
   private LoginRequest getLoginRequest(HttpServletRequest req, HttpServletResponse res)
-      throws IOException, HttpRequestMethodNotSupportedException {
+      throws IOException {
     String httpMethod = req.getMethod();
     if (!POST.name().equalsIgnoreCase(httpMethod)) {
       String resMsg =

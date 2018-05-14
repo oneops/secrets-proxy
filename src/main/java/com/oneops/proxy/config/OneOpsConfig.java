@@ -196,7 +196,11 @@ public class OneOpsConfig {
   public static class Cli {
     @NotNull private String version;
 
+    @NotNull private String userAgentHeader;
+
     @NotNull private String downloadPath;
+
+    @NotNull private String downloadUrl;
 
     public String getVersion() {
       return version;
@@ -214,9 +218,38 @@ public class OneOpsConfig {
       this.downloadPath = downloadPath;
     }
 
+    public String getDownloadUrl() {
+      return downloadUrl;
+    }
+
+    public void setDownloadUrl(String downloadUrl) {
+      this.downloadUrl = downloadUrl;
+    }
+
+    public String getUserAgentHeader() {
+      return userAgentHeader;
+    }
+
+    public void setUserAgentHeader(String userAgentHeader) {
+      this.userAgentHeader = userAgentHeader;
+    }
+
     @Override
     public String toString() {
-      return "Cli{" + "version='" + version + '\'' + ", downloadPath='" + downloadPath + '\'' + '}';
+      return "Cli{"
+          + "version='"
+          + version
+          + '\''
+          + ", userAgentHeader='"
+          + userAgentHeader
+          + '\''
+          + ", downloadPath='"
+          + downloadPath
+          + '\''
+          + ", downloadUrl='"
+          + downloadUrl
+          + '\''
+          + '}';
     }
   }
 

@@ -54,7 +54,7 @@ public class TokenAuthProcessingFilter extends AbstractAuthenticationProcessingF
 
   @Override
   public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
-      throws AuthenticationException, IOException, ServletException {
+      throws AuthenticationException {
     log.debug("Attempting token authentication.");
     JwtAuthToken jwtAuthToken = jwtTokenService.getAccessToken(req);
     if (jwtAuthToken == null) {
