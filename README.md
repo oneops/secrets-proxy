@@ -25,7 +25,7 @@
     ```
      $ git clone https://github.com/oneops/secrets-proxy.git
      $ cd secrets-proxy
-     $ docker build -t secrets-proxy:1.2.0 .
+     $ docker build -t secrets-proxy:latest .
     ```  
     
   * Run `secrets-proxy` image
@@ -34,7 +34,7 @@
     all the [keystores](#oneops-secrets-proxy-keystores) under `/path/to/secrets`
     
     ```
-     $ docker run -it --rm --name secrets-proxy -p 8443:8443  --env-file=/path/to/secrets/keywhiz-proxy-env  -v /path/to/secrets:/secrets -d secrets-proxy:1.2.0
+     $ docker run -it --rm --name secrets-proxy -p 8443:8443  --env-file=/path/to/secrets/keywhiz-proxy-env  -v /path/to/secrets:/secrets -d secrets-proxy:latest
      $ open https://localhost:8443/apidocs
     ``` 
     

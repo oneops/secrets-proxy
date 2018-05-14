@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 
+## [1.2.1] - 2018-05-14
+### Changed
+- Increased max secrets size to 250KB.
+
+### Added
+- Secrets cli version check on server side.
+
 ## [1.2.0] - 2018-05-04
 ### Fixed
 - AD authentication issue.
@@ -32,7 +39,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Releases -->
 
-[Unreleased]: https://github.com/oneops/secrets-proxy/compare/release-1.2.0...HEAD
+[Unreleased]: https://github.com/oneops/secrets-proxy/compare/release-1.2.1...HEAD
+[1.2.1]: https://github.com/oneops/secrets-proxy/compare/1.2.0...release-1.2.1
 [1.2.0]: https://github.com/oneops/secrets-proxy/compare/1.1.0...release-1.2.0
 [1.1.0]: https://github.com/oneops/secrets-proxy/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/oneops/secrets-proxy/compare/f6900edc7077c6052d6417ebf69c8481329cef77...1.0.0
