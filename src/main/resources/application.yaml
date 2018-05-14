@@ -64,7 +64,7 @@ oneops:
     base-url: https://keywhiz.com:4444/
     svc-user: ${KEYWHIZ_USER}
     svc-password: ${KEYWHIZ_PASS}
-    secret-max-size: 100000
+    secret-max-size: ${KEYWHIZ_SECRET_MAX_SIZE:250000}
     trust-store:
       path: classpath:keystores/keywhiz_truststore.p12
       type: pkcs12
@@ -76,6 +76,8 @@ oneops:
       key-password: changeit
     cli:
       version: ${SECRETS_CLI_VERSION:0.0.0}
+      user-agent-header: OneOpsSecretsCLI-
+      download-url: ${SECRETS_CLI_URL:https://secrets.oneops.com/cli/download}
       download-path: ${SECRETS_CLI_PATH:/opt/oneops/secrets-cli/secrets}
   ldap:
     server: ldap://ldap.com
