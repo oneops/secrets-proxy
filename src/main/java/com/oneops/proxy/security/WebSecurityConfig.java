@@ -17,17 +17,10 @@
  */
 package com.oneops.proxy.security;
 
-import static com.oneops.proxy.auth.user.OneOpsUser.Role.MGMT;
-import static com.oneops.proxy.config.Constants.*;
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oneops.proxy.auth.login.*;
 import com.oneops.proxy.auth.token.*;
-import java.util.*;
+import com.oneops.proxy.config.OneOpsConfig;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +34,15 @@ import org.springframework.security.config.annotation.web.configuration.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.*;
 import org.springframework.web.cors.*;
+
+import java.util.*;
+
+import static com.oneops.proxy.auth.user.OneOpsUser.Role.MGMT;
+import static com.oneops.proxy.config.Constants.*;
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 /**
  * Web security configurer for the application.
@@ -59,6 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   private String mgmtUser;
 
   private String mgmtPasswd;
+
+  private OneOpsConfig oneOpsConfig;
 
   /** Paths to be skipped from token authentication. */
   private List<String> tokenAuthSkipPaths;
@@ -82,10 +86,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       RestAuthEntryPoint authEntryPoint,
       JwtTokenService jwtTokenService,
       ObjectMapper objectMapper,
+      OneOpsConfig oneOpsConfig,
       @Value("${management.context-path}") String mgmtContext,
       @Value("${management.user}") String mgmtUser,
       @Value("${management.password}") String mgmtPasswd) {
-
     this.mgmtContext = mgmtContext;
     this.mgmtUser = mgmtUser;
     this.mgmtPasswd = mgmtPasswd;
@@ -94,6 +98,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     this.authEntryPoint = authEntryPoint;
     this.jwtTokenService = jwtTokenService;
     this.objectMapper = objectMapper;
+    this.oneOpsConfig = oneOpsConfig;
     this.successHandler = successHandler;
     this.failureHandler = failureHandler;
     this.permitAllPaths = ArrayUtils.addAll(DEFAULT_SKIP_PATHS, mgmtContext + "/health");
@@ -152,6 +157,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   /**
+   * Secrets cli version filter.
+   *
+   * @return {@link CliVersionFilter}
+   */
+  private CliVersionFilter buildCliVersionFilter() {
+    log.info("Configuring secrets cli version filter.");
+    return new CliVersionFilter(oneOpsConfig);
+  }
+
+  /**
    * Configures two filters namely, login and auth filters in the same order. {@link
    * LoginProcessingFilter} is for all the login (/auth/token) requests and {@link
    * TokenAuthProcessingFilter} is for other requests to check the presence of JWT in header.
@@ -181,6 +196,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .anyRequest()
         .fullyAuthenticated()
         .and()
+        .addFilterBefore(buildCliVersionFilter(), UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(buildLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(buildAuthProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
         .httpBasic()
