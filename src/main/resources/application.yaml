@@ -59,12 +59,11 @@ jetty:
 # Proxy Configuration
 # ===================
 oneops:
-  base-url: ${ONEOPS_BASE_URL}
   keywhiz:
     base-url: https://keywhiz.com:4444/
     svc-user: ${KEYWHIZ_USER}
     svc-password: ${KEYWHIZ_PASS}
-    secret-max-size: ${KEYWHIZ_SECRET_MAX_SIZE:250000}
+    secret-max-size: ${KEYWHIZ_SECRET_MAX_SIZE:350000}
     trust-store:
       path: classpath:keystores/keywhiz_truststore.p12
       type: pkcs12
@@ -98,7 +97,7 @@ oneops:
     header: X-Authorization
     token-type: Bearer
     signing-key: ${SIGNING_KEY}
-    expires-in-sec: 3600
+    expires-in-sec: 7200
     compression-enabled: false
   proxy:
     enabled: false
@@ -106,6 +105,35 @@ oneops:
     proxy-to: https://httpbin.org/
     via-host: OneOps Proxy
     trust-all: true
+  datasources:
+    prod:
+      url: ${ONEOPS_PROD_DB_URL}
+      username: ${ONEOPS_DB_USER}
+      password: ${ONEOPS_DB_PASS}
+      type: com.zaxxer.hikari.HikariDataSource
+      maximum-pool-size: 5
+      pool-name: keywhiz-proxy-prod
+    mgmt:
+      url: ${ONEOPS_MGMT_DB_URL}
+      username: ${ONEOPS_DB_USER}
+      password: ${ONEOPS_DB_PASS}
+      type: com.zaxxer.hikari.HikariDataSource
+      maximum-pool-size: 2
+      pool-name: keywhiz-proxy-mgmt
+    stg:
+      url: ${ONEOPS_STG_DB_URL}
+      username: ${ONEOPS_DB_USER}
+      password: ${ONEOPS_DB_PASS}
+      type: com.zaxxer.hikari.HikariDataSource
+      maximum-pool-size: 2
+      pool-name: keywhiz-proxy-stg
+    dev:
+      url: ${ONEOPS_DEV_DB_URL}
+      username: ${ONEOPS_DB_USER}
+      password: ${ONEOPS_DB_PASS}
+      type: com.zaxxer.hikari.HikariDataSource
+      maximum-pool-size: 2
+      pool-name: keywhiz-proxy-dev
 
 # Spring datasource Configuration
 # ===============================
@@ -115,14 +143,6 @@ spring:
     default-domain: oneops
   jackson.serialization:
       INDENT_OUTPUT: true
-  datasource:
-    url: ${ONEOPS_DB_URL:jdbc:postgresql://xxxxx.${oneops.base-url}:5432/xxxxx}
-    username: ${ONEOPS_DB_USER}
-    password: ${ONEOPS_DB_PASS}
-    type: com.zaxxer.hikari.HikariDataSource
-    hikari:
-       maximum-pool-size: 5
-       pool-name: keywhiz-proxy
   jooq:
     sql-dialect: postgres
   cache:
