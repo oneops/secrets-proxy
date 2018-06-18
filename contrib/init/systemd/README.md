@@ -15,7 +15,6 @@
 
    #### Keywhiz Proxy Server config
   
-   * **ONEOPS_BASE_URL** - https://oneops.com/
    * **SERVER_SSL_KEY_STORE** - file:${SECRETS_DIR}/keywhiz_proxy_keystore.p12
    * **SERVER_SSL_KEY_PASSWORD** - xxxxx
    * **SERVER_SSL_KEY_STORE_PASSWORD** - xxxxx
@@ -45,9 +44,12 @@
 
    #### OneOps User Datasource config
    
-   * **SPRING_DATASOURCE_URL** - jdbc:postgresql://userdb:5432/xxxxx
-   * **SPRING_DATASOURCE_USERNAME** - xxxxx
-   * **SPRING_DATASOURCE_PASSWORD** - xxxxx
+   * **ONEOPS_PROD_DB_URL** - jdbc:postgresql://prod-userdb:5432/xxxxx
+   * **ONEOPS_MGMT_DB_URL** - jdbc:postgresql://mgmt-userdb:5432/xxxxx
+   * **ONEOPS_STG_DB_URL** -jdbc:postgresql://stg-userdb:5432/xxxxx
+   * **ONEOPS_DEV_DB_URL** -jdbc:postgresql://dev-userdb:5432/xxxxx
+   * **ONEOPS_DB_USER** -xxxxxx
+   * **ONEOPS_DB_PASS** -xxxxxx
 
    #### Management app config
    
