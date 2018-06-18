@@ -17,6 +17,10 @@
  */
 package com.oneops.proxy.authz;
 
+import static com.oneops.proxy.authz.AuthDomain.DEV;
+import static com.oneops.proxy.authz.AuthDomain.MGMT;
+import static com.oneops.proxy.authz.AuthDomain.PROD;
+import static com.oneops.proxy.authz.AuthDomain.STG;
 import static com.oneops.user.Tables.TEAMS_USERS;
 import static com.oneops.user.tables.CiProxies.CI_PROXIES;
 import static com.oneops.user.tables.CiProxiesTeams.CI_PROXIES_TEAMS;
@@ -25,11 +29,19 @@ import static com.oneops.user.tables.Users.USERS;
 import static java.lang.System.currentTimeMillis;
 
 import com.oneops.proxy.model.AppGroup;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import org.jooq.*;
-import org.slf4j.*;
+import org.jooq.Condition;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.actuate.metrics.dropwizard.DropwizardMetricServices;
 import org.springframework.stereotype.Repository;
 
@@ -50,13 +62,26 @@ public class UserRepository {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
 
-  private DSLContext dslContext;
+  /** Holds the DSLContext for all data sources. */
+  private Map<AuthDomain, DSLContext> dslContextMap;
 
   private DropwizardMetricServices metricService;
 
-  public UserRepository(DSLContext dslContext, DropwizardMetricServices metricService) {
-    this.dslContext = dslContext;
+  public UserRepository(
+      @Qualifier("prod") DSLContext prodDSLContext,
+      @Qualifier("mgmt") DSLContext mgmtDSLContext,
+      @Qualifier("stg") DSLContext stgDSLContext,
+      @Qualifier("dev") DSLContext devDSLContext,
+      DropwizardMetricServices metricService) {
+
     this.metricService = metricService;
+    dslContextMap = new HashMap<>(4);
+    dslContextMap.put(PROD, prodDSLContext);
+    dslContextMap.put(MGMT, mgmtDSLContext);
+    dslContextMap.put(STG, stgDSLContext);
+    dslContextMap.put(DEV, devDSLContext);
+
+    log.info("Initialized DSL contexts are, " + dslContextMap.keySet());
   }
 
   /** A helper method to map the team record to {@link OneOpsTeam} */
@@ -74,8 +99,10 @@ public class UserRepository {
    */
   public List<OneOpsTeam> getTeams(
       @Nonnull final String userName, @Nonnull final AppGroup appGroup) {
-    log.debug(
-        "Retrieving teams having user: "
+    log.info(
+        "Querying "
+            + appGroup.getDomain()
+            + " teams having user: "
             + userName
             + " for application group: "
             + appGroup.getNsPath());
@@ -96,7 +123,7 @@ public class UserRepository {
                             .and(CI_PROXIES.CI_CLASS_NAME.eq("account.Assembly"))));
     // Read like SQL :)
     Result<Record> records =
-        dslContext
+        getDSLContext(appGroup)
             .select(TEAMS.fields())
             .from(CI_PROXIES)
             .innerJoin(CI_PROXIES_TEAMS)
@@ -135,7 +162,7 @@ public class UserRepository {
 
     // Read like SQL :)
     Result<Record> records =
-        dslContext
+        getDSLContext(appGroup)
             .select(TEAMS.fields())
             .from(CI_PROXIES)
             .innerJoin(CI_PROXIES_TEAMS)
@@ -146,5 +173,16 @@ public class UserRepository {
             .fetch();
     metricService.submit("timer.oneops.user.allteams", currentTimeMillis() - start);
     return records.stream().map(UserRepository::mapRecord).collect(Collectors.toList());
+  }
+
+  /**
+   * Returns the {@link DSLContext} for given AppGroup domain. Defaults to <b>prod</b>, if it can't
+   * the domain.
+   *
+   * @param appGroup {@link AppGroup}
+   */
+  private DSLContext getDSLContext(AppGroup appGroup) {
+    DSLContext dslContext = dslContextMap.get(appGroup.getDomain());
+    return Objects.requireNonNull(dslContext, "Invalid auth domain");
   }
 }

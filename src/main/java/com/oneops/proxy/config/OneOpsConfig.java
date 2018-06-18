@@ -18,22 +18,22 @@
 package com.oneops.proxy.config;
 
 import java.util.List;
-import javax.validation.constraints.*;
-import org.springframework.boot.context.properties.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.http.HttpHeaders;
+import org.springframework.validation.annotation.Validated;
 
 /**
  * OneOps proxy configuration properties,for communicating to the Keywhiz and LDAP.
  *
  * @author Suresh G
  */
+@Validated
 @ConfigurationProperties(value = "oneops")
 public class OneOpsConfig {
-
-  /**
-   * The base url used for different oneops services. The url will change depending on the domain.
-   */
-  @NotNull private String baseUrl;
 
   @NotNull private Keywhiz keywhiz;
 
@@ -42,14 +42,6 @@ public class OneOpsConfig {
   @NotNull private Auth auth;
 
   private Proxy proxy;
-
-  public String getBaseUrl() {
-    return baseUrl;
-  }
-
-  public void setBaseUrl(String baseUrl) {
-    this.baseUrl = baseUrl;
-  }
 
   public Keywhiz getKeywhiz() {
     return keywhiz;
@@ -86,10 +78,7 @@ public class OneOpsConfig {
   @Override
   public String toString() {
     return "OneOpsConfig{"
-        + "baseUrl='"
-        + baseUrl
-        + '\''
-        + ", keywhiz="
+        + "keywhiz="
         + keywhiz
         + ", ldap="
         + ldap
@@ -483,7 +472,7 @@ public class OneOpsConfig {
     private boolean compressionEnabled;
 
     /** Token expiry in secs. */
-    @NotNull private int expiresInSec;
+    private int expiresInSec;
 
     public char[] getSigningKey() {
       return signingKey;

@@ -47,9 +47,6 @@ public interface Constants {
   /** Favicon path, for browser agents. */
   String FAVICON_PATH = "/favicon.ico";
 
-  /** Default mgmt domain for keywhiz requests. */
-  String DEFAULT_DOMAIN = "prod";
-
   /** Default access token type (Eg: Bearer, JWT etc) */
   String DEFAULT_TOKEN_TYPE = "Bearer";
 

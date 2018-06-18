@@ -17,29 +17,63 @@
  */
 package com.oneops.proxy.web;
 
-import static com.oneops.proxy.audit.EventTag.*;
+import static com.oneops.proxy.audit.EventTag.CLIENT_DELETE;
+import static com.oneops.proxy.audit.EventTag.GROUP_CREATE;
+import static com.oneops.proxy.audit.EventTag.SECRET_CHANGEVERSION;
+import static com.oneops.proxy.audit.EventTag.SECRET_CREATE;
+import static com.oneops.proxy.audit.EventTag.SECRET_DELETE;
+import static com.oneops.proxy.audit.EventTag.SECRET_READCONTENT;
+import static com.oneops.proxy.audit.EventTag.SECRET_UPDATE;
 import static com.oneops.proxy.auth.user.OneOpsUser.Role.ADMIN;
 import static com.oneops.proxy.config.Constants.GROUP_CTLR_BASE_PATH;
-import static com.oneops.proxy.model.AppGroup.*;
+import static com.oneops.proxy.model.AppGroup.APP_NAME_PARAM;
+import static com.oneops.proxy.model.AppGroup.DOMAIN_METADATA;
+import static com.oneops.proxy.model.AppGroup.USERID_METADATA;
 import static com.oneops.proxy.model.AppSecret.APP_SECRET_PARAM;
 import static java.lang.String.format;
 import static java.util.Collections.singletonList;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import com.google.common.collect.ImmutableMap;
-import com.oneops.proxy.audit.*;
+import com.oneops.proxy.audit.AuditLog;
+import com.oneops.proxy.audit.Event;
 import com.oneops.proxy.auth.user.OneOpsUser;
-import com.oneops.proxy.keywhiz.*;
-import com.oneops.proxy.keywhiz.model.v2.*;
-import com.oneops.proxy.model.*;
-import com.oneops.proxy.security.annotations.*;
+import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
+import com.oneops.proxy.keywhiz.KeywhizException;
+import com.oneops.proxy.keywhiz.model.v2.ClientDetailResponseV2;
+import com.oneops.proxy.keywhiz.model.v2.CreateSecretRequestV2;
+import com.oneops.proxy.keywhiz.model.v2.GroupDetailResponseV2;
+import com.oneops.proxy.keywhiz.model.v2.SecretContentsResponseV2;
+import com.oneops.proxy.keywhiz.model.v2.SecretDetailResponseV2;
+import com.oneops.proxy.model.AppGroup;
+import com.oneops.proxy.model.AppSecret;
+import com.oneops.proxy.model.SecretContent;
+import com.oneops.proxy.model.SecretRequest;
+import com.oneops.proxy.model.SecretVersionRequest;
+import com.oneops.proxy.security.annotations.AuthzRestController;
+import com.oneops.proxy.security.annotations.CurrentUser;
 import com.oneops.proxy.service.SecretService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import org.slf4j.*;
-import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * An authenticated REST controller to manage Keywhiz application group and associated secrets. The
@@ -560,7 +594,10 @@ public class GroupController {
             group,
             "Created by OneOps Secrets Proxy.",
             ImmutableMap.of(
-                USERID_METADATA, user.getUsername(), DOMAIN_METADATA, appGroup.getDomain()));
+                USERID_METADATA,
+                user.getUsername(),
+                DOMAIN_METADATA,
+                appGroup.getDomain().getType()));
         auditLog.log(new Event(GROUP_CREATE, user.getUsername(), group));
       } else {
         throw new KeywhizException(

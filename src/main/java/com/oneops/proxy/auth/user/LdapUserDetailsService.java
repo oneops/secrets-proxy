@@ -18,17 +18,20 @@
 package com.oneops.proxy.auth.user;
 
 import static com.oneops.proxy.auth.user.OneOpsUser.Role.USER;
-import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 import static java.util.Collections.singletonList;
 
+import com.oneops.proxy.authz.AuthDomain;
 import com.oneops.proxy.ldap.LdapClient;
 import java.io.IOException;
 import java.util.List;
 import org.ldaptive.LdapException;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import sun.security.x509.X500Name;
 
 /**
@@ -61,7 +64,7 @@ public class LdapUserDetailsService implements UserDetailsService {
       X500Name x500Name = x500Names.get(0);
       List<SimpleGrantedAuthority> authorities =
           singletonList(new SimpleGrantedAuthority(USER.authority()));
-      return new OneOpsUser(username, null, authorities, x500Name.getCommonName(), DEFAULT_DOMAIN);
+      return new OneOpsUser(username, null, authorities, x500Name.getCommonName(), AuthDomain.PROD);
 
     } catch (IOException | LdapException e) {
       throw new UsernameNotFoundException("Can't load the user details for " + username, e);

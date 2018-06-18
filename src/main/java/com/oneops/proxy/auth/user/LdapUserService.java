@@ -20,11 +20,13 @@ package com.oneops.proxy.auth.user;
 import static com.oneops.proxy.auth.user.OneOpsUser.Role.USER;
 import static java.util.Collections.singletonList;
 
+import com.oneops.proxy.authz.AuthDomain;
 import com.oneops.proxy.ldap.LdapClient;
 import com.oneops.proxy.metrics.MetricsUtilService;
 import java.io.IOException;
 import javax.annotation.Nullable;
-import org.ldaptive.*;
+import org.ldaptive.LdapEntry;
+import org.ldaptive.LdapException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import sun.security.x509.X500Name;
@@ -53,12 +55,12 @@ public class LdapUserService {
    *
    * @param userName ldap username
    * @param password ldap password
-   * @param domain mgmt domain.
+   * @param domain Auth domain.
    * @return {@link OneOpsUser} details object if successfully authenticated, else returns <code>
    *     null</code>.
    * @throws LdapException throws if any error authenticating/connecting to ldap server.
    */
-  public @Nullable OneOpsUser authenticate(String userName, char[] password, String domain)
+  public @Nullable OneOpsUser authenticate(String userName, char[] password, AuthDomain domain)
       throws LdapException {
     LdapEntry ldapUser =
         metricService.time("oneops.ldap.auth", () -> ldapClient.authenticate(userName, password));

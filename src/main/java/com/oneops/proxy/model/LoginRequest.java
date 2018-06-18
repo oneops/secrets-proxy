@@ -17,9 +17,10 @@
  */
 package com.oneops.proxy.model;
 
-import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
+import static com.oneops.proxy.authz.AuthDomain.PROD;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.oneops.proxy.authz.AuthDomain;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -39,12 +40,12 @@ public class LoginRequest {
   private String password;
 
   @JsonProperty
-  @ApiModelProperty(example = DEFAULT_DOMAIN)
-  private String domain = DEFAULT_DOMAIN;
+  @ApiModelProperty(example = "prod")
+  private AuthDomain domain = PROD;
 
   public LoginRequest() {}
 
-  public LoginRequest(String username, String password, String domain) {
+  public LoginRequest(String username, String password, AuthDomain domain) {
     this.username = username;
     this.password = password;
     this.domain = domain;
@@ -66,11 +67,11 @@ public class LoginRequest {
     this.password = password;
   }
 
-  public String getDomain() {
+  public AuthDomain getDomain() {
     return domain;
   }
 
-  public void setDomain(String domain) {
+  public void setDomain(AuthDomain domain) {
     this.domain = domain;
   }
 
@@ -82,7 +83,7 @@ public class LoginRequest {
         + '\''
         + ", password=******"
         + ", domain='"
-        + domain
+        + domain.getType()
         + '\''
         + '}';
   }

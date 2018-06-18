@@ -38,9 +38,9 @@ public class CliVersionFilter extends GenericFilterBean {
         String version = userAgent.replaceFirst(userAgentPrefix, "");
         if (!Objects.equals(version, cliConfig.getVersion())) {
           String msg =
-              "You are using an old version of secrets cli (v"
+              "The secrets cli (v"
                   + version
-                  + "). Please download the latest version from "
+                  + ") you are using is deprecated. Please download the latest version from "
                   + cliConfig.getDownloadUrl();
           log.error("CLI version {} not supported.", version);
           SecurityContextHolder.clearContext();

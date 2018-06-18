@@ -17,6 +17,7 @@
  */
 package com.oneops.proxy.model;
 
+import com.oneops.proxy.authz.AuthDomain;
 import java.util.List;
 
 /**
@@ -30,11 +31,11 @@ public class UserResponse {
 
   private String cn;
 
-  private String domain;
+  private AuthDomain domain;
 
   private List<String> roles;
 
-  public UserResponse(String userName, String cn, String domain, List<String> roles) {
+  public UserResponse(String userName, String cn, AuthDomain domain, List<String> roles) {
     this.userName = userName;
     this.cn = cn;
     this.domain = domain;
@@ -57,11 +58,11 @@ public class UserResponse {
     this.cn = cn;
   }
 
-  public String getDomain() {
+  public AuthDomain getDomain() {
     return domain;
   }
 
-  public void setDomain(String domain) {
+  public void setDomain(AuthDomain domain) {
     this.domain = domain;
   }
 
@@ -83,7 +84,7 @@ public class UserResponse {
         + cn
         + '\''
         + ", domain='"
-        + domain
+        + domain.getType()
         + '\''
         + ", roles="
         + roles

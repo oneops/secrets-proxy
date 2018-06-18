@@ -18,18 +18,22 @@
 package com.oneops.proxy.auth.login;
 
 import static com.oneops.proxy.audit.EventTag.GENERATE_TOKEN;
-import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oneops.proxy.audit.*;
+import com.oneops.proxy.audit.AuditLog;
+import com.oneops.proxy.audit.Event;
 import com.oneops.proxy.auth.user.OneOpsUser;
+import com.oneops.proxy.authz.AuthDomain;
 import com.oneops.proxy.model.LoginResponse;
 import com.oneops.proxy.security.JwtTokenService;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
-import org.slf4j.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -82,7 +86,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     String token = tokenService.generateToken(user);
-    auditLog.log(new Event(GENERATE_TOKEN, user.getUsername(), user.getDomain(), "N/A"));
+    auditLog.log(new Event(GENERATE_TOKEN, user.getUsername(), user.getDomain().getType(), "N/A"));
 
     LoginResponse loginResponse =
         new LoginResponse(token, tokenService.getTokenType(), tokenService.getExpiresInSec());
@@ -108,7 +112,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
       log.debug(userName + " credentials are already erased.");
       password = "";
     }
-    return new OneOpsUser(userName, password, principal.getAuthorities(), userName, DEFAULT_DOMAIN);
+    return new OneOpsUser(
+        userName, password, principal.getAuthorities(), userName, AuthDomain.PROD);
   }
 
   /**

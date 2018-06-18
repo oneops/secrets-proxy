@@ -17,11 +17,17 @@
  */
 package com.oneops.proxy.auth.login;
 
-import com.oneops.proxy.auth.user.*;
+import com.oneops.proxy.auth.user.LdapUserService;
+import com.oneops.proxy.auth.user.OneOpsUser;
+import com.oneops.proxy.authz.AuthDomain;
 import org.ldaptive.LdapException;
-import org.slf4j.*;
-import org.springframework.security.authentication.*;
-import org.springframework.security.core.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -55,7 +61,7 @@ public class LoginAuthProvider implements AuthenticationProvider {
     Assert.notNull(auth, "No authentication data provided.");
     String userName = (String) auth.getPrincipal();
     String password = (String) auth.getCredentials();
-    String domain = (String) auth.getDetails();
+    AuthDomain domain = (AuthDomain) auth.getDetails();
 
     OneOpsUser user = null;
     try {

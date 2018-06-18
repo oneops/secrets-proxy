@@ -76,11 +76,13 @@ public class SecretService {
       throw new IllegalArgumentException("Secret file name too long.");
     }
 
-    if (content.length() > maxSecretSize) {
+    // Secrets data is base64 encoded.
+    int secretSize = Base64.getDecoder().decode(content).length;
+    if (secretSize > maxSecretSize) {
       String errMsg =
           format(
               "Secret size (%s) is too large. Max allowed secret size is %s.",
-              binaryPrefix(content.length()), binaryPrefix(maxSecretSize));
+              binaryPrefix(secretSize), binaryPrefix(maxSecretSize));
       throw new KeywhizException(PAYLOAD_TOO_LARGE.value(), errMsg);
     }
 

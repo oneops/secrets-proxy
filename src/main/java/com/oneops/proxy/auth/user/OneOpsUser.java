@@ -17,12 +17,12 @@
  */
 package com.oneops.proxy.auth.user;
 
-import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.oneops.proxy.authz.AuthDomain;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.*;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * OneOps user details. The user credential (<b>password</b>) is ignored from JSON serialization in
@@ -35,7 +35,7 @@ public class OneOpsUser extends User {
 
   private final String cn;
 
-  private final String domain;
+  private final AuthDomain domain;
 
   /**
    * Creates a new OneOps user from the {@link UserDetails} object.
@@ -48,7 +48,7 @@ public class OneOpsUser extends User {
         user.getPassword(),
         user.getAuthorities(),
         user.getUsername(),
-        DEFAULT_DOMAIN);
+        AuthDomain.PROD);
   }
 
   public OneOpsUser(
@@ -56,14 +56,14 @@ public class OneOpsUser extends User {
       String password,
       Collection<? extends GrantedAuthority> authorities,
       String cn,
-      String domain) {
+      AuthDomain domain) {
     super(username, password, authorities);
     this.cn = cn;
     this.domain = domain;
   }
 
   /** Returns OneOps mgmt domain. */
-  public String getDomain() {
+  public AuthDomain getDomain() {
     return domain;
   }
 

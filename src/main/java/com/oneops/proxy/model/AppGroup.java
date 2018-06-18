@@ -19,6 +19,7 @@ package com.oneops.proxy.model;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+import com.oneops.proxy.authz.AuthDomain;
 import com.oneops.proxy.web.GroupController;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -42,7 +43,7 @@ public class AppGroup {
 
   public static final String DOMAIN_METADATA = "_domain";
 
-  private final String domain;
+  private final AuthDomain domain;
   private final String name;
   private final String org;
   private final String assembly;
@@ -51,24 +52,24 @@ public class AppGroup {
   /**
    * Creates new {@link AppGroup} from the given domain and app group name.
    *
-   * @param domain OneOps mgmt domain
+   * @param domain OneOps auth domain
    * @param name application group name. OneOps environment name with <b>{org}_{assembly}_{env}</b>
    *     format.
    * @return {@link AppGroup}
    * @throws IllegalArgumentException if the app group name format is not valid.
    */
-  public static AppGroup from(@Nonnull String domain, @Nonnull String name) {
+  public static AppGroup from(@Nonnull AuthDomain domain, @Nonnull String name) {
     return new AppGroup(domain, name);
   }
 
   /**
    * Constructor for {@link AppGroup}.
    *
-   * @param domain OneOps mgmt domain
+   * @param domain OneOps auth domain
    * @param name application group name
    * @throws IllegalArgumentException if the app group name format is not valid.
    */
-  public AppGroup(@Nonnull String domain, @Nonnull String name) {
+  public AppGroup(@Nonnull AuthDomain domain, @Nonnull String name) {
     this.domain = domain;
     this.name = name;
 
@@ -83,8 +84,8 @@ public class AppGroup {
     env = paths[2].trim();
   }
 
-  /** Returns oneOps mgmt domain for the application group. */
-  public String getDomain() {
+  /** Returns oneOps auth domain for the application group. */
+  public AuthDomain getDomain() {
     return domain;
   }
 
@@ -124,7 +125,7 @@ public class AppGroup {
    * instances and is defaults to <b>prod</b>.
    */
   public String getGroupName() {
-    return String.format("/%s/%s/%s/%s", domain, org, assembly, env).toLowerCase();
+    return String.format("/%s/%s/%s/%s", domain.getType(), org, assembly, env).toLowerCase();
   }
 
   /**
@@ -138,9 +139,8 @@ public class AppGroup {
   @Override
   public String toString() {
     return "AppGroup{"
-        + "domain='"
-        + domain
-        + '\''
+        + "domain="
+        + domain.getType()
         + ", name='"
         + name
         + '\''

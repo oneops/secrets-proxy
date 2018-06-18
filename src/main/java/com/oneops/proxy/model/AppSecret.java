@@ -19,7 +19,9 @@ package com.oneops.proxy.model;
 
 import static com.oneops.proxy.model.AppGroup.GROUP_SEP;
 
+import com.oneops.proxy.authz.AuthDomain;
 import com.oneops.proxy.web.GroupController;
+import java.util.Arrays;
 import javax.annotation.Nonnull;
 
 /**
@@ -53,7 +55,8 @@ public class AppSecret {
    * @param domain Application domain
    * @param appName Application name.
    */
-  public AppSecret(@Nonnull String secretName, @Nonnull String domain, @Nonnull String appName) {
+  public AppSecret(
+      @Nonnull String secretName, @Nonnull AuthDomain domain, @Nonnull String appName) {
     this.secretName = secretName;
     this.group = AppGroup.from(domain, appName);
   }
@@ -88,7 +91,18 @@ public class AppSecret {
     if (groups.length != 2) {
       throw new IllegalArgumentException("Invalid app group prefix: " + prefix);
     }
-    group = new AppGroup(groups[0], groups[1]);
+
+    AuthDomain authDomain;
+    try {
+      authDomain = AuthDomain.of(groups[0]);
+    } catch (IllegalArgumentException iae) {
+      throw new IllegalArgumentException(
+          "Invalid auth domain: "
+              + groups[0]
+              + ". Valid domains are "
+              + Arrays.toString(AuthDomain.values()));
+    }
+    group = new AppGroup(authDomain, groups[1]);
   }
 
   /**
@@ -126,7 +140,8 @@ public class AppSecret {
    */
   public String getUniqSecretName() {
     return String.format(
-        "%s%s%s%s%s", group.getDomain(), GROUP_SEP, group.getName(), UNIQ_NAME_SEP, secretName);
+        "%s%s%s%s%s",
+        group.getDomain().getType(), GROUP_SEP, group.getName(), UNIQ_NAME_SEP, secretName);
   }
 
   /**

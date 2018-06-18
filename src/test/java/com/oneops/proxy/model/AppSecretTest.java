@@ -2,7 +2,9 @@ package com.oneops.proxy.model;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.*;
+import com.oneops.proxy.authz.AuthDomain;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Test;
 
 /**
@@ -15,9 +17,11 @@ public class AppSecretTest {
   @Test
   public void getUniqSecretName() throws Exception {
 
-    AppGroup appGroup1 = new AppGroup("prod", "oneops_my-app1_prod");
-    AppGroup appGroup2 = new AppGroup("mgmt", "oneops_my-app2_prod");
+    AppGroup appGroup1 = new AppGroup(AuthDomain.PROD, "oneops_my-app1_prod");
+    AppGroup appGroup2 = new AppGroup(AuthDomain.MGMT, "oneops_my-app2_prod");
 
+    System.out.println(appGroup1);
+    System.out.println(appGroup2);
     List<String> secretNames =
         Arrays.asList("db-password.txt", "db@password.txt", "db:password.txt", "db_password.txt");
     secretNames.forEach(

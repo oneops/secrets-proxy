@@ -17,21 +17,33 @@
  */
 package com.oneops.proxy.security;
 
-import static com.oneops.proxy.config.Constants.DEFAULT_DOMAIN;
 import static org.springframework.util.StringUtils.isEmpty;
 
 import com.oneops.proxy.auth.token.JwtAuthToken;
 import com.oneops.proxy.auth.user.OneOpsUser;
+import com.oneops.proxy.authz.AuthDomain;
 import com.oneops.proxy.config.OneOpsConfig;
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.CompressionCodecs;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import java.time.Instant;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
-import javax.annotation.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
-import org.slf4j.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.core.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
@@ -105,7 +117,7 @@ public class JwtTokenService {
       jwt.claim(ROLE_CLAIM, String.join(",", roles));
     }
     if (user.getDomain() != null) {
-      jwt.claim(DOMAIN_CLAIM, user.getDomain());
+      jwt.claim(DOMAIN_CLAIM, user.getDomain().getType());
     }
     if (user.getCn() != null) {
       jwt.claim(CN_CLAIM, user.getCn());
@@ -129,9 +141,17 @@ public class JwtTokenService {
 
     String username = claims.getSubject();
     List<GrantedAuthority> authorities = getAuthorities(claims);
-    String domain = claims.getOrDefault(DOMAIN_CLAIM, DEFAULT_DOMAIN).toString();
+    String dnClaim = claims.getOrDefault(DOMAIN_CLAIM, "").toString();
+
+    AuthDomain authDomain;
+    try {
+      authDomain = AuthDomain.of(dnClaim);
+    } catch (IllegalArgumentException iae) {
+      throw new IllegalArgumentException("Invalid auth token, unsupported domain: " + dnClaim);
+    }
+
     String cn = claims.getOrDefault(CN_CLAIM, username).toString();
-    return new OneOpsUser(username, "", authorities, cn, domain);
+    return new OneOpsUser(username, "", authorities, cn, authDomain);
   }
 
   /**

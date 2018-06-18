@@ -20,13 +20,20 @@ package com.oneops.proxy.web;
 import static com.oneops.proxy.config.Constants.AUTH_CTLR_BASE_PATH;
 
 import com.oneops.proxy.auth.user.OneOpsUser;
-import com.oneops.proxy.model.*;
+import com.oneops.proxy.model.LoginRequest;
+import com.oneops.proxy.model.LoginResponse;
+import com.oneops.proxy.model.UserResponse;
 import com.oneops.proxy.security.annotations.CurrentUser;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * A rest controller to retrieve authenticated user details.
