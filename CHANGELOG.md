@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 
+## [1.3.0] - 2018-06-12
+### Added
+- Support for all lower environments.
+
+### Changed
+- Increased the auth token expiry time to 2 hours.
+- Increased max secrets size to 350KB.
+- Updated to latest dependencies.
+- Updated java doc.
+
+### Fixed
+- Secret size validation error.
+
 ## [1.2.1] - 2018-05-14
 ### Changed
 - Increased max secrets size to 250KB.
@@ -39,7 +52,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- Releases -->
 
-[Unreleased]: https://github.com/oneops/secrets-proxy/compare/release-1.2.1...HEAD
+[Unreleased]: https://github.com/oneops/secrets-proxy/compare/release-1.3.0...HEAD
+[1.3.0]: https://github.com/oneops/secrets-proxy/compare/release-1.2.1...release-1.3.0
 [1.2.1]: https://github.com/oneops/secrets-proxy/compare/release-1.2.0...release-1.2.1
 [1.2.0]: https://github.com/oneops/secrets-proxy/compare/1.1.0...release-1.2.0
 [1.1.0]: https://github.com/oneops/secrets-proxy/compare/1.0.0...1.1.0
