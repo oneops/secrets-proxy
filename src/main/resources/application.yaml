@@ -59,6 +59,8 @@ jetty:
 # Proxy Configuration
 # ===================
 oneops:
+  authenticationURL: http://localhost:9000/api/v1/access
+  authorizationCode: dGVzdA==
   keywhiz:
     base-url: https://keywhiz.com:4444/
     svc-user: ${KEYWHIZ_USER}

@@ -17,12 +17,14 @@
  */
 package com.oneops.proxy.authz;
 
-import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
-
 import com.oneops.proxy.auth.user.OneOpsUser;
+import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.model.AppGroup;
-import java.util.List;
+import java.io.IOException;
 import javax.annotation.Nonnull;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.slf4j.*;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Component;
@@ -37,11 +39,18 @@ import org.springframework.stereotype.Component;
 public class Authz {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
+  private String authenticationURL;
+  private String authorizationCode;
+  //private final UserRepository userRepo;
 
-  private final UserRepository userRepo;
+//  public Authz(UserRepository userRepo) {
+//    this.userRepo = userRepo;
+//  }
 
-  public Authz(UserRepository userRepo) {
-    this.userRepo = userRepo;
+
+  public Authz(OneOpsConfig config) {
+    this.authenticationURL = config.getAuthenticationURL();
+    this.authorizationCode = config.getAuthorizationCode();
   }
 
   /**
@@ -59,15 +68,29 @@ public class Authz {
     }
 
     AppGroup appGroup = new AppGroup(user.getDomain(), appName);
-    List<OneOpsTeam> teams = userRepo.getTeams(user.getUsername(), appGroup);
-    boolean hasAccess = teams.stream().anyMatch(team -> hasAdminAccess(team, appGroup));
-    if (!hasAccess) {
+   // List<OneOpsTeam> teams = userRepo.getTeams(user.getUsername(), appGroup);
+    OkHttpClient client = new OkHttpClient();
+    String url = authenticationURL + "/" + user.getUsername() + "/" + appName;
+
+    Request request = new Request.Builder()
+        .url(url)
+        .addHeader("Authorization", authorizationCode)
+        .build();
+    try {
+      Response response = client.newCall(request).execute();
+      log.warn(url+ "->" +response.code()+":"+response.message());
+
+      if (!response.isSuccessful()){
+        throw new AuthorizationServiceException(
+            "User '"
+                + user.getUsername()
+                + "' is not authorized to manage the secrets for environment: "
+                + appGroup.getNsPath());
+      }
+    } catch (IOException e) {
+      log.warn(e.getMessage());
       throw new AuthorizationServiceException(
-          "OneOps user '"
-              + user.getCn()
-              + "' is not a '"
-              + SECRETS_ADMIN_TEAM
-              + "' or not authorized to manage the secrets for environment: "
+          "Error accessing Tekton: "
               + appGroup.getNsPath());
     }
     return true;
