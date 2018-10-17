@@ -70,7 +70,7 @@ public class Authz {
     AppGroup appGroup = new AppGroup(user.getDomain(), appName);
    // List<OneOpsTeam> teams = userRepo.getTeams(user.getUsername(), appGroup);
     OkHttpClient client = new OkHttpClient();
-    String url = authenticationURL + "/" + user.getUsername() + "/" + appName;
+    String url = authenticationURL + "/" + user.getUsername() + "/" + appName.replace("_", "/");
 
     Request request = new Request.Builder()
         .url(url)
@@ -78,7 +78,7 @@ public class Authz {
         .build();
     try {
       Response response = client.newCall(request).execute();
-      log.warn(url+ "->" +response.code()+":"+response.message());
+      log.debug(url+ "->" +response.code()+":"+response.message());
 
       if (!response.isSuccessful()){
         throw new AuthorizationServiceException(
@@ -90,7 +90,7 @@ public class Authz {
     } catch (IOException e) {
       log.warn(e.getMessage());
       throw new AuthorizationServiceException(
-          "Error accessing Tekton: "
+          "Error accessing authorization service: "
               + appGroup.getNsPath());
     }
     return true;
