@@ -68,7 +68,6 @@ public class Authz {
     }
 
     AppGroup appGroup = new AppGroup(user.getDomain(), appName);
-   // List<OneOpsTeam> teams = userRepo.getTeams(user.getUsername(), appGroup);
     OkHttpClient client = new OkHttpClient();
     String url = authenticationURL + "/" + user.getUsername() + "/" + appName.replace("_", "/");
 
@@ -78,22 +77,14 @@ public class Authz {
         .build();
     try {
       Response response = client.newCall(request).execute();
-      log.debug(url+ "->" +response.code()+":"+response.message());
-
-      if (!response.isSuccessful()){
-        throw new AuthorizationServiceException(
-            "User '"
-                + user.getUsername()
-                + "' is not authorized to manage the secrets for environment: "
-                + appGroup.getNsPath());
-      }
+      log.debug(url + "->" + response.code() + ":" + response.message());
+      return response.isSuccessful();
     } catch (IOException e) {
       log.warn(e.getMessage());
       throw new AuthorizationServiceException(
           "Error accessing authorization service: "
               + appGroup.getNsPath());
     }
-    return true;
   }
 
   /**
