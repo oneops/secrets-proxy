@@ -18,12 +18,14 @@
 package com.oneops.proxy.web;
 
 import static org.springframework.http.MediaType.*;
-
 import com.oneops.proxy.model.ErrorResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Map;
 import javax.servlet.http.*;
 import org.springframework.boot.autoconfigure.web.*;
 import org.springframework.http.*;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,8 +54,24 @@ public class ErrorController extends BasicErrorController {
   public @ResponseBody ResponseEntity<ErrorResponse> errorResponse(
       HttpServletRequest req, HttpServletResponse res) {
     Map<String, Object> body = getErrorAttributes(req, isIncludeStackTrace(req, MediaType.ALL));
-    HttpStatus status = getStatus(req);
 
+    // Update status code and format error respose for RequestRejectedException
+    Object message = "";
+    String exceptionName = body.get("exception").toString();
+
+    if (exceptionName.contains(RequestRejectedException.class.getSimpleName())) {
+      try {
+        message = URLDecoder.decode(body.get("message").toString(), "UTF-8");
+      } catch (UnsupportedEncodingException ignore) {
+      }
+      message = message.toString().replace(exceptionName + ":", "");
+      body.put("message", message);
+      body.put("status", HttpStatus.BAD_REQUEST.value());
+      body.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
+      req.setAttribute("javax.servlet.error.status_code", HttpStatus.BAD_REQUEST.value());
+    }
+
+    HttpStatus status = getStatus(req);
     ErrorResponse errRes = new ErrorResponse(body);
     return new ResponseEntity<>(errRes, status);
   }
