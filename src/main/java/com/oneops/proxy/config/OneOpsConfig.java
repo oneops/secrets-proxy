@@ -43,6 +43,29 @@ public class OneOpsConfig {
 
   private Proxy proxy;
 
+    @NotNull
+    private String authenticationURL;
+
+    @NotNull
+    private String authorizationCode;
+
+
+    public String getAuthorizationCode() {
+        return authorizationCode;
+    }
+
+    public void setAuthorizationCode(String authorizationCode) {
+        this.authorizationCode = authorizationCode;
+    }
+
+    public void setAuthenticationURL(String authenticationURL) {
+        this.authenticationURL = authenticationURL;
+    }
+
+    public String getAuthenticationURL() {
+        return authenticationURL;
+    }
+
   public Keywhiz getKeywhiz() {
     return keywhiz;
   }

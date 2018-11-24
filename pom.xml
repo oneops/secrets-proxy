@@ -61,6 +61,8 @@
         <gitcommit.plugin.version>2.2.4</gitcommit.plugin.version>
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd hh:mm:ss a z</maven.build.timestamp.format>
+        <retrofit.version>2.4.0</retrofit.version>
+        <moshi.version>1.6.0</moshi.version>
     </properties>
 
     <dependencyManagement>
@@ -266,6 +268,23 @@
             <artifactId>jsr305</artifactId>
             <version>${jsr305.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- Retrofit dependency-->
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+        <!-- Moshi-->
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-moshi</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.moshi</groupId>
+            <artifactId>moshi</artifactId>
+            <version>${moshi.version}</version>
         </dependency>
 
         <!-- Test dependencies -->

@@ -18,10 +18,11 @@
 package com.oneops.proxy.authz;
 
 import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
-
 import com.oneops.proxy.auth.user.OneOpsUser;
+import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.model.AppGroup;
-import java.util.List;
+import com.oneops.proxy.clients.auth.ClientsAuthorizationImpl;
+import com.oneops.proxy.clients.auth.AuthorizationProcess;
 import javax.annotation.Nonnull;
 import org.slf4j.*;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -39,9 +40,13 @@ public class Authz {
   private final Logger log = LoggerFactory.getLogger(getClass());
 
   private final UserRepository userRepo;
+  private final ClientsAuthorizationImpl authFact;
+  private final OneOpsConfig config;
 
-  public Authz(UserRepository userRepo) {
+  public Authz(UserRepository userRepo, OneOpsConfig config, ClientsAuthorizationImpl authFact) {
     this.userRepo = userRepo;
+    this.authFact = authFact;
+    this.config = config;
   }
 
   /**
@@ -52,23 +57,25 @@ public class Authz {
    * @param user Authenticated user.
    * @return <code>true</code> if the user is authorized.
    */
-  public boolean isAuthorized(@Nonnull String appName, @Nonnull OneOpsUser user) {
+  public boolean isAuthorized(@Nonnull String appName, @Nonnull OneOpsUser user)
+      throws Exception {
     if (log.isDebugEnabled()) {
       log.debug(
           "Checking the authz for user: " + user.getUsername() + " and application: " + appName);
     }
-
     AppGroup appGroup = new AppGroup(user.getDomain(), appName);
-    List<OneOpsTeam> teams = userRepo.getTeams(user.getUsername(), appGroup);
-    boolean hasAccess = teams.stream().anyMatch(team -> hasAdminAccess(team, appGroup));
-    if (!hasAccess) {
-      throw new AuthorizationServiceException(
-          "OneOps user '"
-              + user.getCn()
-              + "' is not a '"
-              + SECRETS_ADMIN_TEAM
-              + "' or not authorized to manage the secrets for environment: "
-              + appGroup.getNsPath());
+    AuthorizationProcess authorizationProcess = authFact.getAuthorization(appGroup, config, userRepo);
+    if (authorizationProcess.authorizeUser(appName, user)) {
+      authorizationProcess.normalize(appGroup, appName);
+    }
+    else{
+        throw new AuthorizationServiceException(
+            "User '"
+                + user.getCn()
+                + "' is not a '"
+                + SECRETS_ADMIN_TEAM
+                + "' or not authorized to manage the secrets for environment: "
+                + appGroup.getNsPath());
     }
     return true;
   }
