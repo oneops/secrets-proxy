@@ -59,8 +59,8 @@ jetty:
 # Proxy Configuration
 # ===================
 oneops:
-  authenticationURL: http://tekton.dev.prod.walmart.com/api/v1/access/
-  authorizationCode: Authorization:dGVzdA==
+  authenticationURL: http://tekton.dev.prod.walmart.com
+  authorizationCode: dummy
   keywhiz:
     base-url: https://keywhiz.com:4444/
     svc-user: ${KEYWHIZ_USER}
