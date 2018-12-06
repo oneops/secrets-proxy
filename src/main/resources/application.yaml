@@ -59,8 +59,6 @@ jetty:
 # Proxy Configuration
 # ===================
 oneops:
-  authenticationURL: http://tekton.dev.prod.walmart.com
-  authorizationCode: dummy
   keywhiz:
     base-url: https://keywhiz.com:4444/
     svc-user: ${KEYWHIZ_USER}
@@ -137,6 +135,62 @@ oneops:
       maximum-pool-size: 2
       pool-name: keywhiz-proxy-dev
 
+# Tekton/MS Service domains and endpoint details
+# =====================
+services:
+  configs:
+  - domainNames: tekton-dev
+    url: ${TEKTON_DEV_APP_URL}
+    auth:
+      token: ${TEKTON_DEV_APP_CODE}
+      username:
+      password:
+  - domainNames: ms-dev
+    url: ${MS_DEV_APP_URL}
+    auth:
+      token: ${MS_DEV_APP_CODE}
+      username:
+      password:
+
+  - domainNames: tekton-stg
+    url: ${TEKTON_STG_APP_URL}
+    auth:
+      token: ${TEKTON_STG_APP_CODE}
+      username:
+      password:
+  - domainNames: ms-stg
+    url: ${MS_STG_APP_URL}
+    auth:
+      token: ${MS_STG_APP_CODE}
+      username:
+      password:
+
+  - domainNames: tekton-mgmt
+    url: ${TEKTON_MGMT_APP_URL}
+    auth:
+      token: ${TEKTON_MGMT_APP_CODE}
+      username:
+      password:
+  - domainNames: ms-mgmt
+    url: ${MS_MGMT_APP_URL}
+    auth:
+      token: ${MS_MGMT_APP_CODE}
+      username:
+      password:
+
+  - domainNames: tekton-prod
+    url: ${TEKTON_PROD_APP_URL}
+    auth:
+      token: ${TEKTON_PROD_APP_CODE}
+      username:
+      password:
+  - domainNames: ms-prod
+    url: ${MS_PROD_APP_URL}
+    auth:
+      token: ${MS_PROD_APP_CODE}
+      username:
+      password:
+
 # Spring datasource Configuration
 # ===============================
 spring:
@@ -196,6 +250,3 @@ info:
 #    keys-to-sanitize:
 #  configprops:
 #    keys-to-sanitize:
-
-# Managed Service Endpoint details
-# =====================

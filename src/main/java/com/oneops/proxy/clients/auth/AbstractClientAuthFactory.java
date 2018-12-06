@@ -11,5 +11,5 @@ import com.oneops.proxy.model.AppGroup;
  */
 
 public abstract class AbstractClientAuthFactory {
-  public abstract AuthorizationProcess getAuthorization(AppGroup appGroup, OneOpsConfig config, UserRepository userRepo) throws Exception;
+  public abstract AuthorizationProcess getAuthorization(AppGroup appGroup, UserRepository userRepo) throws Exception;
 }

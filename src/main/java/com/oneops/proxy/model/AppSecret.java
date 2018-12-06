@@ -18,7 +18,6 @@
 package com.oneops.proxy.model;
 
 import static com.oneops.proxy.model.AppGroup.GROUP_SEP;
-
 import com.oneops.proxy.authz.AuthDomain;
 import com.oneops.proxy.web.GroupController;
 import java.util.Arrays;
@@ -86,7 +85,6 @@ public class AppSecret {
 
     String prefix = names[0];
     secretName = names[1];
-
     String[] groups = prefix.split(GROUP_SEP, 2);
     if (groups.length != 2) {
       throw new IllegalArgumentException("Invalid app group prefix: " + prefix);

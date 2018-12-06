@@ -25,11 +25,14 @@ public class OneopsAuthorizationProcess implements AuthorizationProcess {
       this.userRepo = userRepo;
   }
 
+  /* Check in UserRepository if user has authorized access for oneops applicaton.
+   *
+   * @param appName appName
+   * @param user OneopsUser
+   * @return <code>true</code> if user has admin access.
+   */
   @Override
   public boolean authorizeUser(@Nonnull String appName, @Nonnull OneOpsUser user) {
-    // need to call Oneops Authorization.
-    System.out.println(appName);
-    System.out.println(user.getDomain() + "==" + user.getUsername());
 
     AppGroup appGroup = new AppGroup(user.getDomain(), appName);
 

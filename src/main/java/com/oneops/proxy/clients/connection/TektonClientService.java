@@ -1,95 +1,80 @@
 package com.oneops.proxy.clients.connection;
 
 import com.oneops.proxy.auth.user.OneOpsUser;
-import com.oneops.proxy.clients.ClientsProxy;
-import com.oneops.proxy.config.OneOpsConfig;
-import com.oneops.proxy.model.ErrorResponse;
-import com.oneops.proxy.model.Result;
-import com.oneops.proxy.utils.DateAdapter;
-import com.squareup.moshi.Moshi;
-import okhttp3.OkHttpClient;
+import com.oneops.proxy.config.ClientsAuthConfig;
+import com.oneops.proxy.model.AppGroup;
+import com.oneops.proxy.utils.SecretsConstants;
 import okhttp3.Request;
-import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.Response;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Component;
-import retrofit2.Call;
-import retrofit2.Converter;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.moshi.MoshiConverterFactory;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.util.Optional;
 import java.util.logging.Logger;
-import static okhttp3.logging.HttpLoggingInterceptor.Level.BASIC;
 
 /**
- * Proxy client to connect Managed Services
+ * Proxy client to connect Tekton Services
  *
  * @author Varsha
  */
 @Component
-public class TektonClientService {
+public class TektonClientService extends ProxyClientConnection{
 
   private Logger log = Logger.getLogger(getClass().getSimpleName());
 
-  private ClientsProxy clientsProxy;
+  public TektonClientService() {}
 
-  private Converter<ResponseBody, ErrorResponse> errResConverter;
-  private String appName;
-  private OneOpsUser user;
+  public boolean auth(OneOpsUser oneOpsUser, String appName, ClientsAuthConfig clientsAuthConfig, AppGroup appGroup) throws IOException {
 
-  public TektonClientService( OneOpsConfig config) throws GeneralSecurityException {
+      String url = "";
+      String token = "";
+      String userName = oneOpsUser.getUsername();
 
-    HttpLoggingInterceptor logIntcp = new HttpLoggingInterceptor(s -> log.info(s));
-    logIntcp.setLevel(BASIC);
+      /* Get the domainName from AppGroup.
+       *  Output domainStr =  "tekton-prod"
+       */
+      String domainStr = appGroup.getDomain().getType();
 
-    Moshi moshi = new Moshi.Builder().add(new DateAdapter()).build();
+      /* Get the <name> from AppGroup
+       * Tekton auth URL contains "/" in appName instead "_" , replace the underscore with slash
+       * Output : {org}/{project_name}/{env}
+       * */
 
-    OkHttpClient okhttp =
-        new OkHttpClient()
-            .newBuilder()
-            .addInterceptor(
-                chain -> {
-                  Request.Builder reqBuilder =
-                      chain
-                          .request()
-                          .newBuilder()
-                          .addHeader("Authorization", config.getAuthorizationCode());
+      String namespace = appGroup.getName().replace(AppGroup.GROUP_SEP, AppGroup.NSPATH_SEP).trim();
 
-                  return chain.proceed(reqBuilder.build());
-                })
-            .hostnameVerifier((h, s) -> true)
-            .build();
+      log.info("Tekton Client services :"+ " Domain name=" + domainStr +" and Namespace="+namespace);
 
-    Retrofit retrofit =
-        new Retrofit.Builder()
-            .baseUrl(config.getAuthenticationURL())// + "/" + user.getUsername() + appName.replace("_", "/"))
-            .client(okhttp)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .build();
+      /* Get the configuration properties for Tekton only*/
+      Optional<ClientsAuthConfig.ClientsAuthDomain> clientAuth = clientsAuthConfig.getConfigs().stream().filter(x -> x.getDomainNames().equals(domainStr)).findFirst();
 
-    clientsProxy = retrofit.create(ClientsProxy.class);
-  }
+      if (clientAuth.isPresent()) {
+          url =
+              clientAuth.get().getUrl()
+                  + SecretsConstants.TEKTON_AUTH_PREFIX
+                  + userName
+                  + "/"
+                  + namespace;
+          token = clientAuth.get().getAuth().getToken();
 
-  /** Helper method to handle {@link Call} object and return the execution {@link Result}. */
-  private <T> Result<T> exec(Call<T> call) throws IOException {
-    Response<T> res = call.execute();
-    ErrorResponse err = null;
-    T body = null;
+          Request request =
+              new Request.Builder()
+                  .url(url)
+                  .addHeader(SecretsConstants.TEKTON_AUTH_HEADER, token)
+                  .build();
 
-    if (res.isSuccessful()) {
-      body = res.body();
-    } else {
-      if (res.errorBody() != null) {
-        err = errResConverter.convert(res.errorBody());
+          try {
+              Response response = makeCall(request);
+
+              log.info("Response status "+ response.code() +" for Tekton :" +url);
+              return response.isSuccessful();
+
+          } catch (IOException e) {
+              log.warning(e.getMessage());
+              throw new AuthorizationServiceException(
+                  "Error accessing authorization service: " + appGroup.getNsPath());
+          }
       }
-    }
-    return new Result<>(body, err, res.code(), res.isSuccessful());
-  }
+      return false;
 
-  public Result<String> auth(OneOpsUser user, String appName) throws IOException {
-      this.appName = appName;
-      this.user = user;
-    return exec(clientsProxy.auth(user.getUsername() ,appName));
   }
 }
