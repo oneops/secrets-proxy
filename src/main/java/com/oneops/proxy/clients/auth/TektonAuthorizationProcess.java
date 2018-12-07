@@ -14,7 +14,6 @@ import java.io.IOException;
  *
  * @author Varsha
  */
-
 public class TektonAuthorizationProcess implements AuthorizationProcess {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
@@ -22,22 +21,23 @@ public class TektonAuthorizationProcess implements AuthorizationProcess {
   private final ClientsAuthConfig serviceAuth;
   private final AppGroup appGroup;
 
-  public TektonAuthorizationProcess(TektonClientService tektonClient, ClientsAuthConfig serviceAuth, AppGroup appGroup){
-      this.tektonClient = tektonClient;
-      this.serviceAuth = serviceAuth;
-      this.appGroup = appGroup;
+  public TektonAuthorizationProcess(
+      TektonClientService tektonClient, ClientsAuthConfig serviceAuth, AppGroup appGroup) {
+    this.tektonClient = tektonClient;
+    this.serviceAuth = serviceAuth;
+    this.appGroup = appGroup;
   }
 
   /* Invoke Tekton service Clients and call auth api.
-  *
-  * @param appName appName
-  * @param user OneopsUser
-  * @return <code>true</code> if user has admin access.
-  */
+   *
+   * @param appName appName
+   * @param user OneopsUser
+   * @return <code>true</code> if user has admin access.
+   */
 
   @Override
-  public boolean authorizeUser(@Nonnull String appName, @Nonnull OneOpsUser user) throws IOException {
-     return tektonClient.auth(user,appName, serviceAuth, appGroup);
+  public boolean authorizeUser(@Nonnull String appName, @Nonnull OneOpsUser user)
+      throws IOException {
+    return tektonClient.auth(user, appName, serviceAuth, appGroup);
   }
-
 }

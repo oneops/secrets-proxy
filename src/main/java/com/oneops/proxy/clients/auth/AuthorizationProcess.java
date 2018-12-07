@@ -10,10 +10,10 @@ import java.io.IOException;
  *
  * @author Varsha
  */
-
 @Component
 public interface AuthorizationProcess {
 
   /* {@link boolean} method authorizeUser with arugument user and appName */
-  boolean authorizeUser(@Nonnull String appName, @Nonnull OneOpsUser user) throws IOException, Exception;
+  boolean authorizeUser(@Nonnull String appName, @Nonnull OneOpsUser user)
+      throws IOException, Exception;
 }

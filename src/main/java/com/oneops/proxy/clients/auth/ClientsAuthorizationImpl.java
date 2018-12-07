@@ -14,22 +14,25 @@ import java.io.IOException;
  *
  * @author Varsha
  */
-
 @Component
 public class ClientsAuthorizationImpl extends AbstractClientAuthFactory {
 
-   private ClientsAuthConfig clientsAuthConfig;
-   public ClientsAuthorizationImpl(ClientsAuthConfig clientsAuthConfig){this.clientsAuthConfig = clientsAuthConfig;}
+  private ClientsAuthConfig clientsAuthConfig;
+
+  public ClientsAuthorizationImpl(ClientsAuthConfig clientsAuthConfig) {
+    this.clientsAuthConfig = clientsAuthConfig;
+  }
 
   @Override
-  public AuthorizationProcess getAuthorization(AppGroup appGroup, UserRepository userRepo) throws IOException, Exception {
+  public AuthorizationProcess getAuthorization(AppGroup appGroup, UserRepository userRepo)
+      throws IOException, Exception {
 
     if (appGroup.getName().startsWith(SecretsConstants.MS_APP)) {
-        return new MSAuthorizationProcess(new MSClientService(), clientsAuthConfig, appGroup);
-    }else if (appGroup.getDomain().getType().startsWith(SecretsConstants.TEKTON_APP)) {
-        return new TektonAuthorizationProcess(new TektonClientService(), clientsAuthConfig, appGroup);
-    }else{
-        return new OneopsAuthorizationProcess(userRepo);
+      return new MSAuthorizationProcess(new MSClientService(), clientsAuthConfig, appGroup);
+    } else if (appGroup.getDomain().getType().startsWith(SecretsConstants.TEKTON_APP)) {
+      return new TektonAuthorizationProcess(new TektonClientService(), clientsAuthConfig, appGroup);
+    } else {
+      return new OneopsAuthorizationProcess(userRepo);
     }
   }
 }

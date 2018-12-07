@@ -9,7 +9,7 @@ import com.oneops.proxy.model.AppGroup;
  *
  * @author Varsha
  */
-
 public abstract class AbstractClientAuthFactory {
-  public abstract AuthorizationProcess getAuthorization(AppGroup appGroup, UserRepository userRepo) throws Exception;
+  public abstract AuthorizationProcess getAuthorization(AppGroup appGroup, UserRepository userRepo)
+      throws Exception;
 }

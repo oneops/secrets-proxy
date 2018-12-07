@@ -8,94 +8,84 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * Proxy configuration properties for communicating to the secret-proxy clients like Managed Services, Tekton etc.
+ * Proxy configuration properties for communicating to the secret-proxy clients like Managed
+ * Services, Tekton etc.
  *
  * @author Varsha
  */
-
 @Configuration
 @ConfigurationProperties(value = "services")
 public class ClientsAuthConfig {
 
-    private List<ClientsAuthDomain> configs;
+  private List<ClientsAuthDomain> configs;
 
-    public List<ClientsAuthDomain> getConfigs() {
-        return configs;
+  public List<ClientsAuthDomain> getConfigs() {
+    return configs;
+  }
+
+  public void setConfigs(List<ClientsAuthDomain> configs) {
+    this.configs = configs;
+  }
+
+  public static class ClientsAuthDomain {
+    @NotNull private String domainNames;
+    @NotNull private String url;
+    @NestedConfigurationProperty private ClientsAuthData auth;
+
+    public String getDomainNames() {
+      return domainNames;
     }
 
-    public void setConfigs(List<ClientsAuthDomain> configs) {
-        this.configs = configs;
+    public void setDomainNames(String domainNames) {
+      this.domainNames = domainNames;
     }
 
-    public static class ClientsAuthDomain {
-        @NotNull private String domainNames;
-        @NotNull private String url;
-        @NestedConfigurationProperty private ClientsAuthData auth;
-
-        public String getDomainNames() {
-            return domainNames;
-        }
-
-        public void setDomainNames(String domainNames) {
-            this.domainNames = domainNames;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public ClientsAuthData getAuth() {
-            return auth;
-        }
-
-        public void setAuth(ClientsAuthData auth) {
-            this.auth = auth;
-        }
-
-        @Override
-        public String toString() {
-            return "ClientAuthConfig{"
-                + "domainNames="
-                + domainNames
-                + ", url="
-                + url
-                + '}';
-        }
+    public String getUrl() {
+      return url;
     }
 
-    public static class ClientsAuthData {
-
-        private String token;
-        private String username;
-
-        public String getToken() {
-            return token;
-        }
-
-        public void setToken(String token) {
-            this.token = token;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
-        }
-
-        @Override
-        public String toString() {
-            return "ClientAuthConfig{"
-                + " username="
-                + username
-                + '}';
-        }
+    public void setUrl(String url) {
+      this.url = url;
     }
 
+    public ClientsAuthData getAuth() {
+      return auth;
+    }
 
+    public void setAuth(ClientsAuthData auth) {
+      this.auth = auth;
+    }
+
+    @Override
+    public String toString() {
+      return "ClientAuthConfig{" + "domainNames=" + domainNames + ", url=" + url + '}';
+    }
+  }
+
+  public static class ClientsAuthData {
+
+    private String token;
+    private String username;
+
+    public String getToken() {
+      return token;
+    }
+
+    public void setToken(String token) {
+      this.token = token;
+    }
+
+    public String getUsername() {
+      return username;
+    }
+
+    public void setUsername(String username) {
+      this.username = username;
+    }
+
+    @Override
+    public String toString() {
+      return "ClientAuthConfig{" + " username=" + username + '}';
+    }
+  }
 }

@@ -15,14 +15,13 @@ import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
  *
  * @author Varsha
  */
-
 @Component
 public class OneopsAuthorizationProcess implements AuthorizationProcess {
 
-    private final UserRepository userRepo;
+  private final UserRepository userRepo;
 
-  public OneopsAuthorizationProcess(UserRepository userRepo)  {
-      this.userRepo = userRepo;
+  public OneopsAuthorizationProcess(UserRepository userRepo) {
+    this.userRepo = userRepo;
   }
 
   /* Check in UserRepository if user has authorized access for oneops applicaton.
@@ -51,15 +50,15 @@ public class OneopsAuthorizationProcess implements AuthorizationProcess {
     return true;
   }
 
-    /**
-     * Checks if the given team is a 'secret-admin' and has access to manage design and transition for
-     * the given application group.
-     *
-     * @param team OneOps team
-     * @param appGroup Application group
-     * @return <code>true</code> if the team has admin access.
-     */
-    public boolean hasAdminAccess(OneOpsTeam team, AppGroup appGroup) {
-        return team.isSecretsAdmin(appGroup.getAssembly()) && team.isDesign() && team.isTransition();
-    }
+  /**
+   * Checks if the given team is a 'secret-admin' and has access to manage design and transition for
+   * the given application group.
+   *
+   * @param team OneOps team
+   * @param appGroup Application group
+   * @return <code>true</code> if the team has admin access.
+   */
+  public boolean hasAdminAccess(OneOpsTeam team, AppGroup appGroup) {
+    return team.isSecretsAdmin(appGroup.getAssembly()) && team.isDesign() && team.isTransition();
+  }
 }

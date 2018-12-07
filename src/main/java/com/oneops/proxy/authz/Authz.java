@@ -61,21 +61,25 @@ public class Authz {
       throws Exception {
     if (log.isDebugEnabled()) {
       log.debug(
-          "Checking the authz for user: " + user.getUsername() + ", domain: "+ user.getDomain() + " and application: " + appName);
+          "Checking the authz for user: "
+              + user.getUsername()
+              + ", domain: "
+              + user.getDomain()
+              + " and application: "
+              + appName);
     }
     AppGroup appGroup = new AppGroup(user.getDomain(), appName);
     AuthorizationProcess authorizationProcess = authFact.getAuthorization(appGroup, userRepo);
     if (authorizationProcess.authorizeUser(appName, user)) {
-      log.info("Authorization process is done for user "+user.getUsername());
-    }
-    else{
-        throw new AuthorizationServiceException(
-            "User '"
-                + user.getCn()
-                + "' is not a '"
-                + SECRETS_ADMIN_TEAM
-                + "' or not authorized to manage the secrets for environment: "
-                + appGroup.getNsPath());
+      log.info("Authorization process is done for user " + user.getUsername());
+    } else {
+      throw new AuthorizationServiceException(
+          "User '"
+              + user.getCn()
+              + "' is not a '"
+              + SECRETS_ADMIN_TEAM
+              + "' or not authorized to manage the secrets for environment: "
+              + appGroup.getNsPath());
     }
     return true;
   }

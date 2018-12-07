@@ -12,23 +12,23 @@ import com.oneops.proxy.utils.SecretsConstants;
  */
 public enum AuthDomain {
 
-    /*Oneops domain name*/
-    PROD("prod"),
-    MGMT("mgmt"),
-    STG("stg"),
-    DEV("dev"),
+  /*Oneops domain name*/
+  PROD("prod"),
+  MGMT("mgmt"),
+  STG("stg"),
+  DEV("dev"),
 
-    /*Tekton domain name*/
-    TEKTON_PROD("tekton-prod"),
-    TEKTON_MGMT("tekton-mgmt"),
-    TEKTON_STG("tekton-stg"),
-    TEKTON_DEV("tekton-dev"),
+  /*Tekton domain name*/
+  TEKTON_PROD("tekton-prod"),
+  TEKTON_MGMT("tekton-mgmt"),
+  TEKTON_STG("tekton-stg"),
+  TEKTON_DEV("tekton-dev"),
 
-    /*MS domain name*/
-    MS_PROD("ms-prod"),
-    MS_MGMT("ms-mgmt"),
-    MS_STG("ms-stg"),
-    MS_DEV("ms-dev");
+  /*MS domain name*/
+  MS_PROD("ms-prod"),
+  MS_MGMT("ms-mgmt"),
+  MS_STG("ms-stg"),
+  MS_DEV("ms-dev");
 
   private final String type;
 

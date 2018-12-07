@@ -49,11 +49,11 @@ public class AppGroup {
 
   public static final String DOMAIN_METADATA = "_domain";
 
-    private AuthDomain domain;
-    private String name;
-    private String org;
-    private  String assembly;
-    private  String env;
+  private AuthDomain domain;
+  private String name;
+  private String org;
+  private String assembly;
+  private String env;
 
   /**
    * Creates new {@link AppGroup} from the given domain and app group name.
@@ -82,21 +82,16 @@ public class AppGroup {
 
     String[] paths = name.split(GROUP_SEP);
 
-    if (paths.length == 3
-        && !(isBlank(paths[0]) || isBlank(paths[1]) || isBlank(paths[2]))) {
+    if (paths.length == 3 && !(isBlank(paths[0]) || isBlank(paths[1]) || isBlank(paths[2]))) {
       org = paths[0].trim();
       assembly = paths[1].trim();
       env = paths[2].trim();
-    } else if(paths.length > 3)
-    {
+    } else if (paths.length > 3) {
       this.domain = AuthDomain.of(paths[0]);
       this.name = this.name.substring(this.domain.getType().length() + 1);
-    }
-    else
+    } else
       throw new IllegalArgumentException(
-          "Invalid application group name: "
-              + name
-              + ". The format is 'domain_org_assembly_env'.");
+          "Invalid application group name: " + name + ". The format is 'domain_org_assembly_env'.");
   }
 
   /** Returns oneOps auth domain for the application group. */
@@ -142,9 +137,8 @@ public class AppGroup {
   public String getGroupName() {
     if (null != org || null != assembly || null != env) {
       return String.format("/%s/%s/%s/%s", domain.getType(), org, assembly, env);
-    }
-    else{
-        return String.format("/%s/%s", domain.getType(), name.replace(GROUP_SEP, NSPATH_SEP));
+    } else {
+      return String.format("/%s/%s", domain.getType(), name.replace(GROUP_SEP, NSPATH_SEP));
     }
   }
   /**
