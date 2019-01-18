@@ -1,26 +1,27 @@
 package com.oneops.proxy.clients.auth;
 
+import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
+
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.authz.OneOpsTeam;
 import com.oneops.proxy.authz.UserRepository;
 import com.oneops.proxy.model.AppGroup;
+import java.util.List;
 import javax.annotation.Nonnull;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Component;
-import java.util.List;
-import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
 
 /**
- * Authorization provides for default application that is Oneops
+ * Authorization process for default application that is Oneops
  *
  * @author Varsha
  */
 @Component
-public class OneopsAuthorizationProcess implements AuthorizationProcess {
+public class OneopsClient implements Client {
 
   private final UserRepository userRepo;
 
-  public OneopsAuthorizationProcess(UserRepository userRepo) {
+  public OneopsClient(UserRepository userRepo) {
     this.userRepo = userRepo;
   }
 

@@ -18,11 +18,12 @@
 package com.oneops.proxy.authz;
 
 import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
+
 import com.oneops.proxy.auth.user.OneOpsUser;
+import com.oneops.proxy.clients.auth.Client;
+import com.oneops.proxy.clients.auth.ClientFactoryInterface;
 import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.model.AppGroup;
-import com.oneops.proxy.clients.auth.ClientsAuthorizationImpl;
-import com.oneops.proxy.clients.auth.AuthorizationProcess;
 import javax.annotation.Nonnull;
 import org.slf4j.*;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -40,12 +41,12 @@ public class Authz {
   private final Logger log = LoggerFactory.getLogger(getClass());
 
   private final UserRepository userRepo;
-  private final ClientsAuthorizationImpl authFact;
+  private final ClientFactoryInterface factory;
   private final OneOpsConfig config;
 
-  public Authz(UserRepository userRepo, OneOpsConfig config, ClientsAuthorizationImpl authFact) {
+  public Authz(UserRepository userRepo, OneOpsConfig config, ClientFactoryInterface factory) {
     this.userRepo = userRepo;
-    this.authFact = authFact;
+    this.factory = factory;
     this.config = config;
   }
 
@@ -57,8 +58,7 @@ public class Authz {
    * @param user Authenticated user.
    * @return <code>true</code> if the user is authorized.
    */
-  public boolean isAuthorized(@Nonnull String appName, @Nonnull OneOpsUser user)
-      throws Exception {
+  public boolean isAuthorized(@Nonnull String appName, @Nonnull OneOpsUser user) throws Exception {
     if (log.isDebugEnabled()) {
       log.debug(
           "Checking the authz for user: "
@@ -69,8 +69,9 @@ public class Authz {
               + appName);
     }
     AppGroup appGroup = new AppGroup(user.getDomain(), appName);
-    AuthorizationProcess authorizationProcess = authFact.getAuthorization(appGroup, userRepo);
-    if (authorizationProcess.authorizeUser(appName, user)) {
+    Client client = factory.selectClient(appGroup, appName, user, userRepo);
+
+    if (client.authorizeUser(appName, user)) {
       log.info("Authorization process is done for user " + user.getUsername());
     } else {
       throw new AuthorizationServiceException(

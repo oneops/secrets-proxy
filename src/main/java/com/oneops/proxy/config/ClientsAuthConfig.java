@@ -1,11 +1,10 @@
 package com.oneops.proxy.config;
 
+import java.util.List;
+import javax.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Configuration;
-
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * Proxy configuration properties for communicating to the secret-proxy clients like Managed
@@ -31,6 +30,7 @@ public class ClientsAuthConfig {
     @NotNull private String domainNames;
     @NotNull private String url;
     @NestedConfigurationProperty private ClientsAuthData auth;
+    private int timeout;
 
     public String getDomainNames() {
       return domainNames;
@@ -54,6 +54,14 @@ public class ClientsAuthConfig {
 
     public void setAuth(ClientsAuthData auth) {
       this.auth = auth;
+    }
+
+    public int getTimeout() {
+      return timeout;
+    }
+
+    public void setTimeout(int timeout) {
+      this.timeout = timeout;
     }
 
     @Override

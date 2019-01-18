@@ -2,7 +2,6 @@ package com.oneops.proxy.authz;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.oneops.proxy.utils.SecretsConstants;
 
 /**
  * OneOps auth domains. The user data source for each corresponding domain is configured in the
@@ -19,16 +18,10 @@ public enum AuthDomain {
   DEV("dev"),
 
   /*Tekton domain name*/
-  TEKTON_PROD("tekton-prod"),
-  TEKTON_MGMT("tekton-mgmt"),
-  TEKTON_STG("tekton-stg"),
-  TEKTON_DEV("tekton-dev"),
-
-  /*MS domain name*/
-  MS_PROD("ms-prod"),
-  MS_MGMT("ms-mgmt"),
-  MS_STG("ms-stg"),
-  MS_DEV("ms-dev");
+  TEKTONPROD("tektonprod"),
+  TEKTONMGMT("tektonmgmt"),
+  TEKTONSTG("tektonstg"),
+  TEKTONDEV("tektondev");
 
   private final String type;
 
@@ -39,7 +32,7 @@ public enum AuthDomain {
   /** This is for dealing with case insensitive enum in json. */
   @JsonCreator
   public static AuthDomain of(String type) {
-    return AuthDomain.valueOf(type.replaceFirst(SecretsConstants.DOMAIN_SEP, SecretsConstants.GROUP_SEP).toUpperCase());
+    return AuthDomain.valueOf(type.toUpperCase());
   }
 
   @JsonValue

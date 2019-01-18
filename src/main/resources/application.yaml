@@ -139,57 +139,62 @@ oneops:
 # =====================
 services:
   configs:
-  - domainNames: tekton-dev
+  - domainNames: tektondev
     url: ${TEKTON_DEV_APP_URL}
     auth:
       token: ${TEKTON_DEV_APP_CODE}
       username:
       password:
-  - domainNames: ms-dev
+    timeout: 5
+  - domainNames: msdev
     url: ${MS_DEV_APP_URL}
     auth:
       token: ${MS_DEV_APP_CODE}
       username:
       password:
-
-  - domainNames: tekton-stg
+    timeout: 5
+  - domainNames: tektonstg
     url: ${TEKTON_STG_APP_URL}
     auth:
       token: ${TEKTON_STG_APP_CODE}
       username:
       password:
-  - domainNames: ms-stg
+    timeout: 5
+  - domainNames: msstg
     url: ${MS_STG_APP_URL}
     auth:
       token: ${MS_STG_APP_CODE}
       username:
       password:
-
-  - domainNames: tekton-mgmt
+    timeout: 5
+  - domainNames: tektonmgmt
     url: ${TEKTON_MGMT_APP_URL}
     auth:
       token: ${TEKTON_MGMT_APP_CODE}
       username:
       password:
-  - domainNames: ms-mgmt
+    timeout: 5
+  - domainNames: msmgmt
     url: ${MS_MGMT_APP_URL}
     auth:
       token: ${MS_MGMT_APP_CODE}
       username:
       password:
-
-  - domainNames: tekton-prod
+    timeout: 5
+  - domainNames: tektonprod
     url: ${TEKTON_PROD_APP_URL}
     auth:
       token: ${TEKTON_PROD_APP_CODE}
       username:
       password:
-  - domainNames: ms-prod
+    timeout: 5
+  - domainNames: msprod
     url: ${MS_PROD_APP_URL}
     auth:
       token: ${MS_PROD_APP_CODE}
       username:
       password:
+    timeout: 5
 
 # Spring datasource Configuration
 # ===============================
