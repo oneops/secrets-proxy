@@ -8,7 +8,8 @@ package com.oneops.proxy.utils;
 public class SecretsConstants {
 
   /* Secrets-Proxy support for new applications like ms -> Managed services, tekton -> Tekton*/
-  public static final String MS_APP = "ms";
+  public static final String MS_APP = "ms-sf-tomcat_";
+  public static final String MS = "ms";
   public static final String TEKTON_APP = "tekton";
 
   /* Auth Api header info for MS and Tekton applications */

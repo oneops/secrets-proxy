@@ -20,7 +20,7 @@ package com.oneops.proxy.clients.model;
 /**
  * Holds secrets proxy response T and {@link ErrorRes} result.
  *
- * @author Suresh G
+ * @author Varsha
  */
 public class Result<T> {
 

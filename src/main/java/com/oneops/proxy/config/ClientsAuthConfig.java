@@ -1,6 +1,7 @@
 package com.oneops.proxy.config;
 
 import java.util.List;
+import java.util.Optional;
 import javax.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
@@ -16,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(value = "services")
 public class ClientsAuthConfig {
 
-  private List<ClientsAuthDomain> configs;
+  private static List<ClientsAuthDomain> configs;
 
   public List<ClientsAuthDomain> getConfigs() {
     return configs;
@@ -95,5 +96,9 @@ public class ClientsAuthConfig {
     public String toString() {
       return "ClientAuthConfig{" + " username=" + username + '}';
     }
+  }
+
+  public Optional<ClientsAuthDomain> getAuthClients(String domain) {
+    return configs.stream().filter(x -> x.getDomainNames().equals(domain)).findFirst();
   }
 }

@@ -18,6 +18,7 @@
 package com.oneops.proxy.model;
 
 import static com.oneops.proxy.model.AppGroup.GROUP_SEP;
+
 import com.oneops.proxy.authz.AuthDomain;
 import com.oneops.proxy.web.GroupController;
 import java.util.Arrays;

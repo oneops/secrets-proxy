@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Secrets Proxy Json Date adapter.
  *
- * @author Suresh
+ * @author Varsha
  */
 public class DateAdapter {
 

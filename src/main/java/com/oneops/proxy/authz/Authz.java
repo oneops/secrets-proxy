@@ -21,8 +21,7 @@ import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
 
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.clients.auth.Client;
-import com.oneops.proxy.clients.auth.ClientFactoryInterface;
-import com.oneops.proxy.config.OneOpsConfig;
+import com.oneops.proxy.clients.auth.ClientSelector;
 import com.oneops.proxy.model.AppGroup;
 import javax.annotation.Nonnull;
 import org.slf4j.*;
@@ -41,13 +40,11 @@ public class Authz {
   private final Logger log = LoggerFactory.getLogger(getClass());
 
   private final UserRepository userRepo;
-  private final ClientFactoryInterface factory;
-  private final OneOpsConfig config;
+  private ClientSelector clientSelector;
 
-  public Authz(UserRepository userRepo, OneOpsConfig config, ClientFactoryInterface factory) {
+  public Authz(UserRepository userRepo, ClientSelector clientSelector) {
     this.userRepo = userRepo;
-    this.factory = factory;
-    this.config = config;
+    this.clientSelector = clientSelector;
   }
 
   /**
@@ -69,9 +66,8 @@ public class Authz {
               + appName);
     }
     AppGroup appGroup = new AppGroup(user.getDomain(), appName);
-    Client client = factory.selectClient(appGroup, appName, user, userRepo);
-
-    if (client.authorizeUser(appName, user)) {
+    Client client = clientSelector.selectClient(appGroup, userRepo);
+    if (client != null && client.authorizeUser(appName, user)) {
       log.info("Authorization process is done for user " + user.getUsername());
     } else {
       throw new AuthorizationServiceException(
@@ -80,7 +76,7 @@ public class Authz {
               + "' is not a '"
               + SECRETS_ADMIN_TEAM
               + "' or not authorized to manage the secrets for environment: "
-              + appGroup.getNsPath());
+              + appGroup.getName());
     }
     return true;
   }

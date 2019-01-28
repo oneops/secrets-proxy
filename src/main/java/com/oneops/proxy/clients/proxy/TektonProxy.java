@@ -4,6 +4,11 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
+/**
+ * Tekton client Proxy
+ *
+ * @author Varsha
+ */
 public interface TektonProxy {
 
   String authPrefix = "api/v1/access";

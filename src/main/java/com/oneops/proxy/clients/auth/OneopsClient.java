@@ -25,7 +25,8 @@ public class OneopsClient implements Client {
     this.userRepo = userRepo;
   }
 
-  /* Check in UserRepository if user has authorized access for oneops applicaton.
+  /**
+   * Check in UserRepository if user has authorized access for oneops applicaton.
    *
    * @param appName appName
    * @param user OneopsUser

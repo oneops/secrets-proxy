@@ -25,6 +25,7 @@ import com.oneops.proxy.clients.model.DateAdapter;
 import com.oneops.proxy.clients.model.ErrorRes;
 import com.oneops.proxy.clients.model.Result;
 import com.oneops.proxy.config.ClientsAuthConfig;
+import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.model.ms.MSClientAuthRequest;
 import com.oneops.proxy.model.ms.MSClientAuthResponse;
 import com.oneops.proxy.utils.SecretsConstants;
@@ -32,8 +33,6 @@ import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.util.Optional;
 import java.util.logging.Logger;
 import javax.net.ssl.*;
@@ -54,35 +53,40 @@ public class MSProxyClient {
 
   private Logger log = Logger.getLogger(getClass().getSimpleName());
 
-  private ClientsAuthConfig config;
-
   private MSProxy msProxy;
 
   private Converter<ResponseBody, ErrorRes> errResConverter;
 
-  public MSProxyClient(ClientsAuthConfig config, com.oneops.proxy.model.AppGroup appGroup)
-      throws GeneralSecurityException {
+  private OneOpsConfig.TrustStore config;
 
-    log.info("Initializing the Managed Service Client");
+  private ClientsAuthConfig clientsConfig;
+
+  public MSProxyClient(OneOpsConfig.TrustStore config, ClientsAuthConfig clientsConfig) {
     this.config = config;
+    this.clientsConfig = clientsConfig;
+  }
 
-    /* create domain for managed services : output :: domainStr = "msdev"*/
-    String domainStr = SecretsConstants.MS_APP + appGroup.getDomain().getType();
+  /**
+   * Initial client setup to get TrustStore, OkHttpClient and Retrofit
+   *
+   * @param domain
+   * @throws GeneralSecurityException
+   */
+  public void setup(String domain) throws GeneralSecurityException {
+
+    log.info("Initialize setup for MS Proxy Client");
 
     /* Get the clients configuration for MS*/
     Optional<ClientsAuthConfig.ClientsAuthDomain> clientAuth =
-        config.getConfigs().stream().filter(x -> x.getDomainNames().equals(domainStr)).findFirst();
+        clientsConfig.getAuthClients(SecretsConstants.MS + domain);
 
     Moshi moshi = new Moshi.Builder().add(new DateAdapter()).build();
 
     HttpLoggingInterceptor logIntcp = new HttpLoggingInterceptor(s -> log.info(s));
     logIntcp.setLevel(BASIC);
 
-    /* TODO : need to remove : changed to getTrustManagers() */
-    TrustManager[] trustManagers = getTestAllTrustManager();
-    SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
-    sslContext.init(null, trustManagers, new SecureRandom());
-    SSLSocketFactory socketFactory = sslContext.getSocketFactory();
+    TrustManager[] trustManagers = ProxyClientUtil.getTrustManagers(config);
+    SSLSocketFactory socketFactory = ProxyClientUtil.getSocketfactory(trustManagers);
 
     int timeout = clientAuth.get().getTimeout();
     OkHttpClient okhttp =
@@ -106,21 +110,17 @@ public class MSProxyClient {
 
                   return chain.proceed(reqBuilder.build());
                 })
-            .hostnameVerifier((h, s) -> true) /* TODO : Needs to remove*/
             .build();
 
-    if (clientAuth.isPresent()) {
+    Retrofit retrofit =
+        new Retrofit.Builder()
+            .baseUrl(clientAuth.get().getUrl())
+            .client(okhttp)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build();
 
-      Retrofit retrofit =
-          new Retrofit.Builder()
-              .baseUrl(clientAuth.get().getUrl())
-              .client(okhttp)
-              .addConverterFactory(MoshiConverterFactory.create(moshi))
-              .build();
-
-      this.msProxy = retrofit.create(MSProxy.class);
-      errResConverter = retrofit.responseBodyConverter(ErrorRes.class, new Annotation[0]);
-    }
+    this.msProxy = retrofit.create(MSProxy.class);
+    errResConverter = retrofit.responseBodyConverter(ErrorRes.class, new Annotation[0]);
   }
 
   /**
@@ -130,6 +130,7 @@ public class MSProxyClient {
    * @throws IOException throws if any IO error when communicating to Secrets Proxy.
    */
   public Result<MSClientAuthResponse> doAuth(MSClientAuthRequest authRequest) throws IOException {
+    log.info("MSProxyClient::auth::create client request::" + authRequest.getNamespace());
     return exec(msProxy.auth(authRequest));
   }
 
@@ -142,42 +143,10 @@ public class MSProxyClient {
     if (res.isSuccessful()) {
       body = res.body();
     } else {
-      if (res.errorBody() != null) {
+      if (res.errorBody() != null && res.errorBody().contentLength() != 0) {
         err = errResConverter.convert(res.errorBody());
       }
     }
     return new Result<>(body, err, res.code(), res.isSuccessful());
-  }
-
-  /** Return new trust managers from the trust-store. */
-  private TrustManager[] getTrustManagers() throws GeneralSecurityException {
-    final TrustManagerFactory trustManagerFactory =
-        TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-    // trustManagerFactory.init(keyStoreFromResource(config.getTrustStore()));
-    return trustManagerFactory.getTrustManagers();
-  }
-
-  /* TODO : need to remove this */
-  private TrustManager[] getTestAllTrustManager() {
-    final TrustManager[] trustAllCerts =
-        new TrustManager[] {
-          new X509TrustManager() {
-            @Override
-            public void checkClientTrusted(
-                java.security.cert.X509Certificate[] chain, String authType)
-                throws CertificateException {}
-
-            @Override
-            public void checkServerTrusted(
-                java.security.cert.X509Certificate[] chain, String authType)
-                throws CertificateException {}
-
-            @Override
-            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-              return new java.security.cert.X509Certificate[] {};
-            }
-          }
-        };
-    return trustAllCerts;
   }
 }

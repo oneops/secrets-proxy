@@ -20,7 +20,7 @@ package com.oneops.proxy.clients.model;
 /**
  * Secrets Proxy common error response.
  *
- * @author Suresh
+ * @author Varsha
  */
 public class ErrorRes {
 

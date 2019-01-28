@@ -5,6 +5,11 @@ import com.oneops.proxy.model.ms.MSClientAuthResponse;
 import retrofit2.Call;
 import retrofit2.http.*;
 
+/**
+ * Managed Service client Proxy
+ *
+ * @author Varsha
+ */
 public interface MSProxy {
 
   String authPrefix = "api/ms/auth/";
