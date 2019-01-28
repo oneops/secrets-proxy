@@ -62,9 +62,7 @@ public class ClientSelector {
             Client tektonClient = null;
             try {
               tektonProxyClient.setup(appGroup.getDomain().getType());
-              tektonClient =
-                  new TektonClient(
-                      appGroup.getName(), appGroup.getDomain().getType(), tektonProxyClient);
+              tektonClient = new TektonClient(appGroup.getName(), tektonProxyClient);
             } catch (GeneralSecurityException e) {
               log.error("Tekton Client can't be authorize in the system.");
             }

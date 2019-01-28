@@ -21,7 +21,7 @@ public class TektonClient implements Client {
   private TektonProxyClient tektonProxyClient;
   private final String namespace;
 
-  public TektonClient(String namespace, String domain, TektonProxyClient tektonProxyClient) {
+  public TektonClient(String namespace, TektonProxyClient tektonProxyClient) {
     this.namespace = namespace;
     this.tektonProxyClient = tektonProxyClient;
   }
