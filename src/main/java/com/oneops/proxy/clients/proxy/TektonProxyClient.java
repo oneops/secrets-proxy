@@ -75,7 +75,7 @@ public class TektonProxyClient {
     TrustManager[] trustManagers = ProxyClientUtil.getTrustManagers(config);
     SSLSocketFactory socketFactory = ProxyClientUtil.getSocketfactory(trustManagers);
 
-    int timeout = clientAuth.get().getTimeout();
+    int timeout = clientsConfig.getExpiresInSec();
     OkHttpClient okhttp =
         new OkHttpClient()
             .newBuilder()

@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 public class ClientsAuthConfig {
 
   private static List<ClientsAuthDomain> configs;
+  private int expiresInSec;
 
   public List<ClientsAuthDomain> getConfigs() {
     return configs;
@@ -27,11 +28,18 @@ public class ClientsAuthConfig {
     this.configs = configs;
   }
 
+  public int getExpiresInSec() {
+    return expiresInSec;
+  }
+
+  public void setExpiresInSec(int expiresInSec) {
+    this.expiresInSec = expiresInSec;
+  }
+
   public static class ClientsAuthDomain {
     @NotNull private String domainNames;
     @NotNull private String url;
     @NestedConfigurationProperty private ClientsAuthData auth;
-    private int timeout;
 
     public String getDomainNames() {
       return domainNames;
@@ -57,14 +65,6 @@ public class ClientsAuthConfig {
       this.auth = auth;
     }
 
-    public int getTimeout() {
-      return timeout;
-    }
-
-    public void setTimeout(int timeout) {
-      this.timeout = timeout;
-    }
-
     @Override
     public String toString() {
       return "ClientAuthConfig{" + "domainNames=" + domainNames + ", url=" + url + '}';
@@ -74,7 +74,6 @@ public class ClientsAuthConfig {
   public static class ClientsAuthData {
 
     private String token;
-    private String username;
 
     public String getToken() {
       return token;
@@ -84,17 +83,9 @@ public class ClientsAuthConfig {
       this.token = token;
     }
 
-    public String getUsername() {
-      return username;
-    }
-
-    public void setUsername(String username) {
-      this.username = username;
-    }
-
     @Override
     public String toString() {
-      return "ClientAuthConfig{" + " username=" + username + '}';
+      return "ClientAuthConfig{" + '}';
     }
   }
 
