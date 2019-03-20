@@ -38,16 +38,22 @@ public class AppGroup {
   /** Application group name separator. */
   public static final String GROUP_SEP = "_";
 
+  /** Application domain name separator. */
+  public static final String DOMAIN_SEP = "-";
+
+  /** Application NsPath separator. */
+  public static final String NSPATH_SEP = "/";
+
   /** Additional metadata used when creating new groups. */
   public static final String USERID_METADATA = "_userId";
 
   public static final String DOMAIN_METADATA = "_domain";
 
-  private final AuthDomain domain;
-  private final String name;
-  private final String org;
-  private final String assembly;
-  private final String env;
+  private AuthDomain domain;
+  private String name;
+  private String org;
+  private String assembly;
+  private String env;
 
   /**
    * Creates new {@link AppGroup} from the given domain and app group name.
@@ -70,18 +76,22 @@ public class AppGroup {
    * @throws IllegalArgumentException if the app group name format is not valid.
    */
   public AppGroup(@Nonnull AuthDomain domain, @Nonnull String name) {
+
     this.domain = domain;
     this.name = name;
 
     String[] paths = name.split(GROUP_SEP);
-    if (paths.length != 3 || isBlank(paths[0]) || isBlank(paths[1]) || isBlank(paths[2])) {
-      throw new IllegalArgumentException(
-          "Invalid application group name: " + name + ". The format is 'org_assembly_env'.");
-    }
 
-    org = paths[0].trim();
-    assembly = paths[1].trim();
-    env = paths[2].trim();
+    if (paths.length == 3 && !(isBlank(paths[0]) || isBlank(paths[1]) || isBlank(paths[2]))) {
+      org = paths[0].trim();
+      assembly = paths[1].trim();
+      env = paths[2].trim();
+    } else if (paths.length > 3) {
+      this.domain = AuthDomain.of(paths[0]);
+      this.name = this.name.substring(this.domain.getType().length() + 1);
+    } else
+      throw new IllegalArgumentException(
+          "Invalid application group name: " + name + ". The format is 'domain_org_assembly_env'.");
   }
 
   /** Returns oneOps auth domain for the application group. */
@@ -125,9 +135,12 @@ public class AppGroup {
    * instances and is defaults to <b>prod</b>.
    */
   public String getGroupName() {
-    return String.format("/%s/%s/%s/%s", domain.getType(), org, assembly, env).toLowerCase();
+    if (null != org || null != assembly || null != env) {
+      return String.format("/%s/%s/%s/%s", domain.getType(), org, assembly, env);
+    } else {
+      return String.format("/%s/%s", domain.getType(), name.replace(GROUP_SEP, NSPATH_SEP));
+    }
   }
-
   /**
    * Returns the http url encoded {@link #getGroupName()}. Use this method when making requests to
    * keywhiz servers. The URL encoded group name is used for request con

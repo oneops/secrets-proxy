@@ -86,7 +86,6 @@ public class AppSecret {
 
     String prefix = names[0];
     secretName = names[1];
-
     String[] groups = prefix.split(GROUP_SEP, 2);
     if (groups.length != 2) {
       throw new IllegalArgumentException("Invalid app group prefix: " + prefix);

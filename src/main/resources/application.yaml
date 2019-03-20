@@ -135,6 +135,25 @@ oneops:
       maximum-pool-size: 2
       pool-name: keywhiz-proxy-dev
 
+# Tekton/MS Service domains and endpoint details
+# =====================
+services:
+  configs:
+  - domainNames: tektonprod
+    url: ${TEKTON_PROD_APP_URL}
+    auth:
+      token: ${TEKTON_PROD_APP_CODE}
+  - domainNames: msprod
+    url: ${MS_PROD_APP_URL}
+    auth:
+      token: ${MS_PROD_APP_CODE}
+  - domainNames: msdev
+    url: ${MS_DEV_APP_URL}
+    auth:
+      token: ${MS_DEV_APP_CODE}
+  expires-in-sec: ${CLIENT_AUTH_EXPIRES_IN_SEC}
+
+
 # Spring datasource Configuration
 # ===============================
 spring:
@@ -194,4 +213,3 @@ info:
 #    keys-to-sanitize:
 #  configprops:
 #    keys-to-sanitize:
-
