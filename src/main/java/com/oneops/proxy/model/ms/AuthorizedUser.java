@@ -1,7 +1,5 @@
 package com.oneops.proxy.model.ms;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 
 /**
@@ -10,13 +8,12 @@ import java.util.Map;
  *
  * @author Varsha
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthorizedUser {
 
-  @JsonProperty private String user;
-  @JsonProperty private boolean authorized;
-  @JsonProperty private String error;
-  @JsonProperty private Map<String, String> metadata;
+  private String user;
+  private boolean authorized;
+  private String error;
+  private Map<String, String> metadata;
 
   public String getUser() {
     return user;

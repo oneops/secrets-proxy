@@ -1,7 +1,5 @@
 package com.oneops.proxy.model.ms;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /**
@@ -10,12 +8,11 @@ import java.util.List;
  *
  * @author Varsha
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class MSClientAuthResponse {
 
-  @JsonProperty private String namespace;
+  private String namespace;
 
-  @JsonProperty private List<AuthorizedUser> authorized;
+  private List<AuthorizedUser> authorized;
 
   public String getNamespace() {
     return namespace;
