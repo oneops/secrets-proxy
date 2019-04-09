@@ -3,8 +3,8 @@ package com.oneops.proxy.model.ms;
 import java.util.List;
 
 /**
- * Request object for Managed Services Auth Api. Uses namespace as appName and List of <Credentials>
- * username </Credentials>
+ * Request object for Managed Services Auth Api. Uses namespace as appName and List of Credentials.
+ * username Credentials
  *
  * @author Varsha
  */

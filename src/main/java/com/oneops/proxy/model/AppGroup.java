@@ -136,7 +136,7 @@ public class AppGroup {
    */
   public String getGroupName() {
     if (null != org || null != assembly || null != env) {
-      return String.format("/%s/%s/%s/%s", domain.getType(), org, assembly, env).toLowerCase();
+      return String.format("/%s/%s/%s/%s", domain.getType(), org, assembly, env);
     } else {
       return String.format("/%s/%s", domain.getType(), name.replace(GROUP_SEP, NSPATH_SEP));
     }
