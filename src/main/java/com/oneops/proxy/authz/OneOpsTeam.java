@@ -29,9 +29,7 @@ public class OneOpsTeam {
   /** The default team name the users to be part of to manage keywhiz secrets. */
   public static final String SECRETS_ADMIN_TEAM = "secrets-admin";
 
-  /** Prefix for restricted team name in OneOps */
-  @Value("${oneops.restricted-team-prefix:sox-}")
-  private String restrictedTeamPrefix;
+  public static final String RESTRICTED_TEAM_PREFIX = "sox-";
 
   private final String name;
   private final String description;
@@ -118,7 +116,7 @@ public class OneOpsTeam {
     String assemblySecretsAdmin = SECRETS_ADMIN_TEAM + "-" + assembly;
     return isSecretsAdmin()
         || assemblySecretsAdmin.equalsIgnoreCase(name)
-        || (restrictedTeamPrefix + assemblySecretsAdmin).equalsIgnoreCase(name);
+        || (RESTRICTED_TEAM_PREFIX + assemblySecretsAdmin).equalsIgnoreCase(name);
   }
 
   @Override

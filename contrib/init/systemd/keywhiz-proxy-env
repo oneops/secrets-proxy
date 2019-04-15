@@ -48,5 +48,3 @@ ONEOPS_DB_PASS=xxxxxx
 # ---------------------
 MANAGEMENT_USER=xxxxx
 MANAGEMENT_PASSWORD=xxxxx
-
-ONEOPS_RESTRICTED_TEAM_PREFIX=sox-
