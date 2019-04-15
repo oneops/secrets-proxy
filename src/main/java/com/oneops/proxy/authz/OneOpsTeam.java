@@ -17,6 +17,8 @@
  */
 package com.oneops.proxy.authz;
 
+import org.springframework.beans.factory.annotation.Value;
+
 /**
  * OneOps team model, used for authorization check.
  *
@@ -26,6 +28,10 @@ public class OneOpsTeam {
 
   /** The default team name the users to be part of to manage keywhiz secrets. */
   public static final String SECRETS_ADMIN_TEAM = "secrets-admin";
+
+  /** Prefix for restricted team name in OneOps */
+  @Value("${oneops.restricted-team-prefix:sox-}")
+  private String restrictedTeamPrefix;
 
   private final String name;
   private final String description;
@@ -103,13 +109,16 @@ public class OneOpsTeam {
    * <ul>
    *   <li>Team name should <b>secrets-admin</b> OR
    *   <li>Team name should <b>secrets-admin-${AssemblyName}</b>
+   *   <li>For a SOX assembly, team name should <b>sox-secrets-admin-${AssemblyName}</b>
    * </ul>
    *
    * @return <code>true</code> if the team is a Secrets admin for given assembly.
    */
   public boolean isSecretsAdmin(String assembly) {
     String assemblySecretsAdmin = SECRETS_ADMIN_TEAM + "-" + assembly;
-    return isSecretsAdmin() || assemblySecretsAdmin.equalsIgnoreCase(name);
+    return isSecretsAdmin()
+        || assemblySecretsAdmin.equalsIgnoreCase(name)
+        || (restrictedTeamPrefix + assemblySecretsAdmin).equalsIgnoreCase(name);
   }
 
   @Override

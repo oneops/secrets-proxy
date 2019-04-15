@@ -134,6 +134,7 @@ oneops:
       type: com.zaxxer.hikari.HikariDataSource
       maximum-pool-size: 2
       pool-name: keywhiz-proxy-dev
+  restricted-team-prefix : ${RESTRICTED_TEAM_PREFIX:sox-}
 
 # Tekton/MS Service domains and endpoint details
 # =====================
