@@ -17,8 +17,6 @@
  */
 package com.oneops.proxy.authz;
 
-import org.springframework.beans.factory.annotation.Value;
-
 /**
  * OneOps team model, used for authorization check.
  *
