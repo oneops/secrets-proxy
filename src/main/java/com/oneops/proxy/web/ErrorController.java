@@ -58,7 +58,8 @@ public class ErrorController extends BasicErrorController {
 
     // Update status code and format error respose for RequestRejectedException
     Object message = "";
-    String exceptionName = body.get("exception").toString();
+    Object ex = body.get("exception");
+    String exceptionName = ex != null ? ex.toString() : "";
 
     if (exceptionName.contains(RequestRejectedException.class.getSimpleName())) {
       try {
