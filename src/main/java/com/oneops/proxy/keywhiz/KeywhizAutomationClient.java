@@ -19,6 +19,7 @@ package com.oneops.proxy.keywhiz;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
+import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.keywhiz.http.HttpClient;
 import com.oneops.proxy.keywhiz.model.v2.*;
 import com.oneops.proxy.security.KeywhizKeyStore;
@@ -38,13 +39,13 @@ public class KeywhizAutomationClient extends HttpClient {
   /**
    * Create a keywhiz automation client for the given baseurl.
    *
-   * @param baseUrl Keywhiz server base url
+   *
    * @param keywhizKeyStore Keywhiz keystore.
    * @throws GeneralSecurityException Throws if any error creating the https client.
    */
-  public KeywhizAutomationClient(String baseUrl, KeywhizKeyStore keywhizKeyStore)
+  public KeywhizAutomationClient(/*String baseUrl,*/ KeywhizKeyStore keywhizKeyStore, OneOpsConfig.Keywhiz keywhiz)
       throws GeneralSecurityException {
-    super(baseUrl, keywhizKeyStore, null);
+    super(/*baseUrl,*/ keywhizKeyStore, keywhiz);
   }
 
   /**

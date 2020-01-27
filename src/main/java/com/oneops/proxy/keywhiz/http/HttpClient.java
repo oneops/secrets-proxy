@@ -66,18 +66,18 @@ public abstract class HttpClient {
   /**
    * Creates an http client.
    *
-   * @param baseUrl keywhiz base url
+   * @param keywhiz base url
    * @param keywhizKeyStore keywhiz keystore.
    * @throws GeneralSecurityException
    */
   protected HttpClient(
-      String baseUrl, KeywhizKeyStore keywhizKeyStore, OneOpsConfig.Keywhiz keywhiz)
+      /*String baseUrl,*/ KeywhizKeyStore keywhizKeyStore, OneOpsConfig.Keywhiz keywhiz)
       throws GeneralSecurityException {
     this.keywhizKeyStore = keywhizKeyStore;
     this.keywhiz = keywhiz;
-    log.info("Creating Keywhiz client for " + baseUrl);
+    log.info("Creating Keywhiz client for " + keywhiz.getBaseUrl());
     this.client = createHttpsClient();
-    this.baseUrl = HttpUrl.parse(baseUrl);
+    this.baseUrl = HttpUrl.parse(keywhiz.getBaseUrl());
   }
 
   /**
