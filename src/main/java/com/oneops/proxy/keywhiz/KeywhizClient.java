@@ -21,6 +21,7 @@ import static java.lang.String.format;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
+import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.keywhiz.http.*;
 import com.oneops.proxy.keywhiz.model.*;
 import com.oneops.proxy.security.KeywhizKeyStore;
@@ -43,9 +44,10 @@ public class KeywhizClient extends HttpClient {
    * @param keywhizKeyStore keywhiz keystore.
    * @throws GeneralSecurityException throws if any error creating the https client.
    */
-  public KeywhizClient(String baseUrl, KeywhizKeyStore keywhizKeyStore)
+  public KeywhizClient(
+      String baseUrl, KeywhizKeyStore keywhizKeyStore, OneOpsConfig.Keywhiz keywhiz)
       throws GeneralSecurityException {
-    super(baseUrl, keywhizKeyStore);
+    super(baseUrl, keywhizKeyStore, keywhiz);
   }
 
   @Override

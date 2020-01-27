@@ -44,7 +44,7 @@ public class KeywhizAutomationClient extends HttpClient {
    */
   public KeywhizAutomationClient(String baseUrl, KeywhizKeyStore keywhizKeyStore)
       throws GeneralSecurityException {
-    super(baseUrl, keywhizKeyStore);
+    super(baseUrl, keywhizKeyStore, null);
   }
 
   /**

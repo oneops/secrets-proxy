@@ -104,11 +104,11 @@ public class ApplicationConfig {
 
   /** Returns the keywhiz http client */
   @Bean
-  @Lazy
   public KeywhizClient keywhizClient(
       OneOpsConfig config, @Qualifier("keywhizKeyStore") KeywhizKeyStore keywhizKeyStore)
       throws GeneralSecurityException {
-    return new KeywhizClient(config.getKeywhiz().getBaseUrl(), keywhizKeyStore);
+    OneOpsConfig.Keywhiz keywhiz = config.getKeywhiz();
+    return new KeywhizClient(config.getKeywhiz().getBaseUrl(), keywhizKeyStore, keywhiz);
   }
 
   /** Returns the keywhiz automation client */
