@@ -71,7 +71,7 @@ public abstract class HttpClient {
    * @throws GeneralSecurityException
    */
   protected HttpClient(
-      /*String baseUrl,*/ KeywhizKeyStore keywhizKeyStore, OneOpsConfig.Keywhiz keywhiz)
+    KeywhizKeyStore keywhizKeyStore, OneOpsConfig.Keywhiz keywhiz)
       throws GeneralSecurityException {
     this.keywhizKeyStore = keywhizKeyStore;
     this.keywhiz = keywhiz;
@@ -114,9 +114,7 @@ public abstract class HttpClient {
     SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
     sslContext.init(keyManagers, trustManagers, new SecureRandom());
     SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-    log.info(
-        "Keywhiz connect timeout "
-            + String.valueOf(keywhiz != null ? keywhiz.getConnectTimeout() : 5));
+    log.info("Keywhiz connect timeout " + keywhiz.getConnectTimeout());
 
     HttpLoggingInterceptor loggingInterceptor =
         new HttpLoggingInterceptor(
@@ -134,9 +132,9 @@ public abstract class HttpClient {
             .connectionSpecs(singletonList(ConnectionSpec.MODERN_TLS))
             .followSslRedirects(false)
             .retryOnConnectionFailure(true)
-            .connectTimeout(keywhiz != null ? keywhiz.getConnectTimeout() : 5, SECONDS)
-            .readTimeout(keywhiz != null ? keywhiz.getReadTimeout() : 5, SECONDS)
-            .writeTimeout(keywhiz != null ? keywhiz.getWriteTimeout() : 5, SECONDS)
+            .connectTimeout(keywhiz.getConnectTimeout(), SECONDS)
+            .readTimeout(keywhiz.getReadTimeout(), SECONDS)
+            .writeTimeout(keywhiz.getWriteTimeout(), SECONDS)
             .addInterceptor(
                 chain -> {
                   Request req =

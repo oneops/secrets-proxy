@@ -108,7 +108,7 @@ public class ApplicationConfig {
       OneOpsConfig config, @Qualifier("keywhizKeyStore") KeywhizKeyStore keywhizKeyStore)
       throws GeneralSecurityException {
     OneOpsConfig.Keywhiz keywhiz = config.getKeywhiz();
-    return new KeywhizClient(/*config.getKeywhiz().getBaseUrl(),*/ keywhizKeyStore, keywhiz);
+    return new KeywhizClient(keywhizKeyStore, keywhiz);
   }
 
   /** Returns the keywhiz automation client */
@@ -117,7 +117,7 @@ public class ApplicationConfig {
       OneOpsConfig config, @Qualifier("keywhizKeyStore") KeywhizKeyStore keywhizKeyStore)
       throws GeneralSecurityException {
       OneOpsConfig.Keywhiz keywhiz = config.getKeywhiz();
-    return new KeywhizAutomationClient(/*config.getKeywhiz().getBaseUrl(),*/ keywhizKeyStore, keywhiz);
+    return new KeywhizAutomationClient(keywhizKeyStore, keywhiz);
   }
 
   /** Returns the LDAP client. */

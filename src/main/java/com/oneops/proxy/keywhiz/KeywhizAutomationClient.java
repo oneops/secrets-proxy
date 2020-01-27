@@ -43,9 +43,9 @@ public class KeywhizAutomationClient extends HttpClient {
    * @param keywhizKeyStore Keywhiz keystore.
    * @throws GeneralSecurityException Throws if any error creating the https client.
    */
-  public KeywhizAutomationClient(/*String baseUrl,*/ KeywhizKeyStore keywhizKeyStore, OneOpsConfig.Keywhiz keywhiz)
+  public KeywhizAutomationClient(KeywhizKeyStore keywhizKeyStore, OneOpsConfig.Keywhiz keywhiz)
       throws GeneralSecurityException {
-    super(/*baseUrl,*/ keywhizKeyStore, keywhiz);
+    super(keywhizKeyStore, keywhiz);
   }
 
   /**
