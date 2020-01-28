@@ -70,8 +70,7 @@ public abstract class HttpClient {
    * @param keywhizKeyStore keywhiz keystore.
    * @throws GeneralSecurityException
    */
-  protected HttpClient(
-    KeywhizKeyStore keywhizKeyStore, OneOpsConfig.Keywhiz keywhiz)
+  protected HttpClient(KeywhizKeyStore keywhizKeyStore, OneOpsConfig.Keywhiz keywhiz)
       throws GeneralSecurityException {
     this.keywhizKeyStore = keywhizKeyStore;
     this.keywhiz = keywhiz;
