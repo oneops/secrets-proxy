@@ -114,7 +114,7 @@ public abstract class HttpClient {
     SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
     sslContext.init(keyManagers, trustManagers, new SecureRandom());
     SSLSocketFactory socketFactory = sslContext.getSocketFactory();
-    log.info("Keywhiz connect timeout " + keywhiz.getConnectTimeout());
+    log.info("Keywhiz connect timeout " + keywhiz.getClientTimeout());
 
     HttpLoggingInterceptor loggingInterceptor =
         new HttpLoggingInterceptor(
@@ -132,9 +132,9 @@ public abstract class HttpClient {
             .connectionSpecs(singletonList(ConnectionSpec.MODERN_TLS))
             .followSslRedirects(false)
             .retryOnConnectionFailure(true)
-            .connectTimeout(keywhiz.getConnectTimeout(), SECONDS)
-            .readTimeout(keywhiz.getReadTimeout(), SECONDS)
-            .writeTimeout(keywhiz.getWriteTimeout(), SECONDS)
+            .connectTimeout(keywhiz.getClientTimeout(), SECONDS)
+            .readTimeout(keywhiz.getClientTimeout(), SECONDS)
+            .writeTimeout(keywhiz.getClientTimeout(), SECONDS)
             .addInterceptor(
                 chain -> {
                   Request req =
