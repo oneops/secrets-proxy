@@ -64,6 +64,7 @@ oneops:
     svc-user: ${KEYWHIZ_USER}
     svc-password: ${KEYWHIZ_PASS}
     secret-max-size: ${KEYWHIZ_SECRET_MAX_SIZE:350000}
+    client-timeout: ${KEYWHIZ_CLIENT_TIMEOUT:10}
     trust-store:
       path: classpath:keystores/keywhiz_truststore.p12
       type: pkcs12

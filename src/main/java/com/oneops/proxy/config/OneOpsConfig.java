@@ -100,6 +100,8 @@ public class OneOpsConfig {
     /** Secret max size in bytes. */
     private long secretMaxSize;
 
+    private int clientTimeout;
+
     @NotNull @NestedConfigurationProperty private TrustStore trustStore;
 
     @NotNull @NestedConfigurationProperty private Keystore keyStore;
@@ -160,6 +162,14 @@ public class OneOpsConfig {
 
     public void setSecretMaxSize(long secretMaxSize) {
       this.secretMaxSize = secretMaxSize;
+    }
+
+    public int getClientTimeout() {
+      return clientTimeout;
+    }
+
+    public void setClientTimeout(int clientTimeout) {
+      this.clientTimeout = clientTimeout;
     }
 
     @Override

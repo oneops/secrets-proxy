@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.oneops.proxy.config.OneOpsConfig;
 import com.oneops.proxy.keywhiz.KeywhizException;
 import com.oneops.proxy.security.KeywhizKeyStore;
 import java.io.IOException;
@@ -60,19 +61,23 @@ public abstract class HttpClient {
 
   private CookieManager cookieMgr;
 
+  private OneOpsConfig.Keywhiz keywhiz;
+
   /**
    * Creates an http client.
    *
-   * @param baseUrl keywhiz base url
+   * @param keywhiz base url
    * @param keywhizKeyStore keywhiz keystore.
    * @throws GeneralSecurityException
    */
-  protected HttpClient(String baseUrl, KeywhizKeyStore keywhizKeyStore)
+  protected HttpClient(
+    KeywhizKeyStore keywhizKeyStore, OneOpsConfig.Keywhiz keywhiz)
       throws GeneralSecurityException {
     this.keywhizKeyStore = keywhizKeyStore;
-    log.info("Creating Keywhiz client for " + baseUrl);
+    this.keywhiz = keywhiz;
+    log.info("Creating Keywhiz client for " + keywhiz.getBaseUrl());
     this.client = createHttpsClient();
-    this.baseUrl = HttpUrl.parse(baseUrl);
+    this.baseUrl = HttpUrl.parse(keywhiz.getBaseUrl());
   }
 
   /**
@@ -109,6 +114,7 @@ public abstract class HttpClient {
     SSLContext sslContext = SSLContext.getInstance("TLSv1.2");
     sslContext.init(keyManagers, trustManagers, new SecureRandom());
     SSLSocketFactory socketFactory = sslContext.getSocketFactory();
+    log.info("Keywhiz connect timeout " + keywhiz.getClientTimeout());
 
     HttpLoggingInterceptor loggingInterceptor =
         new HttpLoggingInterceptor(
@@ -126,9 +132,9 @@ public abstract class HttpClient {
             .connectionSpecs(singletonList(ConnectionSpec.MODERN_TLS))
             .followSslRedirects(false)
             .retryOnConnectionFailure(true)
-            .connectTimeout(5, SECONDS)
-            .readTimeout(5, SECONDS)
-            .writeTimeout(5, SECONDS)
+            .connectTimeout(keywhiz.getClientTimeout(), SECONDS)
+            .readTimeout(keywhiz.getClientTimeout(), SECONDS)
+            .writeTimeout(keywhiz.getClientTimeout(), SECONDS)
             .addInterceptor(
                 chain -> {
                   Request req =

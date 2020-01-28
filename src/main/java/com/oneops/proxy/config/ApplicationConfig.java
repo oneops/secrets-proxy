@@ -104,11 +104,11 @@ public class ApplicationConfig {
 
   /** Returns the keywhiz http client */
   @Bean
-  @Lazy
   public KeywhizClient keywhizClient(
       OneOpsConfig config, @Qualifier("keywhizKeyStore") KeywhizKeyStore keywhizKeyStore)
       throws GeneralSecurityException {
-    return new KeywhizClient(config.getKeywhiz().getBaseUrl(), keywhizKeyStore);
+    OneOpsConfig.Keywhiz keywhiz = config.getKeywhiz();
+    return new KeywhizClient(keywhizKeyStore, keywhiz);
   }
 
   /** Returns the keywhiz automation client */
@@ -116,7 +116,8 @@ public class ApplicationConfig {
   public KeywhizAutomationClient keywhizAutomationClient(
       OneOpsConfig config, @Qualifier("keywhizKeyStore") KeywhizKeyStore keywhizKeyStore)
       throws GeneralSecurityException {
-    return new KeywhizAutomationClient(config.getKeywhiz().getBaseUrl(), keywhizKeyStore);
+      OneOpsConfig.Keywhiz keywhiz = config.getKeywhiz();
+    return new KeywhizAutomationClient(keywhizKeyStore, keywhiz);
   }
 
   /** Returns the LDAP client. */
