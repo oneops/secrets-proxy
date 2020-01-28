@@ -62,7 +62,7 @@
         <build.timestamp>${maven.build.timestamp}</build.timestamp>
         <maven.build.timestamp.format>yyyy-MM-dd hh:mm:ss a z</maven.build.timestamp.format>
         <moshi.version>1.6.0</moshi.version>
-        <retrofit.version>2.4.0</retrofit.version>
+        <retrofit.version>2.7.1</retrofit.version>
      </properties>
 
      <dependencyManagement>
