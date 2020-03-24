@@ -40,7 +40,7 @@ public class KeywhizClient extends HttpClient {
   /**
    * Create a keywhiz client for the given baseurl.
    *
-   * @param  keywhiz server base url
+   * @param keywhiz server base url
    * @param keywhizKeyStore keywhiz keystore.
    * @throws GeneralSecurityException throws if any error creating the https client.
    */
