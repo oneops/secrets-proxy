@@ -140,13 +140,17 @@ public class MSProxyClient {
     ErrorRes err = null;
     T body = null;
 
-    if (res.isSuccessful()) {
-      body = res.body();
+    if (res.isSuccessful() && res.body() != null) {
+      if(((MSClientAuthResponse) res.body()).getAuthorized().get(0).isAuthorized()) {
+        log.info("Passed MS authorization request successfully.");
+        body = res.body();
+        return new Result<>(body, err, res.code(), res.isSuccessful());
+      }
     } else {
       if (res.errorBody() != null && res.errorBody().contentLength() != 0) {
         err = errResConverter.convert(res.errorBody());
       }
     }
-    return new Result<>(body, err, res.code(), res.isSuccessful());
+    return new Result<>(body, err,400, false);
   }
 }
