@@ -39,7 +39,6 @@ public class KeywhizAutomationClient extends HttpClient {
   /**
    * Create a keywhiz automation client for the given baseurl.
    *
-   *
    * @param keywhizKeyStore Keywhiz keystore.
    * @throws GeneralSecurityException Throws if any error creating the https client.
    */

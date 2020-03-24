@@ -116,7 +116,7 @@ public class ApplicationConfig {
   public KeywhizAutomationClient keywhizAutomationClient(
       OneOpsConfig config, @Qualifier("keywhizKeyStore") KeywhizKeyStore keywhizKeyStore)
       throws GeneralSecurityException {
-      OneOpsConfig.Keywhiz keywhiz = config.getKeywhiz();
+    OneOpsConfig.Keywhiz keywhiz = config.getKeywhiz();
     return new KeywhizAutomationClient(keywhizKeyStore, keywhiz);
   }
 
