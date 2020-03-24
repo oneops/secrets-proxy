@@ -24,7 +24,7 @@
 
     <scm>
         <developerConnection>scm:git:git@github.com:oneops/secrets-proxy.git</developerConnection>
-        <url>https://github.com/oneops/secrets-proxy</url>
+        <url>https://github.com/oneops/secrets-proxy.git</url>
         <tag>HEAD</tag>
     </scm>
 
