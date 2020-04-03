@@ -131,7 +131,11 @@ public class MSProxyClient {
    */
   public Result<MSClientAuthResponse> doAuth(MSClientAuthRequest authRequest) throws IOException {
     log.info("MSProxyClient::auth::create client request::" + authRequest.getNamespace());
-    return exec(msProxy.auth(authRequest));
+    Result<MSClientAuthResponse> result = exec(msProxy.auth(authRequest));
+    if(result.getBody() != null && result.getBody().isAuthorized()) {
+      return result;
+    }else
+      return null;
   }
 
   /** Helper method to handle {@Param Call} object and return the execution {@link Result}. */

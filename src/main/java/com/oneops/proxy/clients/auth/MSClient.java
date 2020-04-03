@@ -3,12 +3,9 @@ package com.oneops.proxy.clients.auth;
 import com.oneops.proxy.auth.user.OneOpsUser;
 import com.oneops.proxy.clients.model.Result;
 import com.oneops.proxy.clients.proxy.MSProxyClient;
-import com.oneops.proxy.model.ms.Credentials;
 import com.oneops.proxy.model.ms.MSClientAuthRequest;
 import com.oneops.proxy.model.ms.MSClientAuthResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +42,7 @@ public class MSClient implements Client {
 
     /* Create MS client request */
     MSClientAuthRequest authRequest = createRequest(user.getUsername(), namespace);
+    log.info("Checking authorization for user "+ user.getUsername());
 
     /*Invoking proxy url*/
     Result<MSClientAuthResponse> result = msProxyClient.doAuth(authRequest);
@@ -57,13 +55,8 @@ public class MSClient implements Client {
   /** create request payload object for Managed services auth api */
   private MSClientAuthRequest createRequest(String user, String namespace) {
     MSClientAuthRequest authRequest = new MSClientAuthRequest();
-    Credentials cred = new Credentials();
-    cred.setUser(user);
-
-    List<Credentials> credential = new ArrayList<>();
-    credential.add(cred);
     authRequest.setNamespace(namespace);
-    authRequest.setCredential(credential);
+    authRequest.setUser(user);
     return authRequest;
   }
 }
