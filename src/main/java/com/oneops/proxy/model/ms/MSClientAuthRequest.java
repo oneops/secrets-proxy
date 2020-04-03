@@ -11,7 +11,8 @@ import java.util.List;
 public class MSClientAuthRequest {
 
   private String namespace;
-  private List<Credentials> credential;
+  private String user;
+  private String password;
 
   public String getNamespace() {
     return namespace;
@@ -21,11 +22,19 @@ public class MSClientAuthRequest {
     this.namespace = namespace;
   }
 
-  public List<Credentials> getCredential() {
-    return credential;
+  public String getUser() {
+    return user;
   }
 
-  public void setCredential(List<Credentials> credential) {
-    this.credential = credential;
+  public void setUser(String user) {
+    this.user = user;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
   }
 }
