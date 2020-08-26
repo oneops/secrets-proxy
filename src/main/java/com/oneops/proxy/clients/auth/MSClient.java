@@ -42,7 +42,7 @@ public class MSClient implements Client {
 
     /* Create MS client request */
     MSClientAuthRequest authRequest = createRequest(user.getUsername(), namespace);
-    log.info("Checking authorization for user "+ user.getUsername());
+    log.info("Checking authorization for user " + user.getUsername());
 
     /*Invoking proxy url*/
     Result<MSClientAuthResponse> result = msProxyClient.doAuth(authRequest);
