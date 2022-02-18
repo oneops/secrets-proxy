@@ -22,8 +22,6 @@ import static com.oneops.proxy.security.KeywhizKeyStore.Name.LDAP;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oneops.proxy.clients.proxy.MSProxyClient;
-import com.oneops.proxy.clients.proxy.TektonProxyClient;
 import com.oneops.proxy.keywhiz.KeywhizAutomationClient;
 import com.oneops.proxy.keywhiz.KeywhizClient;
 import com.oneops.proxy.ldap.LdapClient;
@@ -128,18 +126,6 @@ public class ApplicationConfig {
       throws GeneralSecurityException {
     return new LdapClient(config.getLdap(), keywhizKeyStore);
   }
-
-//  /** Returns the MSProxyClient. */
-//  @Bean
-//  public MSProxyClient msProxyClient(OneOpsConfig config, ClientsAuthConfig clientConfig) {
-//    return new MSProxyClient(config.getKeywhiz().getTrustStore(), clientConfig);
-//  }
-//
-//  /** Returns the TektonProxyClient. */
-//  @Bean
-//  public TektonProxyClient tektonProxyClient(OneOpsConfig config, ClientsAuthConfig clientConfig) {
-//    return new TektonProxyClient(config.getKeywhiz().getTrustStore(), clientConfig);
-//  }
 
   /**
    * Json (de)serializer config.

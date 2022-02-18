@@ -20,9 +20,8 @@ package com.oneops.proxy.authz;
 import static com.oneops.proxy.authz.OneOpsTeam.SECRETS_ADMIN_TEAM;
 
 import com.oneops.proxy.auth.user.OneOpsUser;
-import com.oneops.proxy.clients.auth.Client;
-import com.oneops.proxy.clients.auth.ClientSelector;
 import com.oneops.proxy.model.AppGroup;
+import java.util.List;
 import javax.annotation.Nonnull;
 import org.slf4j.*;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -40,11 +39,9 @@ public class Authz {
   private final Logger log = LoggerFactory.getLogger(getClass());
 
   private final UserRepository userRepo;
-  private ClientSelector clientSelector;
 
-  public Authz(UserRepository userRepo, ClientSelector clientSelector) {
+  public Authz(UserRepository userRepo) {
     this.userRepo = userRepo;
-    this.clientSelector = clientSelector;
   }
 
   /**
@@ -55,28 +52,23 @@ public class Authz {
    * @param user Authenticated user.
    * @return <code>true</code> if the user is authorized.
    */
-  public boolean isAuthorized(@Nonnull String appName, @Nonnull OneOpsUser user) throws Exception {
+  public boolean isAuthorized(@Nonnull String appName, @Nonnull OneOpsUser user) {
     if (log.isDebugEnabled()) {
       log.debug(
-          "Checking the authz for user: "
-              + user.getUsername()
-              + ", domain: "
-              + user.getDomain()
-              + " and application: "
-              + appName);
+          "Checking the authz for user: " + user.getUsername() + " and application: " + appName);
     }
+
     AppGroup appGroup = new AppGroup(user.getDomain(), appName);
-    Client client = clientSelector.selectClient(appGroup, userRepo);
-    if (client != null && client.authorizeUser(appName, user)) {
-      log.info("Authorization process is done for user " + user.getUsername());
-    } else {
+    List<OneOpsTeam> teams = userRepo.getTeams(user.getUsername(), appGroup);
+    boolean hasAccess = teams.stream().anyMatch(team -> hasAdminAccess(team, appGroup));
+    if (!hasAccess) {
       throw new AuthorizationServiceException(
-          "User '"
+          "OneOps user '"
               + user.getCn()
               + "' is not a '"
               + SECRETS_ADMIN_TEAM
               + "' or not authorized to manage the secrets for environment: "
-              + appGroup.getName());
+              + appGroup.getNsPath());
     }
     return true;
   }
