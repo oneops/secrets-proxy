@@ -75,7 +75,7 @@ oneops:
       store-password: changeit
       key-password: changeit
     cli:
-      version: ${SECRETS_CLI_VERSION:0.0.0}
+      version: ${SECRETS_CLI_VERSION:1.1.1}
       user-agent-header: OneOpsSecretsCLI-
       download-url: ${SECRETS_CLI_URL:https://secrets.oneops.com/cli/download}
       download-path: ${SECRETS_CLI_PATH:/opt/oneops/secrets-cli/secrets}
