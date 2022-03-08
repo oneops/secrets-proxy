@@ -18,6 +18,7 @@
 package com.oneops.proxy.web;
 
 import static org.springframework.http.MediaType.*;
+
 import com.oneops.proxy.model.ErrorResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
