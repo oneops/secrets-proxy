@@ -165,10 +165,10 @@
  [maven-url]: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.oneops%22%20AND%20a%3A%22secrets-proxy%22
  [maven-svg]: https://img.shields.io/maven-central/v/com.oneops/secrets-proxy.svg?label=Maven%20Central&style=flat-square
  
- [apidoc-url]: https://oneops.github.com/secrets-proxy/apidocs
+ [apidoc-url]: https://oneops.github.io/secrets-proxy/apidocs
  [apidoc-svg]: https://img.shields.io/badge/api--doc-latest-green.svg?style=flat-square
  
- [javadoc-url]: https://oneops.github.com/secrets-proxy/javadocs
+ [javadoc-url]: https://oneops.github.io/secrets-proxy/javadocs
  [javadoc-svg]: https://img.shields.io/badge/java--doc-latest-ff69b4.svg?style=flat-square
  
  [cl-url]: https://github.com/oneops/secrets-proxy/blob/master/CHANGELOG.md
