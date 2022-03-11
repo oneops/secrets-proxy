@@ -2,7 +2,7 @@
 
 # :key: OneOps Secrets Proxy 
 
-[![Maven Central][maven-svg]][maven-url] [![api-doc][apidoc-svg]][apidoc-url] [![java-doc][javadoc-svg]][javadoc-url] [![changelog][cl-svg]][cl-url] 
+[![Build](https://github.com/oneops/secrets-proxy/actions/workflows/maven.yml/badge.svg)](https://github.com/oneops/secrets-proxy/actions/workflows/maven.yml) [![Maven Central][maven-svg]][maven-url] [![api-doc][apidoc-svg]][apidoc-url] [![java-doc][javadoc-svg]][javadoc-url] [![changelog][cl-svg]][cl-url] 
 
  A secure proxy service for managing [OneOps][oneops-url] secrets.
  
