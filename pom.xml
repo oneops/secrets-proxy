@@ -54,7 +54,7 @@
         <okhttp.version>3.10.0</okhttp.version>
         <togglz.version>2.5.0.Final</togglz.version>
         <commonlang.version>3.7</commonlang.version>
-        <postgresql.version>9.3-1104-jdbc4</postgresql.version>
+        <postgresql.version>42.3.7</postgresql.version>
         <hikaricp.version>3.2.0</hikaricp.version>
         <springfox.version>2.8.0</springfox.version>
         <logback.access.starter.version>2.6.0</logback.access.starter.version>
